@@ -1,0 +1,7 @@
+const express = require('express')
+const app= express()
+require('dotenv').config()
+const routes = require("./routes/index")
+app.use(express.json())
+routes(app)
+app.listen(process.env.SERVER_PORT_NUMBER, () => console.log("server connect to port : ", process.env.SERVER_PORT_NUMBER))
