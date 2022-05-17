@@ -4,6 +4,9 @@ import Button from "react-bootstrap/Button"
 import { useState } from "react"
 const Authenticate = () => {
     const [auth, setAuth] = useState(true)
+
+
+    
     return(
         <Container>
             <Content>
@@ -17,11 +20,18 @@ const Authenticate = () => {
                         <Form.Label>Email address</Form.Label>
                         <Form.Control type="email" placeholder="Enter email" />
                     </Form.Group>
-
+                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                        <Form.Label>Mật khẩu</Form.Label>
+                        <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
 
                     {
                         !auth && (
                             <>
+                                <Form.Group className="mb-3" controlId="formBasicPassword">
+                                    <Form.Label>Nhập lại mật khẩu</Form.Label>
+                                    <Form.Control type="password" placeholder="Password" />
+                                </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicName">
                                     <Form.Label>Họ tên</Form.Label>
                                     <Form.Control type="text" placeholder="nhập họ tên" />
@@ -33,14 +43,8 @@ const Authenticate = () => {
                             </>
                         )
                     }
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Mật khẩu</Form.Label>
-                        <Form.Control type="password" placeholder="Password" />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Nhập lại mật khẩu</Form.Label>
-                        <Form.Control type="password" placeholder="Password" />
-                    </Form.Group>
+                    
+                    
                     <div className="auth-switch" onClick={()=> setAuth(!auth)}>
                         {
                             auth ? "Đăng ký tại đây" : "Đăng nhập tại đây"

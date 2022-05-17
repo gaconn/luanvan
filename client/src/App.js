@@ -25,7 +25,6 @@ function App() {
         <Route path="/auth" element={<Auth/>} />
         <Route path='*' element= {<div>Nothing here</div>} />
       </Routes>
-      <Footer />
     </BrowserRouter>
   );
 }
