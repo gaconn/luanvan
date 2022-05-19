@@ -9,9 +9,8 @@ import Topbar from '../layout/topbar/topbar';
 import Footer from '../layout/footer/footer';
 const Home = () => {
   return (
-    
-    <body id="page-top">
-    <div id="wrapper">
+<div>
+<div id="wrapper">
         <Sidebar/>
          <div id="content-wrapper" className="d-flex flex-column">
              <div id="content">
@@ -23,9 +22,10 @@ const Home = () => {
          </div>
 
      </div>
-     <>
-         {/* Scroll to Top Button*/}
-         <a className="scroll-to-top rounded" href="#page-top">
+
+
+     {/* Scroll to Top Button*/}
+     <a className="scroll-to-top rounded" href="#page-top">
              <i className="fas fa-angle-up" />
          </a>
          {/* Logout Modal*/}
@@ -70,8 +70,11 @@ const Home = () => {
                  </div>
              </div>
          </div>
-     </>
-    </body>
+</div>
+  
+        
+    
+    
 
 
   )
