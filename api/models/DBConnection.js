@@ -1,6 +1,6 @@
 const mysql2= require('mysql2')
 function poolConnection() {
-    return mysql2.createPool({
+    let conn=  mysql2.createPool({
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         user: process.env.DB_USER,
@@ -10,6 +10,8 @@ function poolConnection() {
         connectionLimit: process.env.DB_CONNECTION_LIMIT,
         queueLimit: process.env.DB_QUEUE_LIMIT
     })
+    const promiseConn= conn.promise()
+    return promiseConn
 }
 
 module.exports = poolConnection()

@@ -1,29 +1,16 @@
+const { checkIsObject } = require("./GeneralUtil")
 const GeneralUtil = require("./GeneralUtil")
 
 class DBUtil {
-    where = (tableName,objCondition) => {
-        var result = ""
-        if(!GeneralUtil.checkIsEmptyObject(objCondition)) {
-            result = "where "
-            for(var item in objCondition) {
-                result += `${tableName}.${item} = ${objCondition.item}`
-            }
+    buildFieldQuery = (objData) => {
+        if(checkIsObject === false) {
+            return ""
         }
-        return result
-    }
-
-    select = (tableName, arrColumn) => {
-        var result = "Select *"
-        if(!GeneralUtil.checkIsEmptyArray(arrColumn)) {
-            result = "Select "
-            for(var i = 0 ; i< arrColumn.length ; i++) {
-                if(i===0){
-                    result += `${tableName}.${arrColumn[i]}`
-                }
-                result += `,${tableName}.${arrColumn[i]}`
-            }
-        }
-        return result
+        if(Object.keys(objData).length === 0) return "" 
+        const arrKeys = Object.keys(objData)
+        if(!arrKeys) return ""
+        const strKeys = arrKeys.join(", ")
+        return strKeys
     }
 }
 
