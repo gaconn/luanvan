@@ -12,11 +12,10 @@ import {BrowserRouter , Routes, Route} from "react-router-dom"
 //admi
 import AdminLanding  from "./admin/Landing"
 //user
-import Landing from './pages/Landing';
 import Home from './pages/Home';
-import Footer from './layouts/Footer';
 import Auth from './pages/Auth';
 function App() {
+  console.log(process.env);
   return (
     <BrowserRouter>
       <Routes>

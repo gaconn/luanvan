@@ -1,10 +1,9 @@
-import { Link, Outlet } from "react-router-dom"
+import NavBar from "../layouts/NavBar"
+import SideBar from "../layouts/SideBar"
 
 const Home = () => {
     return <div>
-        <div></div>
-        <Link to="/manage/login">Login</Link>
-        <Outlet />
+        <SideBar />
     </div>
 }
 
