@@ -40,17 +40,17 @@ class GeneralUtil {
         return false
     }
 
-    hashPassword = async(strPassword) => {
+    hashPassword = (strPassword) => {
        try {
         const salt = bcrypt.genSaltSync(process.env.BCRYPT_SALT_ROUNDS*1)
-        const hash = bcrypt.hashSync(process.env.BCRYPT_PLAINTEXT_PASSWORD, salt)
+        const hash = bcrypt.hashSync(strPassword, salt)
         return hash
        } catch (error) {
            throw error
        }
     }
 
-    verifyPassword = async(plainPassword, hashedPassword) => {
+    verifyPassword = (plainPassword, hashedPassword) => {
         try {
             const isTrue = bcrypt.compareSync(plainPassword, hashedPassword)
             return isTrue

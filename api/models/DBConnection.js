@@ -1,4 +1,5 @@
 const mysql2= require('mysql2')
+require('dotenv').config()
 function poolConnection() {
     let conn=  mysql2.createPool({
         host: process.env.DB_HOST,

@@ -16,7 +16,6 @@ class UserController {
     getDetail = async (req, res) => {
         console.log("getting");
          UserModel.get();
-         
     }
 
     login = async(req, res) => {
