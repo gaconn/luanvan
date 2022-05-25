@@ -15,6 +15,7 @@ const Landing = () => {
             <Route path="*" element={<div>admin page</div>} />
         </Routes>
     </>
+
 }
 
 export default Landing
