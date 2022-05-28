@@ -2,7 +2,8 @@ import { Container, Input, Icon } from "./Search.style";
 import {AiOutlineSearch} from "react-icons/ai"
 import "./Search.style.css"
 const Search = ({key, onKeyChange}) => {
-    return <Container>
+    return 
+    <Container>
         <Input placeholder="Nhập tên sản phẩm" value={key} onChange={onKeyChange}/>
         <Icon>
             <AiOutlineSearch/>

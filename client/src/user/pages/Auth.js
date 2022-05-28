@@ -3,7 +3,7 @@ import Header from "../layouts/Header"
 
 const Auth = () => {
     return <>
-        <Header />
+        <Header/>
         <Authenticate />
     </>
 }

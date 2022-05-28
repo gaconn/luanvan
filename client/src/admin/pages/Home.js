@@ -5,7 +5,7 @@ import Footer from '../layout/footer/footer';
 import Modal from '../layout/modal/modal'
 const Home = () => {
     return <div>
-        <SideBar />
+        <Sidebar />
     </div>
 
 }
