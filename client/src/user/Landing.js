@@ -11,12 +11,15 @@ import React, { Component } from 'react';
  import "./assets/css/slicknav.min.css"  
  import "./assets/css/style.css"  
 import Login from "./pages/Login";
+import Contact from "./pages/Contact";
 class Landing extends Component {
     render() {
         return (
                     <Routes>
                      <Route index element={<Home />} />
-                    <Route path="Login" element={<Login/>}/>
+                    <Route path="/Login" element={<Login/>}/>
+                    <Route path="/Shop" element={<Login/>}/>
+                    <Route path="/Contact" element={<Contact/>}/>
                     </Routes>
         );
     }
