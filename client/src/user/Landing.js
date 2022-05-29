@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 
 import React, { Component } from 'react';
-
  import "./assets/css/bootstrap.min.css"  
  import "./assets/css/font-awesome.min.css"  
  import "./assets/css/elegant-icons.css"  
