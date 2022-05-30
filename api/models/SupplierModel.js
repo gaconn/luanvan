@@ -3,32 +3,28 @@ const { checkIsEmptyObject } = require('../utils/GeneralUtil')
 const ResponseUtil = require('../utils/ResponseUtil')
 const dbconnect= require('./DBConnection')
 class SupplierModel {
-    get = async(arrDataSelect = [],objCondition = {}) => {
+    get = async(page=1) => {
+        if(page< 1) {
+            return ResponseUtil.response(false, "Trang không hợp lệ")
+        }
+        var start= (page-1)*10
+        var end= start + 10
         try {
-            var fields = ""
-            if(arrDataSelect.length > 0) {
-                fields = arrDataSelect.join(", ")
-            }
-            var query = ""
-            if(fields != ""){
-                query = `select ${fields} from nhacungcap`
-            }else{
-                query = 'select * from nhacungcap'
-            }
+            const query = `select * from nhacungcap\
+            , (select COUNT(sp.id) from sanpham sp join nhacungcap ncc on sp.idnhacungcap = ncc.id) as SoLuongSanPham limit ${start},${end}`
+            const arrData = await dbconnect.query(query)
 
-            if(Object.keys(objCondition).length > 0) {
-                query += ' where ?'
-            }
-            const arrData = await dbconnect.query(query, objCondition)
+            const queryCount = `select COUNT(nhacungcap.id) as rowCount from nhacungcap`
+            const arrCount = await dbconnect.query(queryCount)
 
-            if(!arrData) {
+            if(!arrData || !arrCount) {
                 return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
             }
-            if(!arrData[0]) {
+            if(!arrData[0] || !arrCount[0]) {
                 return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
             }
 
-            return ResponseUtil.response(true, 'Thành công', arrData[0])
+            return ResponseUtil.response(true, 'Thành công', {data: arrData[0], rowCount: arrCount[0][0].rowCount})
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
         }

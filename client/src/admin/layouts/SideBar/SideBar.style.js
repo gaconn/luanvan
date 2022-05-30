@@ -2,9 +2,10 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     height: 100vh;
+    width: fit-content;
     background: #2a3542;
     font-size: 0.8rem;
-    position: fixed ;
+    position: sticky ;
     top: 0;
     left: 0;
     bottom: 0;
@@ -19,6 +20,7 @@ export const Content = styled.div`
 
     .side-bar-list-1{
         overflow-y: scroll;
+        overflow-y: overlay;
         height: 80vh;
         border-bottom: 1px solid #fff;
         ::-webkit-scrollbar{
@@ -70,6 +72,8 @@ export const Item = styled.li`
         justify-content: space-between;
         padding: 10px 20px;
         line-height: 2rem;
+        text-decoration: none;
+        color: inherit;
     }
     .side-bar-item-label{
         flex-grow: 1;
@@ -106,4 +110,5 @@ export const Item = styled.li`
             padding: 10px 0px;
         }
     }
+
 `
