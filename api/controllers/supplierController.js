@@ -6,7 +6,6 @@ class Supplier {
     //url: /supplier/get-all
     getAll = async(req, res) =>{
         const data =await SupplierModel.get()
-
         if(!data) {
             return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], ['không thể lấy dữ liệu từ database']))
         }
