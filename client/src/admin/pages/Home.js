@@ -1,13 +1,13 @@
-import Content from '../layout/content/content';
-import Sidebar from '../layout/sidebar/sidebar';
-import Topbar from '../layout/topbar/topbar';
-import Footer from '../layout/footer/footer';
-import Modal from '../layout/modal/modal'
-const Home = () => {
-    return <div>
-        <Sidebar />
-    </div>
 
+import { useEffect, useState } from "react"
+import SideBar from "../layouts/SideBar"
+import NhaCungCap from "./NhaCungCap"
+const Home = () => {
+    return <div className="d-flex">
+        <SideBar/>
+        <div className="flex-fill">
+            <NhaCungCap/>
+        </div>
 }
 
 export default Home 
