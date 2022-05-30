@@ -3,10 +3,7 @@ import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import { useState } from "react"
 const Authenticate = () => {
-    const [auth, setAuth] = useState(true)
-
-
-    
+    const [auth, setAuth] = useState(true)    
     return(
         <Container>
             <Content>
