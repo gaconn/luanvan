@@ -8,6 +8,6 @@ const Home = () => {
         <div className="flex-fill">
             <NhaCungCap/>
         </div>
+    </div>
 }
-
 export default Home 

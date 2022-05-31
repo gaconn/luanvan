@@ -13,6 +13,8 @@ import React, { Component } from 'react';
 import Login from "./pages/Login";
 import Contact from "./pages/Contact";
 import Register from "./pages/Register";
+import Shop from "./pages/Shop"
+import Blog from "./pages/Blog"
 class Landing extends Component {
     render() {
         return (
@@ -20,9 +22,9 @@ class Landing extends Component {
                     <Route index element={<Home />} />
                     <Route path="/Login" element={<Login/>}/>
                     <Route path="/Register" element={<Register/>}/>
-                    <Route path="/Shop" element={<Login/>}/>
+                    <Route path="/Shop" element={<Shop/>}/>
                     <Route path="/Contact" element={<Contact/>}/>
-                    <Route path="/Blog" element={<Contact/>}/>
+                    <Route path="/Blog" element={<Blog/>}/>
                     </Routes>
         );
     }
