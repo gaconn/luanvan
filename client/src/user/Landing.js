@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import Register from "./pages/Register";
 import Shop from "./pages/Shop"
 import Blog from "./pages/Blog"
+import Checkout from "./pages/Checkout";
 class Landing extends Component {
     render() {
         return (
@@ -23,6 +24,7 @@ class Landing extends Component {
                     <Route path="/Login" element={<Login/>}/>
                     <Route path="/Register" element={<Register/>}/>
                     <Route path="/Shop" element={<Shop/>}/>
+                    <Route path="/CheckOut" element={<Checkout/>}/>
                     <Route path="/Contact" element={<Contact/>}/>
                     <Route path="/Blog" element={<Blog/>}/>
                     </Routes>
