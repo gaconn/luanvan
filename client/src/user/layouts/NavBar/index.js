@@ -1,5 +1,4 @@
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from 'react-bootstrap/NavDropdown'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -27,8 +26,6 @@ const NavbarHeader = () => {
                                     <Nav.Link href="/Shop">Shop</Nav.Link>
                                     <Nav.Link href="/Contact">Contact</Nav.Link>
                                     <Nav.Link href="/Blog">Blog</Nav.Link>
-                                   
-
                                 </Nav>
 
                             </Col>

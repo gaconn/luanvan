@@ -4,7 +4,7 @@ import Header from "../layouts/Header"
 import NavbarHeader from "../layouts/NavBar"
 import Section from "../layouts/Section"
 import Banner from "../layouts/Banner"
-
+import HomeComponet from '../components/Home'
 
 const Home  = () => {
     return <>
@@ -12,6 +12,7 @@ const Home  = () => {
     <NavbarHeader/>    
     <Section/>
     <Banner/>
+    <HomeComponet/>
     <Footer/>
     </>
 }
