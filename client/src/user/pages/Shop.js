@@ -3,6 +3,7 @@ import Header from "../layouts/Header"
 import NavbarHeader from "../layouts/NavBar"
 import Section from "../layouts/Section"
 import Banner from "../layouts/Banner"
+import ShopComponent from "../components/Shop"
 const Shop = () => {
     return (
         <>
@@ -10,6 +11,7 @@ const Shop = () => {
             <NavbarHeader />
             <Section />
             <Banner />
+            <ShopComponent/>
             <Footer />
         </>
     );

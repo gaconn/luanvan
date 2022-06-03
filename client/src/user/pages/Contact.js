@@ -11,6 +11,7 @@ const Contact = () => {
             <NavbarHeader />
             <Section />
             <ContactComponent/>
+            &nbsp;
             <Footer />
         </div>
 

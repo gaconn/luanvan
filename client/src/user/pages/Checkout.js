@@ -4,17 +4,18 @@ import Header from "../layouts/Header"
 import NavbarHeader from "../layouts/NavBar"
 import Section from "../layouts/Section"
 import Banner from "../layouts/Banner"
-import HomeComponet from '../components/Home'
-
-const Home  = () => {
-    return <>
+import CheckoutComponent from '../components/CheckOut'
+const Checkout = () => {
+    return ( 
+        <>
     <Header/>  
     <NavbarHeader/>    
     <Section/>
     <Banner/>
-    <HomeComponet/>
+    <CheckoutComponent/>
     <Footer/>
     </>
+     );
 }
-
-export default Home
+ 
+export default Checkout;

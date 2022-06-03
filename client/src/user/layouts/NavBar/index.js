@@ -1,5 +1,4 @@
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from 'react-bootstrap/NavDropdown'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -13,8 +12,6 @@ const NavbarHeader = () => {
                 <Container fluid>
                     <Navbar.Brand href="Home">Automotive Parts</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
-
-
                     <Navbar.Collapse id="navbarScroll">
 
                         <Row>
@@ -29,15 +26,6 @@ const NavbarHeader = () => {
                                     <Nav.Link href="/Shop">Shop</Nav.Link>
                                     <Nav.Link href="/Contact">Contact</Nav.Link>
                                     <Nav.Link href="/Blog">Blog</Nav.Link>
-                                    {/* <NavDropdown title="Link" id="navbarScrollingDropdown">
-                                <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action4">Another action</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action5">
-                                    Something else here
-                                </NavDropdown.Item>
-                            </NavDropdown> */}
-
                                 </Nav>
 
                             </Col>
