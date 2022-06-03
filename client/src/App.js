@@ -18,7 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
       <Route path='/manage/*' element={<AdminLanding />}/>
-        <Route path='/*' element={<UserLanding />} />
+        <Route path='/*' />
         {/* <Route path="/auth" element={<Auth/>} /> */}
         <Route path='*' element= {<div>Nothing here</div>} />
       </Routes>

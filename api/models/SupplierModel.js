@@ -1,17 +1,21 @@
 const { buildFieldQuery } = require('../utils/DBUtil')
+const GeneralUtil = require('../utils/GeneralUtil')
 const { checkIsEmptyObject } = require('../utils/GeneralUtil')
 const ResponseUtil = require('../utils/ResponseUtil')
 const dbconnect= require('./DBConnection')
 class SupplierModel {
-    get = async(page=1) => {
-        if(page< 1) {
+    get = async(objCondition) => {
+        if(!objCondition || !objCondition.page) {
+            objCondition = {...objCondition, page: 1}
+        }
+        if(objCondition.page< 1) {
             return ResponseUtil.response(false, "Trang không hợp lệ")
         }
-        var start= (page-1)*10
-        var end= start + 10
+        var start= (objCondition.page-1)*10
         try {
+            const strWhere = this._buildWhereQuery(objCondition)
             const query = `select * from nhacungcap\
-            , (select COUNT(sp.id) from sanpham sp join nhacungcap ncc on sp.idnhacungcap = ncc.id) as SoLuongSanPham limit ${start},${end}`
+            , (select COUNT(sp.id) SoLuongSanPham  from sanpham sp join nhacungcap ncc on sp.idnhacungcap = ncc.id) as SoLuongSanPham ${strWhere} limit 10 offset ${start}`
             const arrData = await dbconnect.query(query)
 
             const queryCount = `select COUNT(nhacungcap.id) as rowCount from nhacungcap`
@@ -100,6 +104,55 @@ class SupplierModel {
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
         }
+    }
+
+    delete = async(objCondition) => {
+        const error = []
+       
+        if(checkIsEmptyObject(objCondition)) {
+            error.push('Thiếu điều kiện xóa')
+        }
+
+        try {
+            const query = `delete from nhacungcap where ?`
+
+            const arrDataResponse = await dbconnect.query(query, objCondition)
+
+            if(!arrDataResponse || !arrDataResponse[0]) {
+                return ResponseUtil.response(false, 'Truy xuất database không thành công', [], ['Có lỗi xảy ra khi truy xuất database'])
+            }
+            if(arrDataResponse[0].affectedRows === 0) {
+                return ResponseUtil.response(false, 'Thất bại')
+            }
+            return ResponseUtil.response(true, 'Xóa dữ liệu nhà cung cấp thành công')
+        } catch (error) {
+            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
+        }
+    }
+
+    _buildWhereQuery = (objCondition) => {
+        var strWhere = "where 1=1 "
+        if(GeneralUtil.checkIsEmptyObject(objCondition)) {
+            return ""
+        }
+        
+        if(objCondition.hasOwnProperty('id')) {
+            strWhere += `and id = ${objCondition.id}`
+        }
+
+        if(objCondition.hasOwnProperty('DaXoa') ) {
+            strWhere += ` and DaXoa = ${objCondition.DaXoa}`
+        }
+
+        if(objCondition.hasOwnProperty('HoatDong')) {
+            strWhere += ` and HoatDong = ${objCondition.HoatDong}`
+        }
+
+        if(objCondition.hasOwnProperty('ThoiGianTao')) {
+            strWhere += `and ThoiGianTao > ${objCondition.ThoiGianTao}`
+        }
+
+        return strWhere
     }
 }
 

@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { Col, Form, Pagination, Row, Table, Toast, ToastContainer } from "react-bootstrap";
+import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from "react-bootstrap";
 import FilterContainer from "../../../components/FilterContainer";
 import supplierAPI from "../../../services/API/supplierAPI";
 import { Container, Content } from "./DanhSachNhaCungCap.style";
-
+import Page from "../../../components/Page";
+import {BsPencil} from 'react-icons/bs'
+import {MdDelete} from 'react-icons/md'
+import {useNavigate} from "react-router-dom"
+import { LinkSupplierAction } from "../../../configs/define";
 const DanhSachNhaCungCap = () => {
     const [supplier, setSupplier] = useState([])
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
-
+    const [del, setDel] = useState({show: false, id: null})
+    let navigate = useNavigate()
     useEffect(()=> {
         const fetchSupplier = async() => {
             const supplierResponse = await supplierAPI.getAll(page.now)
@@ -19,10 +24,55 @@ const DanhSachNhaCungCap = () => {
                 }
                 return notify
             })
+            setPage(() => {
+                if(supplierResponse.success) {
+                    if(supplierResponse.data.rowCount) {
+                        let next = (page.now) * 10 < supplierResponse.data.rowCount ? page.now+1: null
+                        let prev = page.now > 1 ? page.now -1 : null
+                        return {...page,rowCount: supplierResponse.data.rowCount, next, prev}       
+                    }
+                }
+                return {...page}
+            })
         }
         fetchSupplier()
-    },[])
-    console.log(supplier);
+    },[page.now])
+    const onClickPageHandler = (e) => {
+        console.log(e);
+    }
+
+    const handleDeleteAlertClose = () => {
+        setDel({...del, show: false})
+    }
+    const handleDeleteAccept = async() => {
+        const deleteSupplierResponse = await supplierAPI.delete(del.id)
+        setDel({...del, show: false}) //ẩn dialog
+        console.log(deleteSupplierResponse);
+        setNotify(() => {
+            if(!deleteSupplierResponse || !deleteSupplierResponse.success) {
+                return {...notify, show: true, message: "Có lỗi xảy ra. Vui lòng thử lại", success: false}
+            }
+            return {...notify, show: true, message: deleteSupplierResponse.message, success: deleteSupplierResponse.success, errors: deleteSupplierResponse.errors}
+        })
+
+        setSupplier(() => {
+            if(deleteSupplierResponse.success) {
+                var tmpSupplier = [...supplier.data]
+                tmpSupplier= tmpSupplier.filter((item)=> item.id !== del.id)
+                return {data: tmpSupplier, rowCount: supplier.rowCount -1}
+                
+            }
+            return {...supplier}
+        })
+    }
+    const onControlClick = (e, id, action) => {
+        if(action === "update") {
+            navigate(LinkSupplierAction.supplier_update+`/${id}`, {replace:true})
+            return
+        }
+
+        setDel({...del, show: true, id: id})
+    }
     return (
         <Container>
             <ToastContainer position="top-end" className="p-3">
@@ -78,7 +128,7 @@ const DanhSachNhaCungCap = () => {
                     </Form>
                 </FilterContainer>
             <Content>
-                <Table striped bordered hover>
+                <Table striped bordered hover className="text-center">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -90,38 +140,44 @@ const DanhSachNhaCungCap = () => {
                     </thead>
                     <tbody>
                         {
-                            supplier && supplier.map((item, index)=> {
+                            supplier && supplier.data && supplier.data.map && supplier.data.map((item, index)=> {
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
                                         <td>{item.Ten}</td>
                                         <td>{item.TrangThai}</td>
-                                        <td>@mdo</td>
-                                        <td>@mdo</td>
+                                        <td>{item.SoLuongSanPham}</td>
+                                        <td>
+                                            <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
+                                            <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
+                                        </td>
                                     </tr>
                                 )
                             })
                         }
                     </tbody>
                 </Table>
-                <Pagination className="justify-content-center">
-                    <Pagination.First />
-                    <Pagination.Prev />
-                    <Pagination.Item>{1}</Pagination.Item>
-                    <Pagination.Ellipsis />
-
-                    <Pagination.Item>{10}</Pagination.Item>
-                    <Pagination.Item>{11}</Pagination.Item>
-                    <Pagination.Item active>{12}</Pagination.Item>
-                    <Pagination.Item>{13}</Pagination.Item>
-                    <Pagination.Item disabled>{14}</Pagination.Item>
-
-                    <Pagination.Ellipsis />
-                    <Pagination.Item>{20}</Pagination.Item>
-                    <Pagination.Next />
-                    <Pagination.Last />
-                </Pagination>
             </Content>
+            {page && <Page page={page} onClickPage={onClickPageHandler} />}
+            <Modal
+                show={del.show}
+                onHide={handleDeleteAlertClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                <Modal.Title>Cảnh báo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                        Bạn có chắc chắn muốn xóa ?
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleDeleteAlertClose}>
+                    Quay lại
+                </Button>
+                <Button variant="danger" onClick={handleDeleteAccept}>Xóa</Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     )
 
