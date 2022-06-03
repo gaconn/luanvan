@@ -28,6 +28,15 @@ const supplierAPI = {
         } catch (error) {
             console.log(error);
         }
+    },
+    delete: async(id) => {
+        try {
+            const url = `${supplierUrl}/delete/${id}`
+            const response = await axios.delete(url)
+            return response.data
+        } catch (error) {
+            console.log(error);            
+        }
     }
 }
 

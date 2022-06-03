@@ -5,11 +5,18 @@ class Supplier {
     //method: GET
     //url: /supplier/get-all
     getAll = async(req, res) =>{
-        const data =await SupplierModel.get()
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], ['không thể lấy dữ liệu từ database']))
+        const objQuery = res.query
+        var objCondition = {...objQuery, DaXoa: 0}
+        try {
+            const data =await SupplierModel.get(objCondition)
+
+            if(!data) {
+                return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], ['không thể lấy dữ liệu từ database']))
+            }
+            return res.json(data)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, 'Lỗi hệ thống'))
         }
-        return res.json(data)
     }
 
     insert = async(req, res) => {
@@ -54,6 +61,28 @@ class Supplier {
             return res.json(response)
         } catch (error) {
             return res.json(ResponseUtil.response(false, 'Lỗi hệ thống'))
+        }
+    }
+
+    delete = async (req,res) => {
+        const id = req.params.id
+        if(!id) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+        try {
+            const objDataUpdate = {
+                DaXoa: 1
+            }
+            const objCondition = {
+                id: id
+            }
+            const response = await SupplierModel.update(objDataUpdate,objCondition)
+            if(!response) {
+                return res.json(ResponseUtil.response(false, "Có lỗi xảy ra"))
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, "Lỗi hệ thống"))
         }
     }
 }
