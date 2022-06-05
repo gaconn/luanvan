@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Col, Form, InputGroup, Row, Toast, ToastContainer } from "react-bootstrap";
+import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap";
 import categoryAPI from "../../../services/API/categoryAPI";
 import { Container, Content } from "./AddTheLoai.style";
 

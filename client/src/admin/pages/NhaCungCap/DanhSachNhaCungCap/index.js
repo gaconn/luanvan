@@ -16,7 +16,6 @@ const DanhSachNhaCungCap = () => {
     const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
     let navigate = useNavigate()
-    const [searchParams, setSearchParams] = useSearchParams()
     useEffect(()=> {
         const fetchSupplier = async() => {
             setLoading(true)

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import SideBar from "../layouts/SideBar"
 import NhaCungCap from "./NhaCungCap"
 import TheLoai from "./TheLoai"

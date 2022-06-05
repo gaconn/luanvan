@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from "react-bootstrap"
 import { BsPencil } from "react-icons/bs"
 import { MdDelete } from "react-icons/md"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import FilterContainer from "../../../components/FilterContainer"
 import Loading from "../../../components/Loading"
 import Page from "../../../components/Page"
@@ -17,7 +17,6 @@ const DanhSachTheLoai = () => {
     const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
     let navigate = useNavigate()
-    const [searchParams, setSearchParams] = useSearchParams()
     useEffect(()=> {
         const fetchCategory = async() => {
             setLoading(true)

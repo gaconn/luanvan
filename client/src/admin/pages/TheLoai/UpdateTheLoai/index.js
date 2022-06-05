@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap";
-import { useParams, useSearchParams } from "react-router-dom";
+import {  useSearchParams } from "react-router-dom";
 import Loading from "../../../components/Loading";
 import categoryAPI from "../../../services/API/categoryAPI";
 import { Container, Content } from "./UpdateTheLoai.style";
