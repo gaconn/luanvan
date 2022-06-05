@@ -1,9 +1,14 @@
+const DBUtil = require('../utils/DBUtil')
 const { buildFieldQuery } = require('../utils/DBUtil')
 const GeneralUtil = require('../utils/GeneralUtil')
 const { checkIsEmptyObject } = require('../utils/GeneralUtil')
 const ResponseUtil = require('../utils/ResponseUtil')
+const DBConnection = require('./DBConnection')
 const dbconnect= require('./DBConnection')
 class SupplierModel {
+    constructor() {
+        this.table = "nhacungcap"
+    }
     get = async(objCondition) => {
         if(!objCondition || !objCondition.page) {
             objCondition = {...objCondition, page: 1}
@@ -14,11 +19,11 @@ class SupplierModel {
         var start= (objCondition.page-1)*10
         try {
             const strWhere = this._buildWhereQuery(objCondition)
-            const query = `select * from nhacungcap\
-            , (select COUNT(sp.id) SoLuongSanPham  from sanpham sp join nhacungcap ncc on sp.idnhacungcap = ncc.id) as SoLuongSanPham ${strWhere} limit 10 offset ${start}`
+            const query = `select * from ${this.table}\
+            , (select COUNT(sp.id) SoLuongSanPham  from sanpham sp join ${this.table} ncc on sp.idnhacungcap = ncc.id) as SoLuongSanPham ${strWhere} limit 10 offset ${start}`
             const arrData = await dbconnect.query(query)
 
-            const queryCount = `select COUNT(nhacungcap.id) as rowCount from nhacungcap`
+            const queryCount = `select COUNT(nhacungcap.id) as rowCount from nhacungcap ${strWhere}`
             const arrCount = await dbconnect.query(queryCount)
 
             if(!arrData || !arrCount) {
@@ -133,27 +138,55 @@ class SupplierModel {
     _buildWhereQuery = (objCondition) => {
         var strWhere = "where 1=1 "
         if(GeneralUtil.checkIsEmptyObject(objCondition)) {
-            return ""
+            return strWhere
         }
         
-        if(objCondition.hasOwnProperty('id')) {
+        if(objCondition.hasOwnProperty('id') && objCondition.id) {
             strWhere += `and id = ${objCondition.id}`
         }
 
-        if(objCondition.hasOwnProperty('DaXoa') ) {
+        if(objCondition.hasOwnProperty('Ten') && objCondition.Ten) {
+            strWhere += `and Ten = ${objCondition.Ten}`
+        }
+
+        if(objCondition.hasOwnProperty('DaXoa') && objCondition.DaXoa) {
             strWhere += ` and DaXoa = ${objCondition.DaXoa}`
         }
 
-        if(objCondition.hasOwnProperty('HoatDong')) {
+        if(objCondition.hasOwnProperty('HoatDong') && objCondition.HoatDong) {
             strWhere += ` and HoatDong = ${objCondition.HoatDong}`
         }
 
+        if(objCondition.hasOwnProperty('TrangThai') && objCondition.TrangThai) {
+            strWhere += ` and TrangThai = ${objCondition.TrangThai}`
+        }
         if(objCondition.hasOwnProperty('ThoiGianTao')) {
             strWhere += `and ThoiGianTao > ${objCondition.ThoiGianTao}`
         }
 
         return strWhere
     }
+
+    getDetail = async(objCondition) => {
+        if(!objCondition) {
+            return ResponseUtil.response(false, "Tham số không hợp lệ")
+        }
+        try {
+            objCondition  = DBUtil.object_filter(objCondition)
+            const strWhere = this._buildWhereQuery(objCondition)
+            const query = `select * from nhacungcap ${strWhere}`
+
+            const dataResponse = await DBConnection.query(query)
+            if(!dataResponse || !dataResponse[0]) {
+                throw new Error("Không thể thao tác database")
+            }
+
+            return ResponseUtil.response(true, "Thành công", dataResponse[0])
+        } catch (error) {
+            return ResponseUtil.response(false, "Lỗi hệ thống")
+        }
+    }
+
 }
 
 module.exports = new SupplierModel()
