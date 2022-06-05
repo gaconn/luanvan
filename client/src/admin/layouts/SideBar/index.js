@@ -13,6 +13,7 @@ import QuanLyKhuyenMai from "./Item/QuanLyKhuyenMai"
 import QuanLyPhuongThucThanhToan from "./Item/QuanLyPhuongThucThanhToan"
 import QuanLyNguoiDung from "./Item/QuanLyNguoiDung"
 import QuanLyPhanQuyen from "./Item/QuanLyPhanQuyen"
+import QuanLyTheLoai from "./Item/QuanLyTheLoai"
 const SideBar = () => {
     
     return (
@@ -40,6 +41,8 @@ const SideBar = () => {
                     <QuanLyNguoiDung/>
                     
                     <QuanLyPhanQuyen/>
+
+                    <QuanLyTheLoai />
                 </List>
                 </Accordion>
                 <List>
