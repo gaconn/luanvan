@@ -2,10 +2,10 @@ import axios from "axios"
 
 var supplierUrl = process.env.REACT_APP_API_HOST_URL+"/supplier"
 const supplierAPI = {
-    getAll: async() => {
+    getAll: async(page) => {
         try {
             const url = supplierUrl+"/get-all"
-            const response = await axios.get(url)
+            const response = await axios.get(url, {params: {page}})
             return response.data
         } catch (error) {
             console.log(error);
@@ -36,6 +36,15 @@ const supplierAPI = {
             return response.data
         } catch (error) {
             console.log(error);            
+        }
+    },
+    detail: async (id) => {
+        try {
+            const url = `${supplierUrl}/get-detail`
+            const response = await axios.get(url, {id})
+            return response.data
+        } catch (error) {
+            console.warn(error)
         }
     }
 }
