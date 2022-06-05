@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import AddNhaCungCap from "./AddNhaCungCap"
 import DanhSachNhaCungCap from "./DanhSachNhaCungCap"
+import UpdateNhaCungCap from "./UpdateNhaCungCap"
 
 const NhaCungCap = ({option}) => {
     var body 
@@ -10,6 +11,9 @@ const NhaCungCap = ({option}) => {
             break;
         case "add":
             body = <AddNhaCungCap />
+            break
+        case "update":
+            body = <UpdateNhaCungCap />
             break
         default:
             break;

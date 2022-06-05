@@ -6,25 +6,30 @@ import { Container, Content } from "./DanhSachNhaCungCap.style";
 import Page from "../../../components/Page";
 import {BsPencil} from 'react-icons/bs'
 import {MdDelete} from 'react-icons/md'
-import {useNavigate} from "react-router-dom"
-import { LinkSupplierAction } from "../../../configs/define";
+import {useNavigate, useSearchParams} from "react-router-dom"
+import { LinkSupplierAction } from "../../../configs/define"
+import Loading from "../../../components/Loading";
 const DanhSachNhaCungCap = () => {
     const [supplier, setSupplier] = useState([])
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [del, setDel] = useState({show: false, id: null})
+    const [loading, setLoading] = useState(false)
     let navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
     useEffect(()=> {
         const fetchSupplier = async() => {
+            setLoading(true)
             const supplierResponse = await supplierAPI.getAll(page.now)
+            console.log(supplierResponse);
             setSupplier(supplierResponse.data)
-            setNotify(()=> {
+            setNotify((notify)=> {
                 if(!supplierResponse.success) {
                     return {show: true, message: supplierResponse.message, success: supplierResponse.success}
                 }
                 return notify
             })
-            setPage(() => {
+            setPage((page) => {
                 if(supplierResponse.success) {
                     if(supplierResponse.data.rowCount) {
                         let next = (page.now) * 10 < supplierResponse.data.rowCount ? page.now+1: null
@@ -34,20 +39,22 @@ const DanhSachNhaCungCap = () => {
                 }
                 return {...page}
             })
+            setLoading(false)
         }
         fetchSupplier()
     },[page.now])
     const onClickPageHandler = (e) => {
-        console.log(e);
+        const pageValue = e.target.innerText *1;
+        const nextPage= pageValue *10 <page.rowCount ? pageValue + 1 : null
+        const prevPage = pageValue > 1 ? pageValue -1 : null
+        setPage({...page, now: pageValue, prev: prevPage, next: nextPage})
     }
-
     const handleDeleteAlertClose = () => {
         setDel({...del, show: false})
     }
     const handleDeleteAccept = async() => {
         const deleteSupplierResponse = await supplierAPI.delete(del.id)
         setDel({...del, show: false}) //ẩn dialog
-        console.log(deleteSupplierResponse);
         setNotify(() => {
             if(!deleteSupplierResponse || !deleteSupplierResponse.success) {
                 return {...notify, show: true, message: "Có lỗi xảy ra. Vui lòng thử lại", success: false}
@@ -67,11 +74,14 @@ const DanhSachNhaCungCap = () => {
     }
     const onControlClick = (e, id, action) => {
         if(action === "update") {
-            navigate(LinkSupplierAction.supplier_update+`/${id}`, {replace:true})
+            navigate(LinkSupplierAction.supplier_update+`?id=${id}`, {replace:true})
             return
         }
 
         setDel({...del, show: true, id: id})
+    }
+    if(loading) {
+        return <Loading />
     }
     return (
         <Container>
@@ -145,7 +155,7 @@ const DanhSachNhaCungCap = () => {
                                     <tr key={index}>
                                         <td>{item.id}</td>
                                         <td>{item.Ten}</td>
-                                        <td>{item.TrangThai}</td>
+                                        <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
                                         <td>{item.SoLuongSanPham}</td>
                                         <td>
                                             <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>

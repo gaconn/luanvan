@@ -1,13 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap";
+import { useParams, useSearchParams } from "react-router-dom";
+import Loading from "../../../components/Loading";
 import supplierAPI from "../../../services/API/supplierAPI";
 import { Container, Content } from "./UpdateNhaCungCap.style";
 
 const UpdateNhaCungCap = () => {
     const [validated, setValidated] = useState(false);
-    const [supplier, setSupplier] = useState({Ten:""})
-    const [insertNotify, setInsertNotify] = useState({show: false, message: ""})
+    const [supplier, setSupplier] = useState([])
+    const [notify, setNotify] = useState({show: false, message: ""})
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [loading, setLoading] = useState(false)
+    useEffect(() => {
+        const fetchData = async() => {
+            setLoading(true)
+            const supplier_id = searchParams.get('id')
+            if(!supplier_id) return
 
+            const response = await supplierAPI.detail(supplier_id) 
+            setSupplier((supplier)=> {
+                if(response && (!response.success || response.data.length === 0)) {
+                    return []
+                }
+                return response.data[0]
+            })
+            setNotify((notify)=> {
+                if(response && (!response.success || response.data.length === 0)) {
+                    return {...notify, show: true, message: "Không tìm thấy dữ liệu", success: false}
+                }
+                return {...notify}
+            })
+            setLoading(false)
+        }
+        fetchData()
+    }, [searchParams])
     const handleSubmit = async(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -22,27 +48,30 @@ const UpdateNhaCungCap = () => {
 
         const response = await supplierAPI.insert(supplier)
         
-        setInsertNotify(() =>{ 
+        setNotify(() =>{ 
             if(!response) {
-                return {...insertNotify}
+                return {...notify}
             }
-            return {...insertNotify, show: true, message: response.message, success: response.success}
+            return {...notify, show: true, message: response.message, success: response.success}
         })
     };
   
     const onChangeInput = (e) => {
         setSupplier({[e.target.name]: e.target.value})
     }
+    if(loading) {
+        return <Loading />
+    }
     return(
         <Container>
             <ToastContainer position="top-end" className="p-3">
-                <Toast bg={insertNotify.success ? "success": "danger"} onClose={()=> setInsertNotify({...insertNotify, show: false})} show={insertNotify.show} delay={3000} autohide>
+                <Toast bg={notify.success ? "success": "danger"} onClose={()=> setNotify({...notify, show: false})} show={notify.show} delay={3000} autohide>
                 <Toast.Header>
                     <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
                     <strong className="me-auto">Thông báo</strong>
                     <small className="text-muted">just now</small>
                 </Toast.Header>
-                <Toast.Body>{insertNotify.message ? insertNotify.message : ""}</Toast.Body>
+                <Toast.Body>{notify.message ? notify.message : ""}</Toast.Body>
                 </Toast>
             </ToastContainer>
 

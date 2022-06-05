@@ -1,10 +1,4 @@
-
 import SideBar from "../layouts/SideBar"
-=======
-
-import { useEffect, useState } from "react"
-import SideBar from "../layouts/SideBar"
-import NhaCungCap from "./NhaCungCap"
 const Home = () => {
     return <div className="d-flex">
         <SideBar/>
