@@ -3,6 +3,8 @@ import { Spinner, Pagination } from "react-bootstrap"
 
 
 const Page = ({page, onClickPage}) => {
+
+    console.log(page);
     if(!page || !page.now || !page.rowCount) {
         return (
             <div className="d-flex justify-content-center">
@@ -15,8 +17,6 @@ const Page = ({page, onClickPage}) => {
             {
                 page.now > 2 &&
                 <>
-                    <Pagination.First />
-                    <Pagination.Prev />
                     <Pagination.Item onClick={onClickPage}>{1}</Pagination.Item>
                     <Pagination.Ellipsis />
                 </>
@@ -30,9 +30,7 @@ const Page = ({page, onClickPage}) => {
                 page.next && page.next*10 < page.rowCount &&
                 <>
                 <Pagination.Ellipsis />
-                <Pagination.Item onClick={onClickPage}>{page.next}</Pagination.Item>
-                <Pagination.Next />
-                <Pagination.Last />
+                <Pagination.Item onClick={onClickPage}>{Math.ceil(page.rowCount/10)}</Pagination.Item>
                 </>
             }
         </Pagination>

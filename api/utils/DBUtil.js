@@ -12,6 +12,14 @@ class DBUtil {
         const strKeys = arrKeys.join(", ")
         return strKeys
     }
+    object_filter = (objData) => {
+         Object.keys(objData).forEach((key) => {
+            if(objData[key] === undefined || objData[key] === null) {
+                delete objData[key]
+            }
+        })
+        return objData
+    }
 }
 
 module.exports = new DBUtil()

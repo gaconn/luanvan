@@ -5,7 +5,7 @@ class Supplier {
     //method: GET
     //url: /supplier/get-all
     getAll = async(req, res) =>{
-        const objQuery = res.query
+        const objQuery = req.query
         var objCondition = {...objQuery, DaXoa: 0}
         try {
             const data =await SupplierModel.get(objCondition)
@@ -83,6 +83,33 @@ class Supplier {
             return res.json(response)
         } catch (error) {
             return res.json(ResponseUtil.response(false, "Lỗi hệ thống"))
+        }
+    }
+
+    //GET /supplier/get-detail?id=
+    getDetail = async(req, res) => {
+        const query = req.query
+        if(!query) return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
+        try {
+            const id = query.id ? query.id : undefined
+            const Ten = query.Ten ? query.Ten: undefined
+            const TrangThai = query.TrangThai ? query.TrangThai : undefined
+
+            const objCondition = {
+                DaXoa: 0,
+                id,
+                Ten,
+                TrangThai
+            }
+            const dataSupplierResponse = await SupplierModel.getDetail(objCondition)
+
+            if(!dataSupplierResponse) {
+                throw new Error("Không thể truy xuất database")
+            }
+
+            return res.json(dataSupplierResponse)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error))
         }
     }
 }

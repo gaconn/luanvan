@@ -15,6 +15,7 @@ const UpdateNhaCungCap = () => {
         const fetchData = async() => {
             setLoading(true)
             const supplier_id = searchParams.get('id')
+            console.log(supplier_id);
             if(!supplier_id) return
 
             const response = await supplierAPI.detail(supplier_id) 
@@ -46,7 +47,7 @@ const UpdateNhaCungCap = () => {
 
         if(!isValid) return
 
-        const response = await supplierAPI.insert(supplier)
+        const response = await supplierAPI.update(supplier)
         
         setNotify(() =>{ 
             if(!response) {
@@ -55,9 +56,11 @@ const UpdateNhaCungCap = () => {
             return {...notify, show: true, message: response.message, success: response.success}
         })
     };
-  
+    console.log(supplier);
     const onChangeInput = (e) => {
-        setSupplier({[e.target.name]: e.target.value})
+        setSupplier((supplier)=> {
+            return {...supplier,[e.target.name]: e.target.value}
+        })
     }
     if(loading) {
         return <Loading />
@@ -91,7 +94,16 @@ const UpdateNhaCungCap = () => {
                             <Form.Control.Feedback type="invalid">Tên không được để trống</Form.Control.Feedback>
                         </Form.Group>
                     </Row>
-                    
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="4" controlId="supplier-name">
+                            <Form.Label>Trạng thái</Form.Label>
+                            <Form.Select aria-label="" name="TrangThai" value={supplier.TrangThai} onChange={onChangeInput}>
+                                <option value="0">Không hoạt động</option>
+                                <option value="1">Hoạt động</option>
+                            </Form.Select>
+                            <Form.Control.Feedback type="invalid">Tên không được để trống</Form.Control.Feedback>
+                        </Form.Group>
+                    </Row>
                     <Button type="submit">Thêm mới</Button>
                 </Form>
             </Content>

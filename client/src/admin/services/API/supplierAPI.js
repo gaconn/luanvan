@@ -41,7 +41,7 @@ const supplierAPI = {
     detail: async (id) => {
         try {
             const url = `${supplierUrl}/get-detail`
-            const response = await axios.get(url, {id})
+            const response = await axios.get(url, {params: {id}})
             return response.data
         } catch (error) {
             console.warn(error)
