@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import AddNhaCungCap from "./AddNhaCungCap"
 import DanhSachNhaCungCap from "./DanhSachNhaCungCap"
 import UpdateNhaCungCap from "./UpdateNhaCungCap"

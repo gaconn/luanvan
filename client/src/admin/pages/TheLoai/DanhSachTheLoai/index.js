@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
-import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from "react-bootstrap";
-import FilterContainer from "../../../components/FilterContainer";
-import supplierAPI from "../../../services/API/supplierAPI";
-import { Container, Content } from "./DanhSachNhaCungCap.style";
-import Page from "../../../components/Page";
-import {BsPencil} from 'react-icons/bs'
-import {MdDelete} from 'react-icons/md'
-import {useNavigate, useSearchParams} from "react-router-dom"
-import { LinkSupplierAction } from "../../../configs/define"
-import Loading from "../../../components/Loading";
-const DanhSachNhaCungCap = () => {
-    const [supplier, setSupplier] = useState([])
+import { useEffect, useState } from "react"
+import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from "react-bootstrap"
+import { BsPencil } from "react-icons/bs"
+import { MdDelete } from "react-icons/md"
+import { useNavigate } from "react-router-dom"
+import FilterContainer from "../../../components/FilterContainer"
+import Loading from "../../../components/Loading"
+import Page from "../../../components/Page"
+import { LinkCategoryAction } from "../../../configs/define"
+import categoryAPI from "../../../services/API/categoryAPI"
+import { Container, Content } from "./DanhSachTheLoai.style"
+
+const DanhSachTheLoai = () => {
+    const [category, setCategory] = useState([])
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
     let navigate = useNavigate()
     useEffect(()=> {
-        const fetchSupplier = async() => {
+        const fetchCategory = async() => {
             setLoading(true)
-            const supplierResponse = await supplierAPI.getAll(page.now)
-            console.log(supplierResponse);
-            setSupplier(supplierResponse.data)
+            const supplierResponse = await categoryAPI.getAll(page.now)
+            setCategory(supplierResponse.data)
             setNotify((notify)=> {
                 if(!supplierResponse.success) {
                     return {show: true, message: supplierResponse.message, success: supplierResponse.success}
@@ -40,7 +40,7 @@ const DanhSachNhaCungCap = () => {
             })
             setLoading(false)
         }
-        fetchSupplier()
+        fetchCategory()
     },[page.now])
     const onClickPageHandler = (e) => {
         const pageValue = e.target.innerText *1;
@@ -52,28 +52,28 @@ const DanhSachNhaCungCap = () => {
         setDel({...del, show: false})
     }
     const handleDeleteAccept = async() => {
-        const deleteSupplierResponse = await supplierAPI.delete(del.id)
+        const deleteCategoryResponse = await categoryAPI.delete(del.id)
         setDel({...del, show: false}) //ẩn dialog
         setNotify(() => {
-            if(!deleteSupplierResponse || !deleteSupplierResponse.success) {
+            if(!deleteCategoryResponse || !deleteCategoryResponse.success) {
                 return {...notify, show: true, message: "Có lỗi xảy ra. Vui lòng thử lại", success: false}
             }
-            return {...notify, show: true, message: deleteSupplierResponse.message, success: deleteSupplierResponse.success, errors: deleteSupplierResponse.errors}
+            return {...notify, show: true, message: deleteCategoryResponse.message, success: deleteCategoryResponse.success, errors: deleteCategoryResponse.errors}
         })
 
-        setSupplier(() => {
-            if(deleteSupplierResponse.success) {
-                var tmpSupplier = [...supplier.data]
-                tmpSupplier= tmpSupplier.filter((item)=> item.id !== del.id)
-                return {data: tmpSupplier, rowCount: supplier.rowCount -1}
+        setCategory(() => {
+            if(deleteCategoryResponse.success) {
+                var tmpCategory = [...category.data]
+                tmpCategory= tmpCategory.filter((item)=> item.id !== del.id)
+                return {data: tmpCategory, rowCount: category.rowCount -1}
                 
             }
-            return {...supplier}
+            return {...category}
         })
     }
     const onControlClick = (e, id, action) => {
         if(action === "update") {
-            navigate(LinkSupplierAction.supplier_update+`?id=${id}`, {replace:true})
+            navigate(LinkCategoryAction.category_update+`?id=${id}`, {replace:true})
             return
         }
 
@@ -149,7 +149,7 @@ const DanhSachNhaCungCap = () => {
                     </thead>
                     <tbody>
                         {
-                            supplier && supplier.data && supplier.data.map && supplier.data.map((item, index)=> {
+                            category && category.data && category.data.map && category.data.map((item, index)=> {
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
@@ -157,8 +157,8 @@ const DanhSachNhaCungCap = () => {
                                         <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
                                         <td>{item.SoLuongSanPham}</td>
                                         <td>
-                                            <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
-                                            <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
+                                            <span className="category-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
+                                            <span className="category-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
                                         </td>
                                     </tr>
                                 )
@@ -189,6 +189,6 @@ const DanhSachNhaCungCap = () => {
             </Modal>
         </Container>
     )
-
 }
-export default DanhSachNhaCungCap
+
+export default DanhSachTheLoai

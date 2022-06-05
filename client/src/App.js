@@ -9,7 +9,6 @@ import AdminLanding  from "./admin/Landing"
 //user
 import UserLanding  from "./user/Landing"
 function App() {
-  console.log(process.env);
   return (
     <BrowserRouter>
       <Routes>

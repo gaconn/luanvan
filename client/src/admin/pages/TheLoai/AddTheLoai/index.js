@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap";
-import supplierAPI from "../../../services/API/supplierAPI";
-import { Container, Content } from "./AddNhaCungCap.style";
+import categoryAPI from "../../../services/API/categoryAPI";
+import { Container, Content } from "./AddTheLoai.style";
 
-const AddNhaCungCap = () => {
+const AddTheLoai = () => {
     const [validated, setValidated] = useState(false);
-    const [supplier, setSupplier] = useState({Ten:""})
+    const [category, setCategory] = useState({Ten:""})
     const [insertNotify, setInsertNotify] = useState({show: false, message: ""})
 
     const handleSubmit = async(event) => {
@@ -20,7 +20,7 @@ const AddNhaCungCap = () => {
 
         if(!isValid) return
 
-        const response = await supplierAPI.insert(supplier)
+        const response = await categoryAPI.insert(category)
         
         setInsertNotify(() =>{ 
             if(!response) {
@@ -31,7 +31,7 @@ const AddNhaCungCap = () => {
     };
   
     const onChangeInput = (e) => {
-        setSupplier({[e.target.name]: e.target.value})
+        setCategory({[e.target.name]: e.target.value})
     }
     return(
         <Container>
@@ -49,14 +49,14 @@ const AddNhaCungCap = () => {
             <Content>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Row className="mb-3">
-                        <Form.Group as={Col} md="4" controlId="supplier-name">
+                        <Form.Group as={Col} md="4" controlId="category-name">
                             <Form.Label>Tên nhà cung cấp</Form.Label>
                             <Form.Control
                                 required
                                 type="text"
                                 placeholder="Tên nhà cung cấp"
                                 name="Ten"
-                                value={supplier.Ten}
+                                value={category.Ten}
                                 onChange={onChangeInput}
                             />
                             <Form.Control.Feedback type="invalid">Tên không được để trống</Form.Control.Feedback>
@@ -70,4 +70,4 @@ const AddNhaCungCap = () => {
     )
 }
 
-export default AddNhaCungCap
+export default AddTheLoai
