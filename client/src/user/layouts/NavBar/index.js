@@ -38,12 +38,12 @@ const NavbarHeader = () => {
                                         <Dropdown.Item href="#/action-1" active>
                                             Customer information
                                         </Dropdown.Item>
-                                        <Dropdown.Item style={{color:"black"}} href="#/action-2">My order</Dropdown.Item>
-                                        <Dropdown.Item style={{color:"black"}} href="#/action-3">Manage return and exchange orders</Dropdown.Item>
-                                        <Dropdown.Item style={{color:"black"}} href="/Login"><i className="fa fa-user" aria-hidden="true"></i>&nbsp;Login</Dropdown.Item>
-                                        <Dropdown.Item style={{color:"black"}} href="/Register"><i className="fa fa-user-plus" aria-hidden="true"></i>&nbsp; Register</Dropdown.Item>
+                                        <Dropdown.Item  href="#/action-2">My order</Dropdown.Item>
+                                        <Dropdown.Item  href="#/action-3">Manage return and exchange orders</Dropdown.Item>
+                                        <Dropdown.Item  href="/Login"><i className="fa fa-user" aria-hidden="true"></i>&nbsp;Login</Dropdown.Item>
+                                        <Dropdown.Item  href="/Register"><i className="fa fa-user-plus" aria-hidden="true"></i>&nbsp; Register</Dropdown.Item>
                                         <Dropdown.Divider />
-                                        <Dropdown.Item style={{color:"black"}} href="/Logout"><i className="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</Dropdown.Item>
+                                        <Dropdown.Item  href="/Logout"><i className="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown></Col>
                         </Row>

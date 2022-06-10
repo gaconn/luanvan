@@ -1,10 +1,8 @@
 const RegisterComponent = () => {
     return (
-
-        <>
-
-            <div className="h-screen bg-gradient-to-br from-blue-600 to-indigo-600 flex justify-center items-center w-full">
-                <form>
+        <div >
+            <div className=" h-screen bg-gradient-to-br from-blue-600 to-indigo-600 flex justify-center items-center w-full">
+                <form className="wow zoomIn" >
                     <div className="bg-white px-10 py-8 rounded-xl w-screen shadow-md max-w-sm">
                         <div className="space-y-4">
                             <h1 className="text-center text-2xl font-semibold text-gray-600">
@@ -18,6 +16,7 @@ const RegisterComponent = () => {
                                     Username
                                 </label>
                                 <input
+                          
                                     type="text"
                                     className="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full"
                                 />
@@ -53,7 +52,7 @@ const RegisterComponent = () => {
                     </div>
                 </form>
             </div>
-        </>
+        </div>
 
     );
 }

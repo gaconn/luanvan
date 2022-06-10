@@ -2,10 +2,7 @@ import img from '../../assets/img/language.png'
 const Header = () => {
     return (
         <>
-            <div id="preloder">
-                <div className="loader" />
-            </div>
-
+          
             {/* Header Section Begin */}
             <header className="header">
                 <div className="header__top">

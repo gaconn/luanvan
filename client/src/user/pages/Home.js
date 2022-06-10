@@ -5,15 +5,19 @@ import NavbarHeader from "../layouts/NavBar"
 import Section from "../layouts/Section"
 import Banner from "../layouts/Banner"
 import HomeComponet from '../components/Home'
+import Loading from "../layouts/Loading"
 
-const Home  = () => {
-    return <>
-    <Header/>  
-    <NavbarHeader/>    
-    <Section/>
-    <Banner/>
-    <HomeComponet/>
-    <Footer/>
+
+const Home = () => {
+   
+    return<>
+     <Loading/>
+    <Header />
+    <NavbarHeader />
+    <Section />
+    <Banner />
+    <HomeComponet />
+    <Footer />  
     </>
 }
 

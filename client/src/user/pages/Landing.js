@@ -9,8 +9,8 @@ const Landing = () => {
         }, 2000)
     },[])
     return <div className="landing-container">
-        <Spinner animation="grow"/>
-    </div>
+    <Spinner animation="grow"/>
+</div>
 }
 
 export default Landing
