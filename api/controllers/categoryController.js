@@ -1,4 +1,5 @@
 const CategoryModel = require("../models/CategoryModel")
+const { checkIsEmptyObject } = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
 
 class CategoryController {
@@ -108,6 +109,32 @@ class CategoryController {
             }
 
             return res.json(dataCategoryResponse)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error))
+        }
+    }
+
+    //GET /category/get-tree?id=?
+    getTree = async (req, res) => {
+        try {
+            const resParent = await CategoryModel.get({parent: true, DaXoa: 0})
+            const resAll = await CategoryModel.get({DaXoa: 0})
+            
+            if(!resParent || !resParent.success ||!resAll || !resAll.success) {
+                throw new Error('Không thể truy xuất database')
+            }
+
+            if(!resParent.data || resParent.data.length === 0 ||!resAll.data || resAll.data.length === 0) {
+                throw new Error('Không có dữ liệu')
+            }
+
+            const result = ResponseUtil.makeTree(resParent.data.data, resAll.data.data)
+
+            if(!result) {
+                return res.json(ResponseUtil.response(false, 'Lỗi xử lý'))
+            }
+
+            return res.json(ResponseUtil.response(true, 'Thành công', result))
         } catch (error) {
             return res.json(ResponseUtil.response(false, error))
         }

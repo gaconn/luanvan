@@ -70,6 +70,7 @@ export const Item = styled.li`
     .side-bar-item-control{
         display: flex;
         justify-content: space-between;
+        align-items:center;
         padding: 10px 20px;
         line-height: 2rem;
         text-decoration: none;

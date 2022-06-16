@@ -3,10 +3,10 @@ import axios from "axios"
 const categoryUrl = process.env.REACT_APP_API_HOST_URL + "/category"
 
 const categoryAPI = {
-    getAll: async(page=1) => {
+    getAll: async(params) => {
         try {
             const url = categoryUrl+"/get-all"
-            const response = await axios.get(url, {params: {page}})
+            const response = await axios.get(url, {params: params})
             return response.data
         } catch (error) {
             console.log(error);
@@ -46,6 +46,15 @@ const categoryAPI = {
             return response.data
         } catch (error) {
             console.warn(error)
+        }
+    },
+    getTree: async () => {
+        try {
+            const url = `${categoryUrl}/get-tree`
+            const response = await axios.get(url)
+            return response.data
+        } catch (error) {
+            console.log(error)            
         }
     }
 }
