@@ -10,30 +10,35 @@ class CategoryModel {
         this.table = "theloai"
     }
     get = async(objCondition) => {
-        if(!objCondition || !objCondition.page) {
-            objCondition = {...objCondition, page: 1}
-        }
-        if(objCondition.page< 1) {
-            return ResponseUtil.response(false, "Trang không hợp lệ")
-        }
-        var start= (objCondition.page-1)*10
         try {
             const strWhere = this._buildWhereQuery(objCondition)
-            const query = `select * from ${this.table}\
-            , (select COUNT(sp.id) SoLuongSanPham  from sanpham sp join ${this.table} tl on sp.idtheloai = tl.id) as SoLuongSanPham ${strWhere} limit 10 offset ${start}`
+            const query = `select theloai.*, lt2.id children, SoLuongSanPham from ${this.table} left join ${this.table} lt2 on theloai.id = lt2.IDTheLoaiCha \
+            , (select COUNT(sp.id) SoLuongSanPham  from sanpham sp join ${this.table} tl on sp.idtheloai = tl.id) as SoLuongSanPham ${strWhere}`
             const arrData = await dbconnect.query(query)
 
-            const queryCount = `select COUNT(theloai.id) as rowCount from theloai ${strWhere}`
-            const arrCount = await dbconnect.query(queryCount)
+            var arrCount = null;
+            if(objCondition.rowCount) {
+                const queryCount = `select COUNT(theloai.id) as rowCount from theloai ${strWhere}`
+                 arrCount = await dbconnect.query(queryCount)
 
-            if(!arrData || !arrCount) {
+                if(!arrCount) {
+                    return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                }
+                if(!arrCount[0]) {
+                    return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                }
+            }
+
+            if(!arrData) {
                 return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
             }
-            if(!arrData[0] || !arrCount[0]) {
+            if(!arrData[0]) {
                 return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
             }
-
-            return ResponseUtil.response(true, 'Thành công', {data: arrData[0], rowCount: arrCount[0][0].rowCount})
+            if(arrCount){
+                return ResponseUtil.response(true, 'Thành công', {data: arrData[0], rowCount: arrCount[0][0].rowCount})
+            }
+            return ResponseUtil.response(true, 'Thành công', {data: arrData[0]})
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
         }
@@ -49,6 +54,18 @@ class CategoryModel {
         }
 
         try {
+            const objCheckField = {
+                Ten: objCategory.Ten,
+                DaXoa: 0
+            }
+
+            const strCheckField = this._buildWhereQuery(objCheckField)
+            const queryCheck = `select id from ${this.table} ${strCheckField} limit 1`
+            const dataExist = await dbconnect.query(queryCheck)
+            if(dataExist && dataExist[0] && dataExist[0].length >0) {
+                return ResponseUtil.response(false, `"${objCategory.Ten}" đã tồn tại`)
+            }
+
             const objField = {
                 Ten: objCategory.Ten,
                 MoTa: objCategory.MoTa,
@@ -93,12 +110,23 @@ class CategoryModel {
         if(checkIsEmptyObject(objCondition)) {
             error.push('Thiếu điều kiện cập nhật')
         }
+        if(!objDataUpdate.Ten) {
+            error.push('Tên ngành hàng không được để trống')
+        }
 
+        if(error.length > 0) {
+            return ResponseUtil.response(false, "Dữ liệu truyền vào không hợp lệ", [], error)
+        }
         try {
-            objDataUpdate.ThoiGianCapNhat = new Date().getTime() /1000
+            const dataUpdate = {
+                HoatDong: objDataUpdate.HoatDong ? objDataUpdate.HoatDong : 0,
+                MoTa: objDataUpdate.MoTa ? objDataUpdate.MoTa : "",
+                Ten: objDataUpdate.Ten,
+                ThoiGianCapNhat: new Date().getTime() /1000
+            }
             const query = `update theloai set ? where ?`
 
-            const arrDataResponse = await dbconnect.query(query, [objDataUpdate, objCondition])
+            const arrDataResponse = await dbconnect.query(query, [dataUpdate, objCondition])
 
             if(!arrDataResponse || !arrDataResponse[0]) {
                 return ResponseUtil.response(false, 'Truy xuất database không thành công', [], ['Có lỗi xảy ra khi truy xuất database'])
@@ -143,27 +171,35 @@ class CategoryModel {
         }
         
         if(objCondition.hasOwnProperty('id') && objCondition.id) {
-            strWhere += `and id = ${objCondition.id}`
+            if(objCondition.child) {
+                strWhere += ` and ${this.table}.IDTheLoaiCha = ${objCondition.id}`
+            }else {
+                strWhere += ` and ${this.table}.id = ${objCondition.id}`
+            }
         }
 
         if(objCondition.hasOwnProperty('Ten') && objCondition.Ten) {
-            strWhere += `and Ten = ${objCondition.Ten}`
+            strWhere += ` and ${this.table}.Ten = '${objCondition.Ten}'`
         }
         
 
-        if(objCondition.hasOwnProperty('DaXoa') && objCondition.DaXoa) {
-            strWhere += ` and DaXoa = ${objCondition.DaXoa}`
+        if(objCondition.hasOwnProperty('DaXoa')) {
+            strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
         }
 
-        if(objCondition.hasOwnProperty('HoatDong') && objCondition.HoatDong) {
-            strWhere += ` and HoatDong = ${objCondition.HoatDong}`
+        if(objCondition.hasOwnProperty('HoatDong')) {
+            strWhere += ` and ${this.table}.HoatDong = ${objCondition.HoatDong}`
         }
 
         if(objCondition.hasOwnProperty('IDTheLoaiCha') && objCondition.IDTheLoaiCha) {
-            strWhere += ` and TrangThai = ${objCondition.TrangThai}`
+            strWhere += ` and ${this.table}.TrangThai = ${objCondition.TrangThai}`
         }
         if(objCondition.hasOwnProperty('ThoiGianTao')) {
-            strWhere += `and ThoiGianTao > ${objCondition.ThoiGianTao}`
+            strWhere += ` and ${this.table}.ThoiGianTao > ${objCondition.ThoiGianTao}`
+        }
+
+        if(objCondition.parent) {
+            strWhere += ` and ${this.table}.IDTheLoaiCha is null`
         }
 
         return strWhere

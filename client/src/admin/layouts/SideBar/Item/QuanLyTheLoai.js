@@ -27,12 +27,6 @@ const QuanLyTheLoai = () => {
                                 <span className="side-bar-item-label">Danh sách thể loại</span>
                             </Link>
                         </Item>
-                        <Item className="side-bar-item-sub">
-                            <Link to={LinkCategoryAction.category_add} className="side-bar-item-control">
-                                <span className="side-bar-item-icon-sub"><AiFillFileAdd /></span>
-                                <span className="side-bar-item-label">Thêm thể loại</span>
-                            </Link>
-                        </Item>
                     </List>
                 </div>
             </Accordion.Collapse>

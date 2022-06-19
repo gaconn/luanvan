@@ -156,7 +156,7 @@ const DanhSachNhaCungCap = () => {
                                         <td>{item.Ten}</td>
                                         <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
                                         <td>{item.SoLuongSanPham}</td>
-                                        <td>
+                                        <td className="d-flex">
                                             <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
                                             <span className="supplier-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
                                         </td>
