@@ -8,7 +8,7 @@ import React, { Component } from 'react';
  import "./assets/css/jquery-ui.min.css"  
  import "./assets/css/owl.carousel.min.css"  
  import "./assets/css/slicknav.min.css"  
- import "./assets/css/style.css"  
+ import "./assets/css/style.css" 
 import Login from "./pages/Login";
 import Contact from "./pages/Contact";
 import Register from "./pages/Register";
