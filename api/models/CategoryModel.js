@@ -110,7 +110,7 @@ class CategoryModel {
         if(checkIsEmptyObject(objCondition)) {
             error.push('Thiếu điều kiện cập nhật')
         }
-        if(!objDataUpdate.Ten) {
+        if(objDataUpdate.Ten && objDataUpdate.Ten === '') {
             error.push('Tên ngành hàng không được để trống')
         }
 
@@ -118,12 +118,16 @@ class CategoryModel {
             return ResponseUtil.response(false, "Dữ liệu truyền vào không hợp lệ", [], error)
         }
         try {
-            const dataUpdate = {
-                HoatDong: objDataUpdate.HoatDong ? objDataUpdate.HoatDong : 0,
-                MoTa: objDataUpdate.MoTa ? objDataUpdate.MoTa : "",
-                Ten: objDataUpdate.Ten,
-                ThoiGianCapNhat: new Date().getTime() /1000
+            var dataUpdate = {
+                HoatDong: objDataUpdate.HoatDong ? objDataUpdate.HoatDong : undefined,
+                MoTa: objDataUpdate.MoTa ? objDataUpdate.MoTa : undefined,
+                Ten: objDataUpdate.Ten ? objDataUpdate : undefined,
+                ThoiGianCapNhat: new Date().getTime() /1000,
+                DaXoa: objDataUpdate.DaXoa ? objDataUpdate.DaXoa : undefined
             }
+
+            dataUpdate = DBUtil.object_filter(dataUpdate)
+            
             const query = `update theloai set ? where ?`
 
             const arrDataResponse = await dbconnect.query(query, [dataUpdate, objCondition])
@@ -148,9 +152,15 @@ class CategoryModel {
         }
 
         try {
-            const query = `delete from theloai where ?`
 
-            const arrDataResponse = await dbconnect.query(query, objCondition)
+            const queryCheckExist = `select theloai.id from theloai join sanpham on theloai.id = sanpham.IDTheLoai where theloai.id = ?`
+            const arrDataCheckResponse =await dbconnect.query(queryCheckExist, objCondition.id)
+            if(arrDataCheckResponse && arrDataCheckResponse[0] &&arrDataCheckResponse[0].length >0) {
+                return ResponseUtil.response(false, 'Ngành hàng có chứa sản phẩm trong kho, không thể xóa.')
+            }
+            const query = `update theloai set DaXoa = 1 where ?`
+
+            const arrDataResponse = await dbconnect.query(query, [objCondition])
 
             if(!arrDataResponse || !arrDataResponse[0]) {
                 return ResponseUtil.response(false, 'Truy xuất database không thành công', [], ['Có lỗi xảy ra khi truy xuất database'])
@@ -160,7 +170,7 @@ class CategoryModel {
             }
             return ResponseUtil.response(true, 'Xóa dữ liệu nhà cung cấp thành công')
         } catch (error) {
-            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
+            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
     }
 

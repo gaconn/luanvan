@@ -49,7 +49,7 @@ class UserModel {
                 SoNha: objUserInfo.SoNha,
                 ThoiGianTao: new Date().getTime()/1000,
                 DaXoa: 0,
-                IDNhomQuyen: 1,
+                IDCapDoTaiKhoan: 1,
 
             }
 
