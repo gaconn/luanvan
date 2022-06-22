@@ -1,19 +1,20 @@
-import React from 'react'
-import { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Row, Toast, ToastContainer } from 'react-bootstrap';
 import categoryAPI from '../../../services/API/categoryAPI';
 import productAPI from '../../../services/API/productAPI';
 import supplierAPI from '../../../services/API/supplierAPI';
-import { Container, Content } from './ThemSanPham.style';
+import { Container, Content } from './SuaSanPham.style';
+import {useSearchParams} from "react-router-dom"
+import Image from '../../../components/Image';
 
-const ThemSanPham = () => {
+const SuaSanPham = () => {
     const [validated, setValidated] = useState(false);
-    const [product, setProduct] = useState({Ten:""})
+    const [product, setProduct] = useState([])
     const [insertNotify, setInsertNotify] = useState({show: false, message: ""})
     const [category, setCategory] = useState([])
     const [supplier, setSupplier] = useState([])
-
+    const [searchParams, setSearchParams] = useSearchParams() 
+    
     useEffect(()=> {
         const fetchCategory = async () => {
             const categoryDataResponse = await categoryAPI.getAll()
@@ -36,10 +37,22 @@ const ThemSanPham = () => {
             })
         }
 
+        const fetchDetailProduct = async () => {
+            const id = searchParams.get('id')
+            const detailProduct = await productAPI.detail(id)
+            setProduct(()=> {
+                if(!detailProduct || !detailProduct.success ||!detailProduct.data ) {
+                    return []
+                }
+                return detailProduct.data
+            })
+
+        }
         fetchCategory()
         fetchSupplier()
+        fetchDetailProduct()
     },[])
-
+    console.log(product);
     const handleSubmit = async(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -98,7 +111,6 @@ const ThemSanPham = () => {
         })
     }
 
-    console.log(product);
     return(
         <Container>
             <ToastContainer position="top-end" className="p-3">
@@ -242,6 +254,13 @@ const ThemSanPham = () => {
                             <Form.Control.Feedback type="invalid">Vui lòng chọn nhà cung cấp</Form.Control.Feedback>
                         </Form.Group>
                     </Row>
+                    <Row className='mb-3'>
+                        {
+                            product.HinhAnh && product.HinhAnh.map((item, index)=> {
+                                return <img src={`${process.env.REACT_APP_API_HOST_URL}/public/images/${item}`} alt="product"/>
+                            })
+                        }
+                    </Row>
                     <Row className="mb-3">
                         <Form.Group as={Col}  controlId="product-name">
                             <Form.Label>Hình ảnh</Form.Label>
@@ -255,4 +274,4 @@ const ThemSanPham = () => {
     )
 }
 
-export default ThemSanPham
+export default SuaSanPham

@@ -5,5 +5,6 @@ const router = express.Router()
 const ProductController = require("../controllers/productController")
 const upload = require("../middlewares/Files")
 router.get("/get-all", ProductController.getAll)
-router.post("/insert", upload.array('file', 20), ProductController.insert)
+router.post("/insert", upload.array('files', 20), ProductController.insert)
+router.get('/get-detail', ProductController.getDetail)
 module.exports = router

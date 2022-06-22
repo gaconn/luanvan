@@ -1,5 +1,6 @@
 import React from 'react'
 import DanhSachSanPham from "./DanhSachSanPham"
+import SuaSanPham from './SuaSanPham'
 import ThemSanPham from "./ThemSanPham"
 
 const SanPham = ({option}) => {
@@ -10,6 +11,9 @@ const SanPham = ({option}) => {
             break;
         case "add":
             body = <ThemSanPham />
+            break
+        case 'update':
+            body = <SuaSanPham />
             break
         default:
             break;

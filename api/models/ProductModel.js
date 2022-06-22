@@ -52,6 +52,36 @@ class ProductModel {
         }
     }
 
+    getDetail = async (objCondition) => {
+        try {
+            const strWhere = this._buildWhereQuery(objCondition)
+            var strJoin = ""
+            if(objCondition.joinCategory) {
+                strJoin += `left join (select tl1.id TheLoai_ID, tl1.Ten TheLoai_Ten, tl1.HoatDong TheLoai_HoatDong, tl1.IDTheLoaiCha TheLoai_IDTheLoaiCha from ${this.table} sp1 join theloai tl1 on \
+                    sp1.IDTheLoai = tl1.id where tl1.DaXoa = 0) as tl1 on ${this.table}.IDTheLoai = tl1.TheLoai_ID `
+            }
+
+            if(objCondition.joinSupplier) {
+                strJoin += `left join (select ncc1.id NhaCungCap_ID, ncc1.Ten NhaCungCap_Ten, ncc1.TrangThai NhaCungCap_TrangThai from ${this.table} sp2 left join nhacungcap ncc1 on sp2.IDNhaCungCap = ncc1.id \
+                where ncc1.DaXoa = 0) as ncc1 on ${this.table}.IDNhaCungCap = ncc1.NhaCungCap_ID `
+            }
+            const query = `select * from ${this.table} ${strJoin} ${strWhere} limit 1`
+            const arrData = await dbconnect.query(query)
+
+            if(!arrData ) {
+                return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+            }
+            if(!arrData[0]) {
+                return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+            }
+            if(arrData[0][0] && arrData[0][0].HinhAnh) {
+                arrData[0][0].HinhAnh = JSON.parse(arrData[0][0].HinhAnh)
+            }
+            return ResponseUtil.response(true, 'Thành công', arrData[0][0])
+        } catch (error) {
+            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
+        }
+    }
     insert = async (objProduct) => {
         var error = []
         if(objProduct.Ten === "") {
@@ -88,6 +118,15 @@ class ProductModel {
             if(!supplierExist || !supplierExist[0] || supplierExist[0].length === 0) {
                 return ResponseUtil.response(false, 'Nhà cung cấp không tồn tại')
             }
+
+            var listImageName 
+            if(objProduct.images && objProduct.images.length > 0) {
+                const arrImages = []
+                for (let index = 0; index < objProduct.images.length; index++) {
+                    arrImages.push(objProduct.images[index].filename)
+                }
+                listImageName = JSON.stringify(arrImages)
+            }
             var objField = {
                 Ten: objProduct.Ten,
                 TrangThai: 1,
@@ -102,6 +141,7 @@ class ProductModel {
                 IDTheLoai: objProduct.IDTheLoai,
                 IDNhaCungCap: objProduct.IDNhaCungCap,
                 ThoiGianTao: new Date().getTime()/1000,
+                HinhAnh: listImageName ? listImageName : undefined
             }
             objField = object_filter(objField)
             const strField = buildFieldQuery(objField)
@@ -128,6 +168,16 @@ class ProductModel {
             return ResponseUtil.response(true, 'Thành công' )
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
+        }
+    }
+
+    delete = async (id) => {
+        try {
+            const query = `update sanpham set ? where ?`
+            const response = dbconnect.query(query, [{DaXoa: 1}, {id: id}])
+            
+        } catch (error) {
+            
         }
     }
     _buildWhereQuery = (objCondition) => {

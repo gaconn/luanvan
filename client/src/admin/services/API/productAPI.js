@@ -31,8 +31,8 @@ const productAPI = {
     },
     delete: async(id) => {
         try {
-            const url = `${productUrl}/delete/${id}`
-            const response = await axios.delete(url)
+            const url = `${productUrl}/delete`
+            const response = await axios.delete(url,{params: {id}})
             return response.data
         } catch (error) {
             console.log(error);            
