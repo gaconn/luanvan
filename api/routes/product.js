@@ -3,6 +3,10 @@ const router = express.Router()
 
 //controller
 const ProductController = require("../controllers/productController")
-router.get("/", ProductController.getAll)
-
+const upload = require("../middlewares/Files")
+router.get("/get-all", ProductController.getAll)
+router.post("/insert", upload.array('files', 20), ProductController.insert)
+router.get('/get-detail', ProductController.getDetail)
+router.delete('/delete', ProductController.delete)
+router.put('/update',upload.array('files', 20), ProductController.update)
 module.exports = router

@@ -1,9 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 import Auth from "./pages/Auth"
-import QLDonHang from "./pages/QLDonHang"
 import ProtectedPage from "./services/utils/ProtectedPage"
-import SideBar from "./layouts/SideBar"
 import 'bootstrap/dist/css/bootstrap.css';
 import Main from "./pages"
 const Landing = () => {

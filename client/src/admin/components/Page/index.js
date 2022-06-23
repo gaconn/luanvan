@@ -4,7 +4,6 @@ import { Spinner, Pagination } from "react-bootstrap"
 
 const Page = ({page, onClickPage}) => {
 
-    console.log(page);
     if(!page || !page.now || !page.rowCount) {
         return (
             <div className="d-flex justify-content-center">
