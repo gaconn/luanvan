@@ -65,11 +65,13 @@ const SuaSanPham = () => {
 
         if(!isValid) return
         var isValidFile = true;
-        for (let i = 0; i < product.file.length; i++) {
-            const type = product.file[i].type.split("/")[0]
-
-            if(type !== "image") {
-                isValidFile = false
+        if(product && product.file) {
+            for (let i = 0; i < product.file.length; i++) {
+                const type = product.file[i].type.split("/")[0]
+    
+                if(type !== "image") {
+                    isValidFile = false
+                }
             }
         }
         setInsertNotify((n) =>{ 
@@ -87,14 +89,16 @@ const SuaSanPham = () => {
                 for (let index = 0; index < product[arrObjKey[i]].length; index++) {
                     formData.append('files', product[arrObjKey[i]][index])
                 }
-            }else{
+            } else if (arrObjKey[i] === 'HinhAnh') {
+                formData.append(arrObjKey[i], JSON.stringify(product[arrObjKey[i]]))
+            } else{
                 formData.append(arrObjKey[i], product[arrObjKey[i]])
             }
         }
-        const response = await productAPI.insert(formData)
+        const response = await productAPI.update(formData)
         
         setInsertNotify(() =>{ 
-            if(!response) {
+            if(!response) { 
                 return {...insertNotify}
             }
             return {...insertNotify, show: true, message: response.message, success: response.success}
@@ -113,7 +117,7 @@ const SuaSanPham = () => {
 
     return(
         <Container>
-            <ToastContainer position="top-end" className="p-3">
+            <ToastContainer position="top-end" className="p-3 position-fixed">
                 <Toast bg={insertNotify.success ? "success": "danger"} onClose={()=> setInsertNotify({...insertNotify, show: false})} show={insertNotify.show} delay={3000} autohide>
                 <Toast.Header>
                     <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
@@ -257,7 +261,7 @@ const SuaSanPham = () => {
                     <Row className='mb-3'>
                         {
                             product.HinhAnh && product.HinhAnh.map((item, index)=> {
-                                return <img src={`${process.env.REACT_APP_API_HOST_URL}/public/images/${item}`} alt="product"/>
+                                return <img src={`${process.env.REACT_APP_API_HOST_URL}/public/images/${item}`} className="product-images" alt="product"/>
                             })
                         }
                     </Row>
@@ -267,7 +271,7 @@ const SuaSanPham = () => {
                             <Form.Control type="file" name='file' multiple onChange={uploadFileHandler}/>
                         </Form.Group>
                     </Row>
-                    <Button type="submit">Thêm mới</Button>
+                    <Button type="submit">Sửa thông tin</Button>
                 </Form>
             </Content>
         </Container>

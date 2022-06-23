@@ -2,6 +2,8 @@ const dbconnect = require("./DBConnection")
 const ResponseUtil = require("../utils/ResponseUtil")
 const GeneralUtil = require("../utils/GeneralUtil")
 const { object_filter, buildFieldQuery } = require("../utils/DBUtil")
+const fs = require('fs')
+const path = require("path")
 class ProductModel {
     constructor() {
         this.table = "sanpham"
@@ -26,7 +28,7 @@ class ProductModel {
                 strJoin += `left join (select ncc1.id NhaCungCap_ID, ncc1.Ten NhaCungCap_Ten, ncc1.TrangThai NhaCungCap_TrangThai from ${this.table} sp2 left join nhacungcap ncc1 on sp2.IDNhaCungCap = ncc1.id \
                 where ncc1.DaXoa = 0) as ncc1 on ${this.table}.IDNhaCungCap = ncc1.NhaCungCap_ID `
             }
-            const query = `select * from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${start}`
+            const query = `select distinct * from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${start}`
             const arrData = await dbconnect.query(query)
 
             if(!arrData ) {
@@ -171,13 +173,88 @@ class ProductModel {
         }
     }
 
+    update = async (objProduct) =>{
+        if(GeneralUtil.checkIsEmptyObject(objProduct)) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+        const id = objProduct.id
+        objProduct.id = undefined
+        if(!id) {
+            return ResponseUtil.response(false, 'Tham số id không được bỏ trống')
+        }
+        try {
+            // Xử lý thêm hình ảnh mới
+            var listImageName 
+            if(objProduct.images && objProduct.images.length > 0) {
+                const arrImages = []
+                for (let index = 0; index < objProduct.images.length; index++) {
+                    arrImages.push(objProduct.images[index].filename)
+                }
+                listImageName = JSON.stringify(arrImages)
+                // Xử lý xóa hình ảnh cũ
+                if(objProduct.HinhAnh ) {
+                    try {
+                        const arrUrlImages= JSON.parse(objProduct.HinhAnh)
+                        if(arrUrlImages && arrUrlImages.length >0) {
+                            for (let index = 0; index < arrUrlImages.length; index++) {
+                                fs.unlinkSync(path.join(`${__dirname}/../public/images/${arrUrlImages[index]}`))
+                            }
+                        }
+                    } catch (error) {
+                    }
+                }
+            }
+            var objField = {
+                Ten: objProduct.Ten,
+                TrangThai: 1,
+                DaXoa: 0,
+                XuatXu: objProduct.XuatXu &&objProduct.XuatXu!== 'null'? objProduct.XuatXu : "",
+                MauSac: objProduct.MauSac &&objProduct.MauSac!== 'null'? objProduct.MauSac : undefined,
+                KichThuoc: objProduct.KichThuoc && objProduct.KichThuoc!== 'null'? objProduct.KichThuoc : undefined,
+                CanNang: objProduct.CanNang && objProduct.CanNang!== 'null'? objProduct.CanNang : undefined,
+                SoLuong: objProduct.SoLuong && objProduct.SoLuong!== 'null'? objProduct.SoLuong : 0,
+                MoTa: objProduct.MoTa && objProduct.MoTa!== 'null'? objProduct.MoTa : "",
+                GiaGoc: objProduct.GiaGoc,
+                IDTheLoai: objProduct.IDTheLoai,
+                IDNhaCungCap: objProduct.IDNhaCungCap,
+                ThoiGianCapNhat: new Date().getTime()/1000,
+                HinhAnh: listImageName &&listImageName!== 'null'? listImageName : undefined
+            }
+            objField = object_filter(objField)
+
+            const query = `update sanpham set ? where ?`
+
+            const response = await dbconnect.query(query, [objField, {id:id}])
+
+            if(!response || !response[0]) {
+                throw new Error('Có lỗi xảy ra khi kết nối database')
+            }
+
+            if(response[0].affectedRows > 0) {
+                return ResponseUtil.response(true, 'Sửa dữ liệu thành công')
+            }
+            return ResponseUtil.response(false, 'Sửa dữ liệu thất bại')
+        } catch (error) {
+            return ResponseUtil.response(false, 'Có lỗi xảy ra', [], [error.message])
+        }
+    }
+
     delete = async (id) => {
         try {
             const query = `update sanpham set ? where ?`
-            const response = dbconnect.query(query, [{DaXoa: 1}, {id: id}])
+            const response = await dbconnect.query(query, [{DaXoa: 1}, {id: id}])
+
+            if(!response || !response[0]) {
+                throw new Error('Không thể kết nối database')
+            }
+
+            if(response[0].affectedRows > 0) {
+                return ResponseUtil.response(true, 'Thành công')
+            }
+            return ResponseUtil.response(false, 'Xóa dữ liệu thất bại.')
             
         } catch (error) {
-            
+            return ResponseUtil.response(false, error.message)
         }
     }
     _buildWhereQuery = (objCondition) => {

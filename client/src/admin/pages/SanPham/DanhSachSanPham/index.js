@@ -61,7 +61,7 @@ const DanhSachSanPham = () => {
         })
 
         setProduct(() => {
-            if(deleteProductResponse.success) {
+            if(deleteProductResponse&&deleteProductResponse.success) {
                 var tmpProduct = [...product.data]
                 tmpProduct= tmpProduct.filter((item)=> item.id !== del.id)
                 return {data: tmpProduct, rowCount: product.rowCount -1}
@@ -83,7 +83,7 @@ const DanhSachSanPham = () => {
     }
     return (
         <Container>
-            <ToastContainer position="top-end" className="p-3">
+            <ToastContainer position="top-end" className="p-3 position-fixed">
                 <Toast bg={notify.success ? "success": "danger"} onClose={()=> setNotify({...notify, show: false})} show={notify.show} delay={3000} autohide>
                 <Toast.Header>
                     <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />

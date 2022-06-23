@@ -67,6 +67,32 @@ class ProductController {
 
     /**
      * method PUT
+     * url: /product/update
+     */
+
+    update = async(req, res) => {
+        const objProduct = req.body
+        const images = req.files
+
+        if(!objProduct) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+
+        try {
+            objProduct.images = images
+            const result = await ProductModel.update(objProduct)
+
+            if(!result) {
+                throw new Error('Lỗi kết nối với database')
+            }
+            return res.json(result)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message]))
+        }
+    }
+
+    /**
+     * method PUT
      * url: /product/delete
      */
 
@@ -76,7 +102,7 @@ class ProductController {
             return res.json(ResponseUtil.response(false, 'Thiếu id sản phẩm'))
         }
         try {
-            const data = await ProductModel.delete(objParams)
+            const data = await ProductModel.delete(params.id)
 
             if(!data) {
                 throw new Error("Không thể kết nối database")
