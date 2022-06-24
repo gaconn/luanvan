@@ -1,7 +1,10 @@
 import { Accordion } from "react-bootstrap"
 import { AiOutlinePlus } from "react-icons/ai"
 import { IoStorefrontOutline } from "react-icons/io5"
-import { MdOutlineCategory, MdOutlineProductionQuantityLimits, MdOutlineSell } from "react-icons/md"
+import { MdOutlineProductionQuantityLimits, MdOutlineSell } from "react-icons/md"
+import {BiAddToQueue} from 'react-icons/bi'
+import { Link } from "react-router-dom"
+import { LinkProductAction } from "../../../configs/define"
 import IconTagToggle from "../IconTagToggle"
 import ListTagToggle from "../ListTagToggle"
 import { Item, List } from "../SideBar.style"
@@ -18,21 +21,21 @@ const QuanLyGianHang = () => {
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={`${LinkProductAction.product_list}`} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><MdOutlineProductionQuantityLimits /></span>
                                 <span className="side-bar-item-label">Danh sách sản phẩm</span>
-                            </div>
+                            </Link>
+                        </Item>
+                        <Item className="side-bar-item-sub">
+                            <Link to={`${LinkProductAction.product_add}`} className="side-bar-item-control">
+                                <span className="side-bar-item-icon-sub"><BiAddToQueue /></span>
+                                <span className="side-bar-item-label">Thêm sản phẩm</span>
+                            </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
                             <div className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><MdOutlineSell /></span>
                                 <span className="side-bar-item-label">Danh sách sản phẩm giảm giá</span>
-                            </div>
-                        </Item>
-                        <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
-                                <span className="side-bar-item-icon-sub"><MdOutlineCategory /></span>
-                                <span className="side-bar-item-label">Danh sách danh mục</span>
                             </div>
                         </Item>
                     </List>

@@ -71,13 +71,10 @@ class CategoryController {
             return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
         }
         try {
-            const objDataUpdate = {
-                DaXoa: 1
-            }
             const objCondition = {
                 id: id
             }
-            const response = await CategoryModel.update(objDataUpdate,objCondition)
+            const response = await CategoryModel.delete(objCondition)
             if(!response) {
                 return res.json(ResponseUtil.response(false, "Có lỗi xảy ra"))
             }

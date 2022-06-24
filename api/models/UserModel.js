@@ -49,7 +49,7 @@ class UserModel {
                 SoNha: objUserInfo.SoNha,
                 ThoiGianTao: new Date().getTime()/1000,
                 DaXoa: 0,
-                IDNhomQuyen: 1,
+                IDCapDoTaiKhoan: 1,
 
             }
 
@@ -134,7 +134,8 @@ class UserModel {
             return ResponseUtil.response(true, 'Đăng nhập thành công', [{...objUserInfo, token}] )
 
         } catch (error) {
-            return ResponseUtil.response(false, 'Lỗi hệ thống',[],error.message)
+         
+            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
     }
     //Custommer
