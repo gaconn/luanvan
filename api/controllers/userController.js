@@ -33,6 +33,18 @@ class UserController {
 
         return res.json(objResult)
     }
+    //Register
+    Register= async(req, res) => {
+        const data = req.body
+        if(Object.keys(data).length === 0) {
+            return res.json(ResponseUtil.response(false, "Dữ liệu truyền vào không hợp lệ"))
+        }
+        const objResult = await UserModel.addCustomer(data)
+        if(Object.keys(objResult).length === 0) {
+            return res.json(ResponseUtil.response(false, "Có lỗi xảy ra, vui lòng thử lại"))
+        }
+        return res.json(objResult)
+    }
 }
 
 module.exports = new UserController()

@@ -39,6 +39,7 @@ class Landing extends Component {
         return (
                     <Routes>
                     <Route index element={<Home />} />
+                    <Route path="/Home" element={<Home />} />
                     <Route path="/Login" element={<Login/>}/>
                     <Route path="/Register" element={<Register/>}/>
                     <Route path="/Shop" element={<Shop/>}/>

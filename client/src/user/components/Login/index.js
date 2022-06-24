@@ -1,6 +1,59 @@
 
-
+import image from '../../assets/img/banner/banner-login.png'
+import {  useState } from 'react'
+import isEmty from 'validator/lib/isEmpty'
+import CustommerAPI from '../../services/API/CustomerAPI'
+import { useNavigate } from 'react-router-dom'
+import token from '../../services/utils/setToken'
 const Logincomponents = () => {
+    const navigate = useNavigate()
+    const [account,setAccount]=useState({Email:'',MatKhau:''})
+    const [validated,setValidated]=useState('')
+    const InputOnChange=(e)=>{
+        e.preventDefault()
+        setAccount(account=>({ ...account, [e.target.name]: e.target.value }))
+    }
+    const handleAcountSubmit=async (event)=>{
+        const isvalidated=validatedAll() 
+        if(!isvalidated) {
+            event.preventDefault()
+            return
+        }
+
+        const form = event.currentTarget;
+         if (form.checkValidity() === false) {
+             event.preventDefault()
+             event.stopPropagation()
+             return
+         }
+         event.preventDefault()
+         const response= await CustommerAPI.login(account)
+         const data = response.data[0]
+         if(response) {
+             if(response.success && response.error.length ===0 ) {
+                 if(data.token) {
+                     token.setAuthToken(data.token)
+                     localStorage.setItem('USER_NAME', data.email)
+                     navigate("../Home")
+                 }
+                     
+             } 
+         }
+    }
+    const validatedAll=()=>{
+        const nsg={}
+     
+        if(isEmty(account.Email)){
+            nsg.Email='Please input your email'
+        }
+        if(isEmty(account.MatKhau)){
+            nsg.MatKhau='Please input your password'
+        }
+        setValidated(nsg)
+        if(Object.keys(nsg).length>0) {return false}
+        return true
+        
+    }
     return (
         
             <div className="py-6 wow zoomIn" >
@@ -9,12 +62,11 @@ const Logincomponents = () => {
                         className="hidden lg:block lg:w-1/2 bg-cover "
                         style={{
                             backgroundImage:
-                                'url("https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80")'
+                            `url(${image})`
                         }}
                     />
                     <div className="w-full p-8 lg:w-1/2">
-                      
-                        <p className="text-xl text-gray-600 text-center">Welcome back!</p>
+                        <p className="text-xl text-gray-600 text-center">Chào mừng trở lại!</p>
                         <a
                             href="#"
                             className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
@@ -40,23 +92,23 @@ const Logincomponents = () => {
                                 </svg>
                             </div>
                             <h6 className="px-4 py-3 w-5/6 text-center text-black font-bold">
-                                Sign in with Google
+                            Đăng nhập bằng Google
                             </h6>
                         </a>
                         <div className="mt-4 flex items-center justify-between">
                             <span className="border-b w-1/5 lg:w-1/4" />
                             <a href="#" className="text-xs text-center text-gray-500 uppercase">
-                                or login with email
+                            hoặc đăng nhập bằng email
                             </a>
                             <span className="border-b w-1/5 lg:w-1/4" />
                         </div>
                         <div className="mt-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Email Address
+                                Email
                             </label>
                             <input
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                                type="email"
+                                type="email" required name='Email' onChange={InputOnChange}
                             />
                         </div>
                         <div className="mt-4">
@@ -65,23 +117,23 @@ const Logincomponents = () => {
                                     Password
                                 </label>
                                 <a href="#" className="text-xs text-gray-500">
-                                    Forget Password?
+                                Quên mật khẩu?
                                 </a>
                             </div>
                             <input
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                                type="password"
+                                type="password" required name='MatKhau' onChange={InputOnChange}
                             />
                         </div>
                         <div className="mt-8">
-                            <button className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600">
-                                Login
+                            <button onClick={handleAcountSubmit} className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600">
+                            Đăng nhập
                             </button>
                         </div>
                         <div className="mt-4 flex items-center justify-between">
                             <span className="border-b w-1/5 md:w-1/4" />
                             <a href="#" className="text-xs text-gray-500 uppercase">
-                                or sign up
+                            hoặc đăng ký
                             </a>
                             <span className="border-b w-1/5 md:w-1/4" />
                         </div>

@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
 import CustommerAPI from '../../services/API/CustomerAPI'
 import isEmty from 'validator/lib/isEmpty'
+import { useNavigate } from 'react-router-dom'
 const RegisterComponent = () => {
+    const navigate=useNavigate();
 
     const [account, setAccount] = useState({ HoTen: "", Email: "", MatKhau:""})
     const [validated,setValidated]=useState('')
@@ -21,6 +23,7 @@ const RegisterComponent = () => {
         event.preventDefault()
         const res= await CustommerAPI.register(account);
          console.log(res)
+         navigate('../Home')
         
     }
     const onInputChange = useCallback((e) => {
@@ -90,7 +93,8 @@ const validatedAll=()=>{
                                 </label>
                                 <input onChange={onInputChange}
                                     name='MatKhau'
-                                    type="text"
+                                    type="password"
+                                    required
                                     placeholder='Password'
                                     className="bg-indigo-50 px-4 py-2 outline-none rounded-md w-full"
                                 />

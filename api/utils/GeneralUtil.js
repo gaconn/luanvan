@@ -39,7 +39,16 @@ class GeneralUtil {
         }
         return false
     }
-
+    checkIsValidPhone = (strPhone) => {
+        let phone = String(strPhone).trim()
+        if(phone) {
+            if(strPhone.length ===10  && !NaN(phone)) {
+                return true
+            }
+          
+        }
+        return false
+    }
     hashPassword = (strPassword) => {
        try {
         const salt = bcrypt.genSaltSync(process.env.BCRYPT_SALT_ROUNDS*1)
