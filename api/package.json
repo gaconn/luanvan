@@ -17,8 +17,13 @@
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
+<<<<<<< HEAD
     "nodemailer": "^6.7.5",
     "redis": "^4.1.0"
+=======
+    "redis": "^4.1.0",
+    "uniqid": "^5.4.0"
+>>>>>>> ada59d801bf393b72bdcc33c9e1c0cb1cad3545a
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
