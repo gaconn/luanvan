@@ -1,5 +1,5 @@
 const DBUtil = require('../utils/DBUtil')
-const { buildFieldQuery } = require('../utils/DBUtil')
+const { buildFieldQuery, _buildSelect } = require('../utils/DBUtil')
 const GeneralUtil = require('../utils/GeneralUtil')
 const { checkIsEmptyObject } = require('../utils/GeneralUtil')
 const ResponseUtil = require('../utils/ResponseUtil')
@@ -12,8 +12,11 @@ class CategoryModel {
     get = async(objCondition) => {
         try {
             const strWhere = this._buildWhereQuery(objCondition)
-            const query = `select theloai.*, lt2.id children, SoLuongSanPham from ${this.table} left join ${this.table} lt2 on theloai.id = lt2.IDTheLoaiCha \
-            , (select COUNT(sp.id) SoLuongSanPham  from sanpham sp join ${this.table} tl on sp.idtheloai = tl.id) as SoLuongSanPham ${strWhere}`
+            var strSelect = 'select 1'
+            strSelect += _buildSelect(['*'], this.table)
+            var strJoin = ` left join theloai tl2 on ${this.table}.id = tl2.IDTheLoaiCha`
+            strSelect += _buildSelect(['id'], 'tl2', 'children_')
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere}`
             const arrData = await dbconnect.query(query)
 
             var arrCount = null;
@@ -34,9 +37,6 @@ class CategoryModel {
             }
             if(!arrData[0]) {
                 return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
-            }
-            if(arrCount){
-                return ResponseUtil.response(true, 'Thành công', {data: arrData[0], rowCount: arrCount[0][0].rowCount})
             }
             return ResponseUtil.response(true, 'Thành công', {data: arrData[0]})
         } catch (error) {
