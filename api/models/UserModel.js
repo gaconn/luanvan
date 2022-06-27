@@ -6,16 +6,11 @@ const { buildFieldQuery, _buildSelect } = require("../utils/DBUtil")
 const jwt = require("jsonwebtoken")
 const mailConfig = require('../models/mailConfig')
 class UserModel {
-<<<<<<< HEAD
-    add = async (objUserInfo) => {
-        if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
-=======
     constructor() { 
         this.table = 'taikhoan'
     }
     add = async(objUserInfo) => {
         if(GeneralUtil.checkIsEmptyObject(objUserInfo)) {
->>>>>>> ada59d801bf393b72bdcc33c9e1c0cb1cad3545a
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
@@ -90,15 +85,6 @@ class UserModel {
 
     }
 
-<<<<<<< HEAD
-    get = async () => {
-        try {
-            console.log('model');
-            const obj = { Ten: "Gầm máy", DaXoa: 0, ThoiGianTao: Math.floor(new Date().getTime() / 1000) }
-            const fields = buildFieldQuery(obj)
-            const result = await dbconnect.query(`select * from taikhoan where Email = ?`, "quan12xz@gmail.com")
-            console.log(result);
-=======
     get = async(objCondition) => {
         if(!objCondition || Object.keys(objCondition).length === 0 ){
             return ResponseUtil.response(false, 'Tham số không hợp lệ')
@@ -130,7 +116,6 @@ class UserModel {
             }
 
             return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
->>>>>>> ada59d801bf393b72bdcc33c9e1c0cb1cad3545a
         } catch (error) {
             return ResponseUtil.response(false, error.message)
         }
@@ -204,6 +189,7 @@ class UserModel {
             strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
         }
         return strWhere
+    }
     //Custommer
     addCustomer = async (objUserInfo) => {
         if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
