@@ -2,7 +2,6 @@ import Category from "./CategoryShop";
 
 const ShopComponent = () => {
     return (
-        
             <>
                   <section className="product spad">
                     <div className="container">

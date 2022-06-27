@@ -14,7 +14,7 @@ const Section = () => {
                                 <Dropdown >
                                     <Dropdown.Toggle variant='success' id="dropdown-basic"  >
                                          <i className="fa fa-bars" /> 
-                                        <span>All departments</span>
+                                        <span>  Tất cả danh mục</span>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
@@ -28,13 +28,10 @@ const Section = () => {
                             <div className="hero__search">
                                 <div className="hero__search__form">
                                     <form action="#">
-                                        <div className="hero__search__categories">
-                                            All Categories
-                                            <span className="arrow_carrot-down" />
-                                        </div>
+                                       
                                         <input type="text" placeholder="What do yo u need?" />
                                         <button type="submit" className="site-btn">
-                                            SEARCH
+                                            Tìm Kiếm
                                         </button>
                                     </form>
                                 </div>
@@ -43,8 +40,8 @@ const Section = () => {
                                         <i className="fa fa-phone" />
                                     </div>
                                     <div className="hero__search__phone__text">
-                                        <h5>+65 11.188.888</h5>
-                                        <span>support 24/7 time</span>
+                                        <h5>+85 0334596482</h5>
+                                        <span>thời gian hỗ trợ 24/7</span>
                                     </div>
                                 </div>
                             </div>

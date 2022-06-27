@@ -1,4 +1,4 @@
-import img from '../../assets/img/language.png'
+
 const Header = () => {
     return (
         <>
@@ -14,7 +14,7 @@ const Header = () => {
                                         <li>
                                             <i className="fa fa-envelope" /> hello@colorlib.com
                                         </li>
-                                        <li>Free Shipping for all Order of $99</li>
+                                        <li>Giao hàng miễn phí cho tất cả Đơn hàng $ 99</li>
                                     </ul>
                                 </div>
                             </div>
@@ -34,7 +34,7 @@ const Header = () => {
                                             <i className="fa fa-pinterest-p" />
                                         </a>
                                     </div>
-                                    <div className="header__top__right__language">
+                                    {/* <div className="header__top__right__language">
                                         <img src={img} alt="" />
                                         <div>English</div>
                                         <span className="arrow_carrot-down" />
@@ -46,7 +46,7 @@ const Header = () => {
                                                 <a href="#">English</a>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
