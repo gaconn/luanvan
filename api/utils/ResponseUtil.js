@@ -13,10 +13,10 @@ class ResponseUtil{
         }
         
         for (let p = 0 ; p< parent.length ; p++) {
-            if(parent[p].children) {
+            if(parent[p].children_id) {
                 var listChild = []
                 for(let i= 0 ; i < list.length ; i++) {
-                    if(list[i].id === parent[p].children) {
+                    if(list[i].id === parent[p].children_id) {
                         listChild.push(list[i])
                         list.splice(i, 1)
                     }

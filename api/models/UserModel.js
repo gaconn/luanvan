@@ -6,8 +6,16 @@ const { buildFieldQuery } = require("../utils/DBUtil")
 const jwt = require("jsonwebtoken")
 const mailConfig = require('../models/mailConfig')
 class UserModel {
+<<<<<<< HEAD
     add = async (objUserInfo) => {
         if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
+=======
+    constructor() { 
+        this.table = 'taikhoan'
+    }
+    add = async(objUserInfo) => {
+        if(GeneralUtil.checkIsEmptyObject(objUserInfo)) {
+>>>>>>> 9246c0e031e7c5dc397546ae3d01fb76eb7bbfd6
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
@@ -82,6 +90,7 @@ class UserModel {
 
     }
 
+<<<<<<< HEAD
     get = async () => {
         try {
             console.log('model');
@@ -89,6 +98,39 @@ class UserModel {
             const fields = buildFieldQuery(obj)
             const result = await dbconnect.query(`select * from taikhoan where Email = ?`, "quan12xz@gmail.com")
             console.log(result);
+=======
+    get = async(objCondition) => {
+        if(!objCondition || Object.keys(objCondition).length === 0 ){
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+        const page = objCondition.page ? objCondition.page : 1;
+        const offsetStart = (page -1 ) * 10
+        try {
+            var strWhere = this._buildWhereQuery(objCondition)
+            var strSelect = 'select 1'
+            var strJoin = ''
+            strSelect += _buildSelect(['*'], this.table)
+
+            if(objCondition.joinPermission) {
+                strJoin += ` left join capdotaikhoan on ${this.table}.IDCapDoTaiKhoan = capdotaikhoan.id`
+                var arrFieldUserLevelSelect = [
+                    'Ten',
+                    'TrangThai'
+                ]
+
+                strSelect += _buildSelect(arrFieldUserLevelSelect, 'capdotaikhoan', 'CapDoTaiKhoan_')
+            }
+
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
+            const result =await dbconnect.query(query)
+            const countUser = await dbconnect.query(`select COUNT(id) from ${this.table}`)
+            
+            if(!result || !countUser || !result[0] || !countUser[0]) {
+                throw new Error('Lỗi kết nối database')
+            }
+
+            return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
+>>>>>>> 9246c0e031e7c5dc397546ae3d01fb76eb7bbfd6
         } catch (error) {
             console.log(error);
         }
@@ -140,6 +182,33 @@ class UserModel {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
     }
+<<<<<<< HEAD
+=======
+
+    _buildWhereQuery = (objCondition) => {
+        var strWhere = ' where 1=1 '
+        if(objCondition.id) {
+            strWhere += ` and ${this.table}.id = ${objCondition.id}`
+        }
+
+        if(objCondition.Email) {
+            strWhere += ` and ${this.table}.Email = ${objCondition.Email}` 
+        }
+
+        if(objCondition.SoDienThoai) {
+            strWhere += ` and ${this.table}.SoDienThoai = ${objCondition.SoDienThoai}`
+        }
+
+        if(objCondition.hasOwnProperty("IDCapDoTaiKhoan")) {
+            strWhere += ` and ${this.table}.IDCapDoTaiKhoan = ${objCondition.IDCapDoTaiKhoan}`
+        }
+
+        if(objCondition.hasOwnProperty("DaXoa")) {
+            strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
+        }
+        return strWhere
+    }
+>>>>>>> 9246c0e031e7c5dc397546ae3d01fb76eb7bbfd6
     //Custommer
     addCustomer = async (objUserInfo) => {
         if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
