@@ -1,7 +1,7 @@
 const dbconnect = require("./DBConnection")
 const ResponseUtil = require("../utils/ResponseUtil")
 const GeneralUtil = require("../utils/GeneralUtil")
-const { object_filter, buildFieldQuery } = require("../utils/DBUtil")
+const { object_filter, buildFieldQuery, _buildSelect } = require("../utils/DBUtil")
 const fs = require('fs')
 const path = require("path")
 class ProductModel {
@@ -18,17 +18,28 @@ class ProductModel {
         var start= (objCondition.page-1)*10
         try {
             const strWhere = this._buildWhereQuery(objCondition)
+            var strSelect = 'select 1'
             var strJoin = ""
+            strSelect += _buildSelect(['*'], this.table)
             if(objCondition.joinCategory) {
-                strJoin += `left join (select tl1.id TheLoai_ID, tl1.Ten TheLoai_Ten, tl1.HoatDong TheLoai_HoatDong, tl1.IDTheLoaiCha TheLoai_IDTheLoaiCha from ${this.table} sp1 join theloai tl1 on \
-                    sp1.IDTheLoai = tl1.id where tl1.DaXoa = 0) as tl1 on ${this.table}.IDTheLoai = tl1.TheLoai_ID `
+                strJoin += ` left join theloai on ${this.table}.IDTheLoai = theloai.id`
+                var arrFieldCategorySelect = [
+                    'Ten',
+                    'HoatDong',
+                    'IDTheLoaiCha'
+                ]
+                strSelect += _buildSelect(arrFieldCategorySelect, 'theloai', 'TheLoai_')
             }
 
             if(objCondition.joinSupplier) {
-                strJoin += `left join (select ncc1.id NhaCungCap_ID, ncc1.Ten NhaCungCap_Ten, ncc1.TrangThai NhaCungCap_TrangThai from ${this.table} sp2 left join nhacungcap ncc1 on sp2.IDNhaCungCap = ncc1.id \
-                where ncc1.DaXoa = 0) as ncc1 on ${this.table}.IDNhaCungCap = ncc1.NhaCungCap_ID `
+                strJoin += ` left join nhacungcap on ${this.table}.IDNhaCungCap = nhacungcap.id`
+                var arrFieldSupplierSelect = [
+                    'Ten',
+                    'TrangThai',
+                ]
+                strSelect += _buildSelect(arrFieldSupplierSelect, 'nhacungcap', 'NhaCungCap_')
             }
-            const query = `select distinct * from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${start}`
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${start}`
             const arrData = await dbconnect.query(query)
 
             if(!arrData ) {
@@ -57,17 +68,28 @@ class ProductModel {
     getDetail = async (objCondition) => {
         try {
             const strWhere = this._buildWhereQuery(objCondition)
+            var strSelect = 'select 1'
             var strJoin = ""
+            strSelect += _buildSelect(['*'], this.table)
             if(objCondition.joinCategory) {
-                strJoin += `left join (select tl1.id TheLoai_ID, tl1.Ten TheLoai_Ten, tl1.HoatDong TheLoai_HoatDong, tl1.IDTheLoaiCha TheLoai_IDTheLoaiCha from ${this.table} sp1 join theloai tl1 on \
-                    sp1.IDTheLoai = tl1.id where tl1.DaXoa = 0) as tl1 on ${this.table}.IDTheLoai = tl1.TheLoai_ID `
+                strJoin += ` left join theloai on ${this.table}.IDTheLoai = theloai.id`
+                var arrFieldCategorySelect = [
+                    'Ten',
+                    'HoatDong',
+                    'IDTheLoaiCha'
+                ]
+                strSelect += _buildSelect(arrFieldCategorySelect, 'theloai', 'TheLoai_')
             }
 
             if(objCondition.joinSupplier) {
-                strJoin += `left join (select ncc1.id NhaCungCap_ID, ncc1.Ten NhaCungCap_Ten, ncc1.TrangThai NhaCungCap_TrangThai from ${this.table} sp2 left join nhacungcap ncc1 on sp2.IDNhaCungCap = ncc1.id \
-                where ncc1.DaXoa = 0) as ncc1 on ${this.table}.IDNhaCungCap = ncc1.NhaCungCap_ID `
+                strJoin += ` left join nhacungcap on ${this.table}.IDNhaCungCap = nhacungcap.id`
+                var arrFieldSupplierSelect = [
+                    'Ten',
+                    'TrangThai',
+                ]
+                strSelect += _buildSelect(arrFieldSupplierSelect, 'nhacungcap', 'NhaCungCap_')
             }
-            const query = `select * from ${this.table} ${strJoin} ${strWhere} limit 1`
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 1`
             const arrData = await dbconnect.query(query)
 
             if(!arrData ) {
@@ -208,12 +230,12 @@ class ProductModel {
                 Ten: objProduct.Ten,
                 TrangThai: 1,
                 DaXoa: 0,
-                XuatXu: objProduct.XuatXu &&objProduct.XuatXu!== 'null'? objProduct.XuatXu : "",
+                XuatXu: objProduct.XuatXu &&objProduct.XuatXu!== 'null'? objProduct.XuatXu : undefined,
                 MauSac: objProduct.MauSac &&objProduct.MauSac!== 'null'? objProduct.MauSac : undefined,
                 KichThuoc: objProduct.KichThuoc && objProduct.KichThuoc!== 'null'? objProduct.KichThuoc : undefined,
                 CanNang: objProduct.CanNang && objProduct.CanNang!== 'null'? objProduct.CanNang : undefined,
                 SoLuong: objProduct.SoLuong && objProduct.SoLuong!== 'null'? objProduct.SoLuong : 0,
-                MoTa: objProduct.MoTa && objProduct.MoTa!== 'null'? objProduct.MoTa : "",
+                MoTa: objProduct.MoTa && objProduct.MoTa!== 'null'? objProduct.MoTa : undefined,
                 GiaGoc: objProduct.GiaGoc,
                 IDTheLoai: objProduct.IDTheLoai,
                 IDNhaCungCap: objProduct.IDNhaCungCap,
@@ -263,25 +285,36 @@ class ProductModel {
             return strWhere
         }
         
-        if(objCondition.hasOwnProperty('id') && objCondition.id) {
-            strWhere += `and id = ${objCondition.id}`
+        if(objCondition.id) {
+            var id = (objCondition.id+'').split(',')
+            if(id.length > 1) {
+                strWhere += ` and (1=1 `
+                for (let index = 0; index < id.length; index++) {
+                    strWhere += ` or ${this.table}.id = ${id[index]}`
+                }
+                strWhere += ` )`
+            }else {
+                strWhere += ` and ${this.table}.id = ${objCondition.id}`
+            }
         }
 
         if(objCondition.hasOwnProperty('Ten') && objCondition.Ten) {
-            strWhere += `and Ten = ${objCondition.Ten}`
+            strWhere += ` and ${this.table}.Ten = ${objCondition.Ten}`
         }
 
         if(objCondition.hasOwnProperty('DaXoa') && objCondition.DaXoa) {
-            strWhere += ` and DaXoa = ${objCondition.DaXoa}`
+            strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
         }
 
         if(objCondition.hasOwnProperty('TrangThai') && objCondition.TrangThai) {
-            strWhere += ` and TrangThai = ${objCondition.TrangThai}`
+            strWhere += ` and ${this.table}.TrangThai = ${objCondition.TrangThai}`
         }
         if(objCondition.hasOwnProperty('ThoiGianTao')) {
-            strWhere += `and ThoiGianTao > ${objCondition.ThoiGianTao}`
+            strWhere += ` and ${this.table}.ThoiGianTao > ${objCondition.ThoiGianTao}`
         }
-
+        if(objCondition.isStoking) {
+            strWhere += ` and ${this.table}.SoLuong > 0`
+        }
         return strWhere
     }
 }
