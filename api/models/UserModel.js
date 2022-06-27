@@ -2,20 +2,12 @@ const dbconnect = require("./DBConnection")
 const GeneralUtil = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
 const bcrypt = require("bcrypt")
-const { buildFieldQuery, _buildSelect } = require("../utils/DBUtil")
+const { buildFieldQuery } = require("../utils/DBUtil")
 const jwt = require("jsonwebtoken")
 const mailConfig = require('../models/mailConfig')
 class UserModel {
-<<<<<<< HEAD
     add = async (objUserInfo) => {
         if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
-=======
-    constructor() { 
-        this.table = 'taikhoan'
-    }
-    add = async(objUserInfo) => {
-        if(GeneralUtil.checkIsEmptyObject(objUserInfo)) {
->>>>>>> ada59d801bf393b72bdcc33c9e1c0cb1cad3545a
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
@@ -90,7 +82,6 @@ class UserModel {
 
     }
 
-<<<<<<< HEAD
     get = async () => {
         try {
             console.log('model');
@@ -98,43 +89,11 @@ class UserModel {
             const fields = buildFieldQuery(obj)
             const result = await dbconnect.query(`select * from taikhoan where Email = ?`, "quan12xz@gmail.com")
             console.log(result);
-=======
-    get = async(objCondition) => {
-        if(!objCondition || Object.keys(objCondition).length === 0 ){
-            return ResponseUtil.response(false, 'Tham số không hợp lệ')
-        }
-        const page = objCondition.page ? objCondition.page : 1;
-        const offsetStart = (page -1 ) * 10
-        try {
-            var strWhere = this._buildWhereQuery(objCondition)
-            var strSelect = 'select 1'
-            var strJoin = ''
-            strSelect += _buildSelect(['*'], this.table)
-
-            if(objCondition.joinPermission) {
-                strJoin += ` left join capdotaikhoan on ${this.table}.IDCapDoTaiKhoan = capdotaikhoan.id`
-                var arrFieldUserLevelSelect = [
-                    'Ten',
-                    'TrangThai'
-                ]
-
-                strSelect += _buildSelect(arrFieldUserLevelSelect, 'capdotaikhoan', 'CapDoTaiKhoan_')
-            }
-
-            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
-            const result =await dbconnect.query(query)
-            const countUser = await dbconnect.query(`select COUNT(id) from ${this.table}`)
-            
-            if(!result || !countUser || !result[0] || !countUser[0]) {
-                throw new Error('Lỗi kết nối database')
-            }
-
-            return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
->>>>>>> ada59d801bf393b72bdcc33c9e1c0cb1cad3545a
         } catch (error) {
-            return ResponseUtil.response(false, error.message)
+            console.log(error);
         }
     }
+
     login = async (objDataUser) => {
         if (GeneralUtil.checkIsEmptyObject(objDataUser)) {
             return ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ')
@@ -181,29 +140,6 @@ class UserModel {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
     }
-
-    _buildWhereQuery = (objCondition) => {
-        var strWhere = ' where 1=1 '
-        if(objCondition.id) {
-            strWhere += ` and ${this.table}.id = ${objCondition.id}`
-        }
-
-        if(objCondition.Email) {
-            strWhere += ` and ${this.table}.Email = ${objCondition.Email}` 
-        }
-
-        if(objCondition.SoDienThoai) {
-            strWhere += ` and ${this.table}.SoDienThoai = ${objCondition.SoDienThoai}`
-        }
-
-        if(objCondition.hasOwnProperty("IDCapDoTaiKhoan")) {
-            strWhere += ` and ${this.table}.IDCapDoTaiKhoan = ${objCondition.IDCapDoTaiKhoan}`
-        }
-
-        if(objCondition.hasOwnProperty("DaXoa")) {
-            strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
-        }
-        return strWhere
     //Custommer
     addCustomer = async (objUserInfo) => {
         if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
