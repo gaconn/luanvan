@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom"
-import Home from "./pages/Home"
 import React, { Component } from 'react';
 //  import "./assets/css/bootstrap.min.css"  
  import "./assets/css/font-awesome.min.css"  
@@ -9,13 +8,20 @@ import React, { Component } from 'react';
  import "./assets/css/owl.carousel.min.css"  
  import "./assets/css/slicknav.min.css"  
  import "./assets/css/style.css" 
-import Login from "./pages/Login";
-import Contact from "./pages/Contact";
-import Register from "./pages/Register";
-import Shop from "./pages/Shop"
-import Blog from "./pages/Blog"
-import Checkout from "./pages/Checkout";
+
+import All from "./pages/All"
+//components
+import HomeComponent from './components/Home'
+import CheckoutComponent from './components/CheckOut'
+import ShopComponent from "./components/Shop"
+import ContactComponent from './components/Contact'
+import BlogComponent from './components/Blog'
+import RegisterComponent from './components/Register'
+import Logincomponents from "./components/Login"
+import Authenticate from "./components/Authenticate"
 import {WOW} from 'wowjs'
+
+
 class Landing extends Component {
     componentDidMount() {
         const wow = new WOW({ 
@@ -38,15 +44,20 @@ class Landing extends Component {
     render() {
         return (
                     <Routes>
-                    <Route index element={<Home />} />
-                    <Route path="/Home" element={<Home />} />
-                    <Route path="/Login" element={<Login/>}/>
-                    <Route path="/Register" element={<Register/>}/>
-                    <Route path="/Shop" element={<Shop/>}/>
-                    <Route path="/CheckOut" element={<Checkout/>}/>
-                    <Route path="/Contact" element={<Contact/>}/>
-                    <Route path="/Blog" element={<Blog/>}/>
-                    </Routes>
+                    <Route path="/*" element={<All/>} >
+                    <Route index element={<HomeComponent/>} />
+                    <Route path="Home" element={<HomeComponent />} />
+                    <Route path="Shop" element={<ShopComponent/>}/>
+                    <Route path="CheckOut" element={<CheckoutComponent/>}/>
+                    <Route path="Contact" element={<ContactComponent/>}/>
+                    <Route path="Blog" element={<BlogComponent/>}/>
+                    </Route> 
+                 
+                     <Route path="Login" element={<Logincomponents/>}/>
+                    <Route path="NewPassword" element={<Authenticate/>}/>
+                    <Route path="Register" element={<RegisterComponent/>}/>
+                  
+                 </Routes>
         );
     }
 }

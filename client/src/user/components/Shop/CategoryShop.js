@@ -1,92 +1,108 @@
 import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import CategoryAPI from '../../services/API/CategoryAPI';
+import { useState, useEffect } from 'react';
 const Category = () => {
+    const [category, setCategory] = useState([]);
+    useEffect(() => {
+
+    }, [])
     return (
         <div className="col-lg-3 col-md-5">
             <div className="sidebar">
                 <div className="sidebar__item ">
-                   
-                    <Dropdown >
-                        <Dropdown.Toggle id="dropdown-button-dark-example1" variant="secondary">
-                        Department
-                        </Dropdown.Toggle>
+                    <div className="flex justify-center">
+                        <div className="bg-white rounded-lg border border-gray-200 w-96 text-gray-900">
+                            <a
+                                href="#!"
+                                aria-current="true"
+                                className="
+  block
+  px-6
+  py-2
+  border-b border-gray-200
+  w-full
+  rounded-t-lg
+  bg-blue-600
+  text-white
+  cursor-pointer
+"                            >
+                                The current link item
+                                
+                            </a>
+                            <a
+                                href="#!"
+                                className="
+  block
+  px-6
+  py-2
+  border-b border-gray-200
+  w-full
+  hover:bg-gray-100 hover:text-gray-500
+  focus:outline-none focus:ring-0 focus:bg-gray-200 focus:text-gray-600
+  transition
+  duration-500
+  cursor-pointer
+"
+                            >
+                                A second link item
+                                
+                            </a>
+                            <a
+                                href="#!"
+                                className="
+  block
+  px-6
+  py-2
+  border-b border-gray-200
+  w-full
+  hover:bg-gray-100 hover:text-gray-500
+  focus:outline-none focus:ring-0 focus:bg-gray-200 focus:text-gray-600
+  transition
+  duration-500
+  cursor-pointer
+"
+                            >
+                                A third link item
+                            </a>
+                            <a
+                                href="#!"
+                                className="
+  block
+  px-6
+  py-2
+  border-b border-gray-200
+  w-full
+  hover:bg-gray-100 hover:text-gray-500
+  focus:outline-none focus:ring-0 focus:bg-gray-200 focus:text-gray-600
+  transition
+  duration-500
+  cursor-pointer
+"
+                            >
+                                A fourth link item
+                            </a>
+                            <a
+                                href="#!"
+                                className="
+  block
+  px-6
+  py-2
+  border-gray-200
+  w-full
+  rounded-b-lg
+  focus:outline-none focus:ring-0
+  text-gray-400
+  cursor-default
+"
+                            >
+                                A disabled link item
+                            </a>
+                        </div>
+                    </div>
 
-                        <Dropdown.Menu variant="dark">
-                            <Dropdown.Item href="#/action-1" active>
-                                Action
-                            </Dropdown.Item>
-                            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item href="#/action-4">Separated link</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
                 </div>
-                {/* <div className="sidebar__item sidebar__item__color--option">
-                    <h4>Colors</h4>
-                    <div className="sidebar__item__color sidebar__item__color--white">
-                        <label htmlFor="white">
-                            White
-                            <input type="radio" id="white" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__color sidebar__item__color--gray">
-                        <label htmlFor="gray">
-                            Gray
-                            <input type="radio" id="gray" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__color sidebar__item__color--red">
-                        <label htmlFor="red">
-                            Red
-                            <input type="radio" id="red" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__color sidebar__item__color--black">
-                        <label htmlFor="black">
-                            Black
-                            <input type="radio" id="black" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__color sidebar__item__color--blue">
-                        <label htmlFor="blue">
-                            Blue
-                            <input type="radio" id="blue" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__color sidebar__item__color--green">
-                        <label htmlFor="green">
-                            Green
-                            <input type="radio" id="green" />
-                        </label>
-                    </div>
-                </div>
-                <div className="sidebar__item">
-                    <h4>Popular Size</h4>
-                    <div className="sidebar__item__size">
-                        <label htmlFor="large">
-                            Large
-                            <input type="radio" id="large" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__size">
-                        <label htmlFor="medium">
-                            Medium
-                            <input type="radio" id="medium" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__size">
-                        <label htmlFor="small">
-                            Small
-                            <input type="radio" id="small" />
-                        </label>
-                    </div>
-                    <div className="sidebar__item__size">
-                        <label htmlFor="tiny">
-                            Tiny
-                            <input type="radio" id="tiny" />
-                        </label>
-                    </div>
-                </div> */}
 
             </div>
         </div>

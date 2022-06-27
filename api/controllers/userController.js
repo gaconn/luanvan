@@ -1,6 +1,9 @@
 const UserModel = require("../models/UserModel")
 const GeneralUtil = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
+const mailer=require('../utils/mailerUtil')
+
+
 class UserController {
     logon = async(req, res) => {
         const data = req.body
@@ -45,6 +48,28 @@ class UserController {
         }
         return res.json(objResult)
     }
+    //sendMail
+    sendResetLinkEmail =async(req,res)=>{
+        const data = req.body
+        let MatKhauRS = Math.random().toString(36).substring(4);  
+        //  const token = jwt.sign({Email: data.Email}, mailConfig.JSON, {expiresIn: '30s'})
+                var content = '';
+                content += `
+                    <div style="padding: 10px; background-color: #003375">
+                        <div style="padding: 10px; background-color: white;">
+                            <h4 style="color: #0085ff">Đặt Lại mật khẩu</h4>
+                            <span style="color: black">Mật khẩu mới: ${MatKhauRS}</span>
+                        </div>
+                    </div>
+                `;
+                // console.log(`${mailConfig.APP}/user/MatKhau/${data.Email}?token=${token}?MatKhau=${MatKhauRS}`);
+                mailer.sendMail(data.Email,'Đặt lại mật khẩu',content)
+                const UPDATEMK=await UserModel.resetPassword(data,MatKhauRS)
+                return res.json(UPDATEMK)
+    }
+    // ChangePassword=async(req,res)=>{
+    //    //ThayDoiPass
+    // }
 }
 
 module.exports = new UserController()

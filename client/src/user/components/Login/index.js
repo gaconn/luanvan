@@ -2,17 +2,24 @@
 import image from '../../assets/img/banner/banner-login.png'
 import {  useState } from 'react'
 import isEmty from 'validator/lib/isEmpty'
+import isEmail from 'validator/lib/isEmail';
 import CustommerAPI from '../../services/API/CustomerAPI'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate ,Link} from 'react-router-dom'
 import token from '../../services/utils/setToken'
+import Toast from "react-bootstrap/Toast"
+import ToastContainer from "react-bootstrap/ToastContainer"
 const Logincomponents = () => {
     const navigate = useNavigate()
     const [account,setAccount]=useState({Email:'',MatKhau:''})
     const [validated,setValidated]=useState('')
+    const [notify, setNotify] = useState()
+     
+    
+  
     const InputOnChange=(e)=>{
-        e.preventDefault()
         setAccount(account=>({ ...account, [e.target.name]: e.target.value }))
     }
+   
     const handleAcountSubmit=async (event)=>{
         const isvalidated=validatedAll() 
         if(!isvalidated) {
@@ -28,13 +35,29 @@ const Logincomponents = () => {
          }
          event.preventDefault()
          const response= await CustommerAPI.login(account)
+         setNotify(() => {
+            if(response) {
+                if(!response.success) {
+                    return {show: true, success: false, message: response.message, error: response.error}
+                }
+                if(response.error.length > 0 ){
+                    return {show: true, success: false, message: response.message, error: response.error}
+                }
+                if(response.success && response.error.length ===0 ){
+                    return {show: false, success: true, message: response.message, error: response.error}
+                }
+              
+            }
+            
+            return {show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại"}
+        })
          const data = response.data[0]
          if(response) {
              if(response.success && response.error.length ===0 ) {
                  if(data.token) {
                      token.setAuthToken(data.token)
-                     localStorage.setItem('USER_NAME', data.email)
-                     navigate("../Home")
+                     localStorage.setItem('USER_NAME', data.HoTen)
+                   navigate('../Home')
                  }
                      
              } 
@@ -42,21 +65,33 @@ const Logincomponents = () => {
     }
     const validatedAll=()=>{
         const nsg={}
-     
+            //Kiểm tra email
+    
+            if (!isEmail(account.Email)) {
+                nsg.Email='Không đúng định dạng email'        
+            }
+            //Kiểm tra password
+            if(account.MatKhau.length < 6) {
+                nsg.MatKhau= 'Mật khẩu phải lớn hơn là 6 ký tự'
+            }
+         
         if(isEmty(account.Email)){
-            nsg.Email='Please input your email'
+            nsg.Email='Vui lòng nhập email'
         }
         if(isEmty(account.MatKhau)){
-            nsg.MatKhau='Please input your password'
+            nsg.MatKhau='Vui lòng nhập mật khẩu'
         }
         setValidated(nsg)
-        if(Object.keys(nsg).length>0) {return false}
+        if(Object.keys(nsg).length>0)
+         {return false}
         return true
         
     }
+  
     return (
         
-            <div className="py-6 wow zoomIn" >
+           <div>
+             <div className="py-6 wow zoomIn" >
                 <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
                     <div
                         className="hidden lg:block lg:w-1/2 bg-cover "
@@ -110,20 +145,22 @@ const Logincomponents = () => {
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                                 type="email" required name='Email' onChange={InputOnChange}
                             />
+                            <p style={{color:'red'}}>{validated.Email}</p>
                         </div>
                         <div className="mt-4">
                             <div className="flex justify-between">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Password
                                 </label>
-                                <a href="#" className="text-xs text-gray-500">
+                                <Link to="/NewPassword" className="text-xs text-gray-500">
                                 Quên mật khẩu?
-                                </a>
+                                </Link>
                             </div>
                             <input
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
                                 type="password" required name='MatKhau' onChange={InputOnChange}
                             />
+                            <p style={{color:'red'}}>{validated.MatKhau}</p>
                         </div>
                         <div className="mt-8">
                             <button onClick={handleAcountSubmit} className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600">
@@ -132,14 +169,35 @@ const Logincomponents = () => {
                         </div>
                         <div className="mt-4 flex items-center justify-between">
                             <span className="border-b w-1/5 md:w-1/4" />
-                            <a href="#" className="text-xs text-gray-500 uppercase">
+                            <Link to="/Register" className="text-xs text-gray-500 uppercase">
                             hoặc đăng ký
-                            </a>
+                            </Link>
                             <span className="border-b w-1/5 md:w-1/4" />
                         </div>
                     </div>
                 </div>
             </div>
+            {
+                notify && <ToastContainer position="top-end" className="p-3">
+                    <Toast bg="danger" onClose={()=>setNotify({...notify, show: false})} show={notify.show} delay={4000} autohide>
+                    <Toast.Header>
+                        <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+                        <strong className="me-auto">Thông báo</strong>
+                        <small className="text-muted">vừa xong</small>
+                    </Toast.Header>
+                    <Toast.Body>
+                        <h5 className="notify-message">{notify.message}</h5>
+                        {
+                            notify.error.length >0 && notify.error.map((item, index)=> {
+                                return <div key={index} className="notify-error">{item}</div>
+                            })
+                        }
+                    </Toast.Body>
+                    </Toast>
+                </ToastContainer>
+            }
+              
+           </div>
 
         
 

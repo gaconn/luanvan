@@ -2,7 +2,6 @@
 const Header = () => {
     return (
         <>
-          
             {/* Header Section Begin */}
             <header className="header">
                 <div className="header__top">
@@ -12,7 +11,7 @@ const Header = () => {
                                 <div className="header__top__left">
                                     <ul>
                                         <li>
-                                            <i className="fa fa-envelope" /> hello@colorlib.com
+                                            <i className="fa fa-envelope" /> company@gmail.com
                                         </li>
                                         <li>Giao hàng miễn phí cho tất cả Đơn hàng $ 99</li>
                                     </ul>
@@ -34,19 +33,7 @@ const Header = () => {
                                             <i className="fa fa-pinterest-p" />
                                         </a>
                                     </div>
-                                    {/* <div className="header__top__right__language">
-                                        <img src={img} alt="" />
-                                        <div>English</div>
-                                        <span className="arrow_carrot-down" />
-                                        <ul>
-                                            <li>
-                                                <a href="#">Spanis</a>
-                                            </li>
-                                            <li>
-                                                <a href="#">English</a>
-                                            </li>
-                                        </ul>
-                                    </div> */}
+                                   
                                 </div>
                             </div>
                         </div>

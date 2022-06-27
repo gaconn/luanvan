@@ -19,6 +19,15 @@ const CustommerAPI = {
         } catch (error) {
          console.log(error)
         }
+    },
+    NewPassword: async(data)=>{
+        try {
+            const url = BASE_URL+"/send-mail"
+            const response = await axios.post(url, data)
+            return response.data
+        } catch (error) {
+         console.log(error)
+        }
     }
 }
 export default CustommerAPI

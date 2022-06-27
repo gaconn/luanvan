@@ -3,18 +3,18 @@ import Header from "../layouts/Header"
 import NavbarHeader from "../layouts/NavBar"
 import Section from "../layouts/Section"
 import Banner from "../layouts/Banner"
-import BlogComponent from '../components/Blog'
 import Loading from "../layouts/Loading"
-const Blog = () => {
+import { Outlet } from "react-router-dom"
+const useAllPage = () => {
     return (<>
-        <Loading/>
+        <Loading />
         <Header />
         <NavbarHeader />
         <Section />
         <Banner />
-        <BlogComponent/>
-        <Footer />
+        <Outlet/>
+        <Footer/>
     </>);
 }
 
-export default Blog;
+export default useAllPage;

@@ -5,6 +5,7 @@ const GeneralUtil = require("../utils/GeneralUtil")
 const User = {
     CheckToken: (req, res, next) => {
         const token = req.header('Authorization')
+  
 
         if(!token) {
             return res.json(ResponseUtil.response(false, 'Thao tác không hợp lệ', [], ['Token không tồn tại']))

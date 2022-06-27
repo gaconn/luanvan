@@ -1,8 +1,10 @@
 const express = require("express")
 const router = express.Router()
+const checkToken =require('../middlewares/User')
 const UserController = require("../controllers/userController")
     router.post("/logon", UserController.logon)
     router.get("/get-detail", UserController.getDetail)
-    router.post('/login', UserController.login)
+    router.post('/login',UserController.login)
     router.post("/register", UserController.Register)
+    router.post('/send-mail', UserController.sendResetLinkEmail)
 module.exports = router
