@@ -14,9 +14,9 @@ class UserModel {
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
-        if (!objUserInfo.HoTen) {
-            arrError.push("Họ tên không được để trống")
-        }
+        // if (!objUserInfo.HoTen) {
+        //     arrError.push("Họ tên không được để trống")
+        // }
         if (!objUserInfo.SoDienThoai) {
             arrError.push("Số điện thoại không được để trống")
         }
@@ -42,7 +42,7 @@ class UserModel {
             //format
             const hashedPassword = await GeneralUtil.hashPassword(objUserInfo.MatKhau)
             const objData = {
-                HoTen: objUserInfo.HoTen,
+                HoTen: objUserInfo.HoTen ? objUserInfo.HoTen : "",
                 NgaySinh: objUserInfo.NgaySinh ? objUserInfo.NgaySinh : null,
                 SoDienThoai: objUserInfo.SoDienThoai,
                 Email: objUserInfo.Email,
