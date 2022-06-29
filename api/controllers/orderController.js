@@ -49,6 +49,28 @@ class OrderController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
+
+    /**
+     * Checkout trực tiếp không qua giỏ hàng, không cần đăng nhập
+     * Method POST
+     * /order/checkout-v2 
+     */
+    checkoutV2 = async (req, res) => {
+        const data = req.body
+        if(!data) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+        try {
+            const checkoutResponse = await OrderModel.checkoutV2(data)
+
+            if(!checkoutResponse) {
+                throw new Error('Không thể sử lý')
+            }
+            return res.json(checkoutResponse)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
 }
 
 module.exports = new OrderController()
