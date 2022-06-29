@@ -31,6 +31,7 @@ const handelSubmit=async(event)=>{
      }
      event.preventDefault()
      const response= await CustommerAPI.NewPassword(account)
+     console.log(response)
      setNotify(() => {
         if(response) {
             if(!response.success) {

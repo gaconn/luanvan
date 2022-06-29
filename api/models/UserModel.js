@@ -4,18 +4,13 @@ const ResponseUtil = require("../utils/ResponseUtil")
 const bcrypt = require("bcrypt")
 const { buildFieldQuery } = require("../utils/DBUtil")
 const jwt = require("jsonwebtoken")
-const mailConfig = require('../models/mailConfig')
+const mailConfig = require('../utils/mailConfig/mailConfig')
 class UserModel {
-<<<<<<< HEAD
-    add = async (objUserInfo) => {
-        if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
-=======
     constructor() { 
         this.table = 'taikhoan'
     }
     add = async(objUserInfo) => {
         if(GeneralUtil.checkIsEmptyObject(objUserInfo)) {
->>>>>>> 9246c0e031e7c5dc397546ae3d01fb76eb7bbfd6
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
@@ -90,15 +85,6 @@ class UserModel {
 
     }
 
-<<<<<<< HEAD
-    get = async () => {
-        try {
-            console.log('model');
-            const obj = { Ten: "Gầm máy", DaXoa: 0, ThoiGianTao: Math.floor(new Date().getTime() / 1000) }
-            const fields = buildFieldQuery(obj)
-            const result = await dbconnect.query(`select * from taikhoan where Email = ?`, "quan12xz@gmail.com")
-            console.log(result);
-=======
     get = async(objCondition) => {
         if(!objCondition || Object.keys(objCondition).length === 0 ){
             return ResponseUtil.response(false, 'Tham số không hợp lệ')
@@ -130,7 +116,6 @@ class UserModel {
             }
 
             return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
->>>>>>> 9246c0e031e7c5dc397546ae3d01fb76eb7bbfd6
         } catch (error) {
             console.log(error);
         }
@@ -182,8 +167,6 @@ class UserModel {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
     }
-<<<<<<< HEAD
-=======
 
     _buildWhereQuery = (objCondition) => {
         var strWhere = ' where 1=1 '
@@ -208,7 +191,6 @@ class UserModel {
         }
         return strWhere
     }
->>>>>>> 9246c0e031e7c5dc397546ae3d01fb76eb7bbfd6
     //Custommer
     addCustomer = async (objUserInfo) => {
         if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
@@ -326,7 +308,7 @@ class UserModel {
     //resetpassword
     resetPassword = async (data, MatKhauRS) => {
         if (GeneralUtil.checkIsEmptyObject(data)) {
-            console.log(data)
+           
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
@@ -345,24 +327,26 @@ class UserModel {
         try {
             const hashPassword = GeneralUtil.hashPassword(MatKhauRS)
             //find by mail
-            const dataVerify = { Email: data.Email, MatKhau: hashPassword }
+            const dataVerify = { Email: data.Email, ThoiGian:new Date(),MatKhau: hashPassword }
             const queryfind = "select * from taikhoan where Email = ? and IDCapDoTaiKhoan = 4 limit 1 "
             const responsefind = await dbconnect.query(queryfind, dataVerify.Email)
+         
+            if(responsefind[0].length==0){
+                return ResponseUtil.response(false, "Tài khoản chưa đăng ký",[],[])
+            }
             if (responsefind[0].length > 0) {
-                //updatePassword
-                const responseVerify = await dbconnect.query("UPDATE taikhoan SET ThoiGianCapNhat = ? WHERE Email = ? and IDCapDoTaiKhoan = 4", [new Date(), dataVerify.Email])
-                if (responseVerify[0].affectedRows > 0) {
-                    const query = "UPDATE taikhoan SET MatKhau = ?  WHERE Email = ? and IDCapDoTaiKhoan = 4"
-                    const response = await dbconnect.query(query, [dataVerify.MatKhau, dataVerify.Email])
+              {
+                    const query = "UPDATE taikhoan SET MatKhau = ?,ThoiGianCapNhat=?  WHERE Email = ? and IDCapDoTaiKhoan = 4"
+                    const response = await dbconnect.query(query, [dataVerify.MatKhau,dataVerify.ThoiGian, dataVerify.Email])
                     if (response[0].affectedRows > 0) {
                         const token = jwt.sign({Email: data.Email}, mailConfig.JSON, {expiresIn: '24h'})
                         return ResponseUtil.response(true, "Mật khẩu mới đã được gửi đến mail", [{...dataVerify,token}]);
                     }
                     return ResponseUtil.response(false, "Lỗi hệ thống cập nhật mật khẩu")
                 }
-                return ResponseUtil.response(false, "Lỗi hệ thống cập nhật thời gian")
+             
             }
-            return ResponseUtil.response(false, "Tài khoản chưa đăng ký")
+          
 
         } catch (error) {
             return ResponseUtil.response(false, "Lỗi hệ thống, Vui lòng liên hệ chăm sóc khách hàng.", [], [error.message])
