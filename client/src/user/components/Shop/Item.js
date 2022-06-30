@@ -1,20 +1,19 @@
 import ListGroup from 'react-bootstrap/ListGroup';
-import Accordion from 'react-bootstrap/Accordion';
-const ItemCate = ({category}) => {
-    console.log(category)
+
+
+const ItemCate = ({ categoryParent=[]}) => {
+  
     return (
-    <>
-        <Accordion>
-            <Accordion.Item eventKey="1">
-                <Accordion.Header >Hello</Accordion.Header>
-                <Accordion.Body>
-                    <ListGroup>
-                        <ListGroup.Item action href=''></ListGroup.Item>
-                    </ListGroup>
-                </Accordion.Body>
-            </Accordion.Item>
-        </Accordion>
-    </>);
+        <>
+        {
+            categoryParent.map((categories,index)=>(
+                <ListGroup key={index}>
+                <ListGroup.Item action href=''>{categories.Ten}</ListGroup.Item>
+            </ListGroup>
+            ))
+        }
+           
+        </>);
 }
 
 export default ItemCate;
