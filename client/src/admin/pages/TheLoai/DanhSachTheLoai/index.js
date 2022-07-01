@@ -127,6 +127,7 @@ const DanhSachTheLoai = () => {
         setLoading(false);
     }
 
+    console.log(category);
     const updateCateChangeHandler = (e) => {
         setCurrentCate((old)=> ({...old, [e.target.name]: e.target.value}))
     }

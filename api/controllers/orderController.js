@@ -71,6 +71,20 @@ class OrderController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
+
+    /**
+     * Checkout qua giỏ hàng khi đã đăng nhập
+     * Method: POST
+     * url: order/checkout-v3
+     */
+
+    checkoutV3 = async (req, res) => {
+        const data = req.body
+        const emailUser = req.emailUser
+        if(!emailUser) {
+            return res.json(ResponseUtil.response(false, 'Vui lòng đăng nhập để sử dụng'))
+        }
+    }
 }
 
 module.exports = new OrderController()
