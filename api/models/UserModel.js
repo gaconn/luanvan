@@ -2,9 +2,9 @@ const dbconnect = require("./DBConnection")
 const GeneralUtil = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
 const bcrypt = require("bcrypt")
-const { buildFieldQuery, _buildSelect } = require("../utils/DBUtil")
+const { buildFieldQuery } = require("../utils/DBUtil")
 const jwt = require("jsonwebtoken")
-const mailConfig = require('../models/mailConfig')
+const mailConfig = require('../utils/mailConfig/mailConfig')
 class UserModel {
     constructor() { 
         this.table = 'taikhoan'
@@ -14,9 +14,9 @@ class UserModel {
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
-        if (!objUserInfo.HoTen) {
-            arrError.push("Họ tên không được để trống")
-        }
+        // if (!objUserInfo.HoTen) {
+        //     arrError.push("Họ tên không được để trống")
+        // }
         if (!objUserInfo.SoDienThoai) {
             arrError.push("Số điện thoại không được để trống")
         }
@@ -42,7 +42,7 @@ class UserModel {
             //format
             const hashedPassword = await GeneralUtil.hashPassword(objUserInfo.MatKhau)
             const objData = {
-                HoTen: objUserInfo.HoTen,
+                HoTen: objUserInfo.HoTen ? objUserInfo.HoTen : "",
                 NgaySinh: objUserInfo.NgaySinh ? objUserInfo.NgaySinh : null,
                 SoDienThoai: objUserInfo.SoDienThoai,
                 Email: objUserInfo.Email,
@@ -117,9 +117,10 @@ class UserModel {
 
             return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
         } catch (error) {
-            return ResponseUtil.response(false, error.message)
+            console.log(error);
         }
     }
+
     login = async (objDataUser) => {
         if (GeneralUtil.checkIsEmptyObject(objDataUser)) {
             return ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ')
@@ -307,7 +308,7 @@ class UserModel {
     //resetpassword
     resetPassword = async (data, MatKhauRS) => {
         if (GeneralUtil.checkIsEmptyObject(data)) {
-            console.log(data)
+           
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
@@ -326,24 +327,26 @@ class UserModel {
         try {
             const hashPassword = GeneralUtil.hashPassword(MatKhauRS)
             //find by mail
-            const dataVerify = { Email: data.Email, MatKhau: hashPassword }
+            const dataVerify = { Email: data.Email, ThoiGian:new Date(),MatKhau: hashPassword }
             const queryfind = "select * from taikhoan where Email = ? and IDCapDoTaiKhoan = 4 limit 1 "
             const responsefind = await dbconnect.query(queryfind, dataVerify.Email)
+         
+            if(responsefind[0].length==0){
+                return ResponseUtil.response(false, "Tài khoản chưa đăng ký",[],[])
+            }
             if (responsefind[0].length > 0) {
-                //updatePassword
-                const responseVerify = await dbconnect.query("UPDATE taikhoan SET ThoiGianCapNhat = ? WHERE Email = ? and IDCapDoTaiKhoan = 4", [new Date(), dataVerify.Email])
-                if (responseVerify[0].affectedRows > 0) {
-                    const query = "UPDATE taikhoan SET MatKhau = ?  WHERE Email = ? and IDCapDoTaiKhoan = 4"
-                    const response = await dbconnect.query(query, [dataVerify.MatKhau, dataVerify.Email])
+              {
+                    const query = "UPDATE taikhoan SET MatKhau = ?,ThoiGianCapNhat=?  WHERE Email = ? and IDCapDoTaiKhoan = 4"
+                    const response = await dbconnect.query(query, [dataVerify.MatKhau,dataVerify.ThoiGian, dataVerify.Email])
                     if (response[0].affectedRows > 0) {
                         const token = jwt.sign({Email: data.Email}, mailConfig.JSON, {expiresIn: '24h'})
                         return ResponseUtil.response(true, "Mật khẩu mới đã được gửi đến mail", [{...dataVerify,token}]);
                     }
                     return ResponseUtil.response(false, "Lỗi hệ thống cập nhật mật khẩu")
                 }
-                return ResponseUtil.response(false, "Lỗi hệ thống cập nhật thời gian")
+             
             }
-            return ResponseUtil.response(false, "Tài khoản chưa đăng ký")
+          
 
         } catch (error) {
             return ResponseUtil.response(false, "Lỗi hệ thống, Vui lòng liên hệ chăm sóc khách hàng.", [], [error.message])

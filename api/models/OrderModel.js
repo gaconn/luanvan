@@ -145,6 +145,84 @@ class OrderModel {
     }
     /**
      * 
+     * @param {Object} objData {IDSanPham, SoLuong, IDPhuongThucThanhToan, Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha}
+     */
+    checkoutV2 = async (objData) => {
+        if(!objData) {
+            return ResponseUtil.response(false, 'tham số không hợp lệ')
+        }
+        const errors = []
+
+        if(!objData.IDSanPham) {
+            errors.push('Thiếu mã sản phẩm')
+        }
+        if(!objData.SoLuong) {
+            errors.push('Thiếu số lượng sản phẩm')
+        }
+        if(!objData.IDPhuongThucThanhToan) {
+            errors.push('Thiếu phương thức thanh toán')
+        }
+        if(!objData.Email) {
+            errors.push('Thiếu thông tin email')
+        }
+        if(!objData.SoDienThoai) {
+            errors.push('Thiếu số điện thoại liên lạc')
+        }
+        if(!objData.TinhThanh) {
+            errors.push('Tỉnh thành không được để trống')
+        }
+        if(!objData.QuanHuyen) {
+            errors.push('Quận huyện không được để trống')
+        }
+        if(!objData.PhuongXa) {
+            errors.push('Phường xã không được để trống')
+        }
+        if(!objData.SoNha) {
+            errors.push('Địa chỉ nhà không được để trống')
+        }
+
+        if(errors.length >0) {
+            return ResponseUtil.response(false, 'Thông tin đặt hàng không hợp lệ', [], errors)
+        }
+
+        try {
+            const objProductResponse = await ProductModel.getDetail({id: objData.IDSanPham})
+            if(!objProductResponse.success) {
+                return objProductResponse
+            }
+
+            const productDetail = objProductResponse.data
+
+            productDetail.SoLuongSanPham = objData.SoLuong
+            productDetail.PhiVanChuyen = 40000
+            const MaDonHang = uniqid('DonHang-')
+
+            const ThongTinDatHang = {
+                Email: objData.Email,
+                SoDienThoai: objData.SoDienThoai,
+                TinhThanh: objData.TinhThanh,
+                QuanHuyen: objData.QuanHuyen,
+                PhuongXa: objData.PhuongXa,
+                SoNha: objData.SoNha
+            }
+
+            const encryptInfo = JSON.stringify(ThongTinDatHang)
+
+            const extraInfo = {
+                IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
+                MaDonHang,
+                ThongTinDatHang: encryptInfo
+            }
+
+            const resultCheckout = this._checkout({arrProduct:[productDetail], extraInfo})
+
+            return resultCheckout
+        } catch (error) {
+            
+        }
+    }
+    /**
+     * 
      * @param {object} objOrderData 
      * arrProduct = [{SoLuongSanPham: 1, PhiVanChuyen: 10000, GiaGoc}]
      * extraInfo = {IDTaiKhoan, IDPhuongThucThanhToan, PhuPhi, MaDonHang}
@@ -169,7 +247,6 @@ class OrderModel {
             }
 
             const objOrder = {
-                IDTaiKhoan: extraInfo.IDTaiKhoan,
                 IDPhuongThucThanhToan: extraInfo.IDPhuongThucThanhToan,
                 ThoiGianTao: new Date().getTime()/1000,
                 DaXoa: 0,
@@ -180,6 +257,12 @@ class OrderModel {
                 GiaVanChuyen: TongPhiVanChuyen
             }
 
+            if(extraInfo.IDTaiKhoan) {
+                objOrder.IDTaiKhoan = extraInfo.IDTaiKhoan
+            }
+            if(extraInfo.ThongTinDatHang) {
+                objOrder.ThongTinDatHang = extraInfo.ThongTinDatHang
+            }
             const responseOrder = await this.insert(objOrder)
 
             if(!responseOrder.success) {

@@ -239,18 +239,6 @@ CREATE TABLE `giatrisanpham` (
 );
 -- quanlylinhkienoto.giohang definition
 
-
-
-
-
-
-
-
-
-
-
-
-
 -- quanlylinhkienoto.vandon definition
 
 CREATE TABLE `vandon` (
