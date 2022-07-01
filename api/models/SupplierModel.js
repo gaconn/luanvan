@@ -53,7 +53,6 @@ class SupplierModel {
                 Ten: objSupplier.Ten,
                 TrangThai: 1,
                 DaXoa: 0,
-                HoatDong: 1,
                 ThoiGianTao: new Date().getTime()/1000,
             }
 
