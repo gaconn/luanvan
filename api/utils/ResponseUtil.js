@@ -13,18 +13,16 @@ class ResponseUtil{
         }
         
         for (let p = 0 ; p< parent.length ; p++) {
-            if(parent[p].children_id) {
-                var listChild = []
-                for(let i= 0 ; i < list.length ; i++) {
-                    if(list[i].id === parent[p].children_id) {
-                        listChild.push(list[i])
-                        list.splice(i, 1)
-                    }
+            var listChild = []
+            for(let i= 0 ; i < list.length ; i++) {
+                if(list[i].IDTheLoaiCha === parent[p].id) {
+                    listChild.push(list[i])
+                    //list.splice(i, 1)
                 }
-
-                var node = this.makeTree(listChild, list)
-                parent[p].listChild = node
             }
+
+            var node = this.makeTree(listChild, list)
+            parent[p].listChild = node
         }
         return parent
     }

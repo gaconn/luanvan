@@ -302,11 +302,11 @@ class ProductModel {
             strWhere += ` and ${this.table}.Ten = ${objCondition.Ten}`
         }
 
-        if(objCondition.hasOwnProperty('DaXoa') && objCondition.DaXoa) {
+        if(objCondition.hasOwnProperty('DaXoa')) {
             strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
         }
 
-        if(objCondition.hasOwnProperty('TrangThai') && objCondition.TrangThai) {
+        if(objCondition.hasOwnProperty('TrangThai')) {
             strWhere += ` and ${this.table}.TrangThai = ${objCondition.TrangThai}`
         }
         if(objCondition.hasOwnProperty('ThoiGianTao')) {
