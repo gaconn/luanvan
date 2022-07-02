@@ -32,7 +32,8 @@ class CartController {
      * url :/cart/remove-cart-item
      * params: 
      * + IDGioHang : nếu muốn xóa tất cả sản phẩm trong giỏ hàng thì chỉ truyền vào cái này thôi !
-     * + IDSanPham : truyền thêm cái này để xóa 1 sản phẩm trong giỏ hàng
+     * + IDSanPham : truyền thêm cái này để xóa 1 sản phẩm trong giỏ hàng, muốn xóa nhiều cái cùng lúc thì truyền id cách nhau bằng dấu phẩy vd (1,2,3)
+     *
      */
     removeCartItem = async (req, res) => {
         const data = req.query
