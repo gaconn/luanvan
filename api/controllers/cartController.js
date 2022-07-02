@@ -27,13 +27,59 @@ class CartController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
-
+    /**
+     * Method: delete
+     * url :/cart/remove-cart-item
+     * params: 
+     * + IDGioHang : nếu muốn xóa tất cả sản phẩm trong giỏ hàng thì chỉ truyền vào cái này thôi !
+     * + IDSanPham : truyền thêm cái này để xóa 1 sản phẩm trong giỏ hàng
+     */
     removeCartItem = async (req, res) => {
+        const data = req.query
 
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+        try {
+            const response = await CartModel.removeFromCart(data)
+
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
+        }
     }
 
-    upadteCart = async (req, res) => {
+    updateCart = async (req, res) => {
         
+    }
+    /**
+     * method: PUT
+     * url: /cart/update-cart-item
+     *  params:
+     * + IDGioHang 
+     * + IDSanPham : sản phẩm cần update
+     * + SoLuong: SoLuong sản phẩm trong giỏ hàng
+     */
+    updateCartItem = async(req, res) => {
+        const data = req.body
+
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+
+        try {
+            const response = await CartModel.updateCartItem(data)
+
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
+        }
     }
 }
 

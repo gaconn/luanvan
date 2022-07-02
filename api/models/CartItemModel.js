@@ -51,10 +51,6 @@ class CartItemModel {
 
     update = async (objData) => {
         var errors = []
-        if(!objData.id) {
-            errors.push('Thiếu id chi tiết giỏ hàng')
-        }
-
         if(!objData.IDSanPham) {
             errors.push('Thiếu thông tin sản phẩm')
         }
@@ -68,9 +64,11 @@ class CartItemModel {
                 SoLuong: objData.SoLuong,
                 ThoiGianCapNhat: new Date().getTime()/1000
             }
-            const query = `update ${this.table} set ? where ?`
 
-            const result = await DBConnection.query(query, [objValue, {id : objData.id}])
+            var strWhere = this._buildWhereQuery(objData)
+            const query = `update ${this.table} set ? ${strWhere}`
+
+            const result = await DBConnection.query(query, [objValue])
 
             if(!result && !result[0]) {
                 throw new Error('Không thể kết nối tới database')
@@ -125,9 +123,33 @@ class CartItemModel {
             return ResponseUtil.response(false, error.message)
         }
     }
+
+    remove = async (objData) => {
+        if(!objData || !objData.IDGioHang) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+
+        try {
+            const strWhere = this._buildWhereQuery(objData)
+            const query = `delete from ${this.table} ${strWhere}`
+            const result = await DBConnection.query(query)
+            if(!result || !result[0]) {
+                throw new Error('Kết nối database không thành công')
+            }
+            if(result[0].affectedRows ===0) {
+                return ResponseUtil.response(false, 'Xóa sản phẩm thất bại')
+            }
+
+            return ResponseUtil.response(true, 'Thành công', [{affectedRows:result[0].affectedRows}])
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
+        }
+    }
     _buildWhereQuery = (objData) => {
         var strWhere = ' where 1=1 '
-
+        if(objData.id) {
+            strWhere += ` and ${this.table}.id = ${objData.id}`
+        }
         if(objData.IDGioHang) {
             strWhere += ` and ${this.table}.IDGioHang = ${objData.IDGioHang}`
         }

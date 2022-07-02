@@ -210,6 +210,95 @@ class CartModel {
             return ResponseUtil.response(false, error.message)
         }
     }
+
+    removeFromCart = async (objCondition) => {
+        if(!objCondition) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+
+        const errors = []
+        if(!objCondition.IDGioHang) {
+            errors.push('Thiếu mã giỏ hàng')
+        }
+
+        if(errors.length >0) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ', [], errors)
+        }
+        try {
+            //lấy thông tin giỏ hàng
+            const cartDataResponse = await this.getCart(objCondition)
+            if(!cartDataResponse || !cartDataResponse.success || cartDataResponse.data.length === 0) {
+                return cartDataResponse
+            }
+            
+            // xóa cartItem
+            const deleteDataResponse = await CartItemModel.remove(objCondition)
+
+            if(!deleteDataResponse || !cartDataResponse.success) {
+                return ResponseUtil.response(false, 'Xóa thất bại')
+            }
+            // lấy lại thông tin cart item hiện tại
+            const dataCartItem = await CartItemModel.getListCartItem({IDGioHang: objCondition.IDGioHang})
+            var countItem = 0
+            var quantity = 0
+            if(dataCartItem && dataCartItem.data.length > 0) {
+                for (let index = 0; index < dataCartItem.data.length; index++) {
+                    countItem ++
+                    quantity += dataCartItem.data[index].SoLuong
+                }
+            }
+            // xóá thành công thì update cart
+            const updateCartData = {
+                SoLuongDanhMuc: countItem,
+                SoLuongSanPham: quantity,
+                id: objCondition.IDGioHang
+            }
+            const updateCartResponse = await this.update(updateCartData)
+            return updateCartResponse 
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
+        }
+    }
+
+    updateCartItem = async (objData) => {
+        if(!objData || !objData.IDGioHang || !objData.IDSanPham) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+
+        try {
+            //lấy thông tin giỏ hàng
+            const cartDataResponse = await this.getCart(objData)
+            if(!cartDataResponse || !cartDataResponse.success || cartDataResponse.data.length === 0) {
+                return cartDataResponse
+            }
+
+            const cartItemUpdateResponse = await CartItemModel.update(objData)
+            if(!cartItemUpdateResponse || !cartItemUpdateResponse.success) {
+                return cartItemUpdateResponse
+            }
+            // lấy lại thông tin cart item hiện tại
+            const dataCartItem = await CartItemModel.getListCartItem({IDGioHang: objData.IDGioHang})
+            var countItem = 0
+            var quantity = 0
+            if(dataCartItem && dataCartItem.data.length > 0) {
+                for (let index = 0; index < dataCartItem.data.length; index++) {
+                    countItem ++
+                    quantity += dataCartItem.data[index].SoLuong
+                }
+            }
+            // sửa thành công thì update cart
+            const updateCartData = {
+                SoLuongDanhMuc: countItem,
+                SoLuongSanPham: quantity,
+                id: objData.IDGioHang
+            }
+            const updateCartResponse = await this.update(updateCartData)
+
+            return updateCartResponse
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
+        }
+    }
     _buildWhereQuery = (condition) => {
         var strWhere = ' where 1=1 '
         if(condition.id) {
