@@ -171,7 +171,7 @@ class CategoryModel {
             if(arrDataResponse[0].affectedRows === 0) {
                 return ResponseUtil.response(false, 'Thất bại')
             }
-            return ResponseUtil.response(true, 'Xóa dữ liệu nhà cung cấp thành công')
+            return ResponseUtil.response(true, 'Xóa dữ liệu ngành hàng thành công')
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
