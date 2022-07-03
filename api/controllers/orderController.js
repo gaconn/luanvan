@@ -13,7 +13,6 @@ class OrderController {
             const objCondition = {
                 joinUser: true,
                 joinPaymentMethod: true,
-                joinProduct: true,
                 page,
             }
 

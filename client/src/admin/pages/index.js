@@ -3,6 +3,7 @@ import SideBar from "../layouts/SideBar"
 import NhaCungCap from "./NhaCungCap"
 import TheLoai from "./TheLoai"
 import SanPham from "./SanPham"
+import Order from "./Order"
 const Main = () => {
     const {manage, option} = useParams()
     var pageBody 
@@ -16,6 +17,9 @@ const Main = () => {
             break;
         case "product": 
             pageBody = <SanPham option= {option} />
+            break;
+        case "order":
+            pageBody = <Order option= {option}/>
             break;
         default:
             break;

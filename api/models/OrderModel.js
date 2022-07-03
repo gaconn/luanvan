@@ -24,7 +24,7 @@ class OrderModel {
             var strSelect = 'select 1'
             strSelect += _buildSelect(['*'], this.table) // select donhang.*
             if(objCondition.joinUser) {
-                strJoin += ` left join taikhoan on ${this.table}.IDTaiKhoan = TaiKhoan.id`
+                strJoin += ` left join taikhoan on ${this.table}.IDTaiKhoan = taikhoan.id`
                 var arrFieldUserSelect = [
                     'HoTen',
                     'NgaySinh',
@@ -35,7 +35,7 @@ class OrderModel {
                     'PhuongXa',
                     'SoNha',
                 ]
-                strSelect += _buildSelect(arrFieldUserSelect, 'TaiKhoan', 'TaiKhoan_')
+                strSelect += _buildSelect(arrFieldUserSelect, 'taikhoan', 'TaiKhoan_')
             }
 
             if(objCondition.joinPaymentMethod) {
@@ -45,23 +45,6 @@ class OrderModel {
                 ]
 
                 strSelect += _buildSelect(arrFieldPaymentMethodSelect, 'phuongthucthanhtoan', 'PhuongThucThanhToan_')
-            }
-
-            if(objCondition.joinProduct) {
-                strJoin += ` left join sanpham on ${this.table}.IDSanPham = sanpham.id`
-                var arrFieldProductSelect = [
-                    'Ten',
-                    'HinhAnh',
-                    'XuatXu',
-                    'MauSac',
-                    'KichThuoc',
-                    'CanNang',
-                    'MoTa',
-                    'GiaGoc',
-                    'IDTheLoai',
-                    'IDNhaCungCap'
-                ]
-                strSelect += _buildSelect(arrFieldProductSelect, 'sanpham', 'SanPham_')
             }
             
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
