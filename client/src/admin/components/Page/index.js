@@ -4,13 +4,7 @@ import { Spinner, Pagination } from "react-bootstrap"
 
 const Page = ({page, onClickPage}) => {
 
-    if(!page || !page.now || !page.rowCount) {
-        return (
-            <div className="d-flex justify-content-center">
-                <Spinner animation="grow" />
-            </div>
-        )
-    }
+
     return (
         <Pagination className="justify-content-center">
             {
