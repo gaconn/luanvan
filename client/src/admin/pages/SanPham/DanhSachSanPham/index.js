@@ -155,13 +155,7 @@ const DanhSachSanPham = () => {
                                     <tr key={index}>
                                         <td>{item.id}</td>
                                         <td>{item.Ten}</td>
-<<<<<<< HEAD
                                         <td><img src={process.env.REACT_APP_API_IMAGE+JSON.parse(item.HinhAnh)}></img></td>
-=======
-                                        <td>{item.HinhAnh && JSON.parse(item.HinhAnh).map((img, index) => {
-                                            return <img key={index} width="100" height={40} alt="product_image" src={`${process.env.REACT_APP_API_HOST_URL}/public/images/${img}`} />
-                                        })}</td>
->>>>>>> 5edf758704870828666e9b935535919c3f23153f
                                         <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
                                         <td>{item.SoLuong}</td>
                                         <td>{item.NhaCungCap_Ten}</td>
