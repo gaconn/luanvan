@@ -114,8 +114,8 @@ class CategoryController {
     //GET /category/get-tree?id=?
     getTree = async (req, res) => {
         try {
-            const resParent = await CategoryModel.get({ parent: true, DaXoa: 0 })
-            const resAll = await CategoryModel.get({ DaXoa: 0 })
+            const resParent = await CategoryModel.get({ parent: true, DaXoa: 0 , joinChild: true})
+            const resAll = await CategoryModel.get({ DaXoa: 0, joinChild: true})
 
             if (!resParent || !resParent.success || !resAll || !resAll.success) {
                 throw new Error('Không thể truy xuất database')
@@ -125,7 +125,12 @@ class CategoryController {
                 throw new Error('Không có dữ liệu')
             }
 
-            const result = ResponseUtil.makeTree(resParent.data.data, resAll.data.data)
+            var dataParent = resParent.data.data
+            var dataItem = resAll.data.data
+
+            dataParent = this._makeChildID(dataParent)
+            dataItem = this._makeChildID(dataItem)
+            const result = ResponseUtil.makeTree(dataParent, dataItem)
 
             if (!result) {
                 return res.json(ResponseUtil.response(false, 'Lỗi xử lý'))
@@ -142,6 +147,29 @@ class CategoryController {
         } catch (error) {
             return res.json(ResponseUtil.response(false, error))
         }
+    }
+    _makeChildID = (dataParent) => {
+        var parentID = -1
+        for (let index = 0; index < dataParent.length; index++) {
+            const objTmp = {}
+            if(dataParent[index].id === parentID) {
+                dataParent.splice(index,1)
+                index --
+                continue
+            }
+            parentID = dataParent[index].id
+            if(dataParent[index].children_id) {
+                objTmp[dataParent[index].children_id] = dataParent[index].children_id
+            }
+            for (let i = index +1; i < dataParent.length; i++) {
+                if(dataParent[index].id === dataParent[i].id) {
+                    objTmp[dataParent[i].children_id] = dataParent[i].children_id
+                    
+                }
+            }
+            dataParent[index].children_id = objTmp
+        }
+        return dataParent
     }
 }
 
