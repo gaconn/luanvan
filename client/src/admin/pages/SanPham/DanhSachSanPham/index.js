@@ -155,7 +155,9 @@ const DanhSachSanPham = () => {
                                     <tr key={index}>
                                         <td>{item.id}</td>
                                         <td>{item.Ten}</td>
-                                        <td></td>
+                                        <td>{item.HinhAnh && JSON.parse(item.HinhAnh).map((img, index) => {
+                                            return <img key={index} width="100" height={40} alt="product_image" src={`${process.env.REACT_APP_API_HOST_URL}/public/images/${img}`} />
+                                        })}</td>
                                         <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
                                         <td>{item.SoLuong}</td>
                                         <td>{item.NhaCungCap_Ten}</td>

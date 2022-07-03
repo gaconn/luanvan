@@ -71,6 +71,39 @@ class OrderController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
+
+    /**
+     * Checkout qua giỏ hàng khi chưa đăng nhập
+     * Method: POST
+     * url: order/checkout-v3
+     * params: 
+     * + Thông tin => Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha
+     * + IDGioHang
+     * + IDSanPham : có thể truyền 1 hoặc nhiều vd 1,2,3
+     * + IDPhuongThucThanhToan: cái này tự thêm database trước, id = 1 là thanh toán khi nhận hàng, id=2 là thanh toán qua momo.
+     */
+
+    checkoutV3 = async (req, res) => {
+        const data = req.body
+        // const emailUser = req.emailUser
+        // if(!emailUser) {
+        //     return res.json(ResponseUtil.response(false, 'Vui lòng đăng nhập để sử dụng'))
+        // }
+
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+
+        try {
+            const response = await OrderModel.checkoutV3(data)
+            if(!response) {
+                throw new Error('Lỗi xử lý')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(false, error.message)
+        }
+    }
 }
 
 module.exports = new OrderController()

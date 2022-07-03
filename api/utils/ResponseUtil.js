@@ -21,10 +21,10 @@ class ResponseUtil{
                         list.splice(i, 1)
                     }
                 }
-
-                var node = this.makeTree(listChild, list)
-                parent[p].listChild = node
             }
+
+            var node = this.makeTree(listChild, list)
+            parent[p].listChild = node
         }
         return parent
     }
