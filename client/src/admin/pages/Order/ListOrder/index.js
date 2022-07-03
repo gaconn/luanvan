@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom"
 import { LinkOrderAction } from "../../../configs/define"
 import Loading from "../../../components/Loading";
 import orderAPI from "../../../services/API/orderAPI";
+import { StatusOrder } from "../../../services/utils/General";
 const ListOrder = () => {
     const [order, setOrder] = useState([])
     const [notify, setNotify] = useState({show: false, message: "", success: false})
@@ -19,7 +20,12 @@ const ListOrder = () => {
             setLoading(true)
             const orderResponse = await orderAPI.getAll(page.now)
             console.log(orderResponse);
-            setOrder(orderResponse.data)
+            setOrder(() => {
+                if(orderResponse && orderResponse.success && orderResponse.data && orderResponse.data[0]) {
+                    return orderResponse.data[0]
+                }
+                return []
+            })
             setNotify((notify)=> {
                 if(!orderResponse.success) {
                     return {show: true, message: orderResponse.message, success: orderResponse.success}
@@ -27,11 +33,11 @@ const ListOrder = () => {
                 return notify
             })
             setPage((page) => {
-                if(orderResponse.success) {
-                    if(orderResponse.data.rowCount) {
-                        let next = (page.now) * 10 < orderResponse.data.rowCount ? page.now+1: null
+                if(orderResponse.success && orderResponse.data && orderResponse.data[0]) {
+                    if(orderResponse.data[0].rowCount) {
+                        let next = (page.now) * 10 < orderResponse.data[0].rowCount ? page.now+1: null
                         let prev = page.now > 1 ? page.now -1 : null
-                        return {...page,rowCount: orderResponse.data.rowCount, next, prev}       
+                        return {...page,rowCount: orderResponse.data[0].rowCount, next, prev}       
                     }
                 }
                 return {...page}
@@ -108,23 +114,38 @@ const ListOrder = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Tên</th>
+                            <th>Thông tin đặt hàng</th>
                             <th>Trạng thái</th>
-                            <th>Số lượng sản phẩm</th>
+                            <th>Thời gian đặt hàng</th>
+                            <th>Giá trị đơn hàng</th>
+                            <th>Khuyến mãi</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            order && order.data && order.data.map && order.data.map((item, index)=> {
+                            order && order.map((item, index)=> {
+                                if(!item.IDTaiKhoan && item.ThongTinDatHang) {
+                                    const dataInfo = JSON.parse(item.ThongTinDatHang)
+
+                                    if(dataInfo) {
+                                        item = {...item, ...dataInfo}
+                                    }
+                                }
+                                var createdDate = new Date(item.ThoiGianTao * 1000)
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
-                                        <td>{item.Ten}</td>
-                                        <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
-                                        <td>{item.SoLuongSanPham}</td>
-                                        <td className="d-flex">
-                                            <span className="order-item-icon" onClick={navigate(`./1`)}><AiOutlineFileSearch/></span>
+                                        <td>
+                                            <span>{item.TaiKhoan_Email ? item.TaiKhoan_Email : item.Email}</span> <br/>
+                                            <span>{item.TaiKhoan_SoDienThoai ? item.TaiKhoan_SoDienThoai : item.SoDienThoai}</span>
+                                        </td>
+                                        <td className={"text-danger"}>{StatusOrder[item.TrangThai]}</td>
+                                        <td>{`${createdDate.getDate()} / ${createdDate.getMonth()} / ${createdDate.getFullYear()}`}</td>
+                                        <td>{item.TongGiaTriDonHang}</td>
+                                        <td style={{color: "red"}}>{item.MaChietKhau ? item.MaChietKhau : "Không"}</td>
+                                        <td className="d-flex" style={{height: "100%"}}>
+                                            <span className="order-item-icon" onClick={()=>navigate(`./${item.id}`)}><AiOutlineFileSearch/></span>
                                         </td>
                                     </tr>
                                 )
