@@ -18,7 +18,7 @@ const ListOrder = () => {
     useEffect(()=> {
         const fetchOrder = async() => {
             setLoading(true)
-            const orderResponse = await orderAPI.getAll(page.now)
+            const orderResponse = await orderAPI.getAll({page: page.now})
             console.log(orderResponse);
             setOrder(() => {
                 if(orderResponse && orderResponse.success && orderResponse.data && orderResponse.data[0]) {
@@ -33,11 +33,11 @@ const ListOrder = () => {
                 return notify
             })
             setPage((page) => {
-                if(orderResponse.success && orderResponse.data && orderResponse.data[0]) {
-                    if(orderResponse.data[0].rowCount) {
-                        let next = (page.now) * 10 < orderResponse.data[0].rowCount ? page.now+1: null
+                if(orderResponse.success && orderResponse.data && orderResponse.data[1]) {
+                    if(orderResponse.data[1].rowCount) {
+                        let next = (page.now) * 10 < orderResponse.data[1].rowCount ? page.now+1: null
                         let prev = page.now > 1 ? page.now -1 : null
-                        return {...page,rowCount: orderResponse.data[0].rowCount, next, prev}       
+                        return {...page,rowCount: orderResponse.data[1].rowCount, next, prev}       
                     }
                 }
                 return {...page}
@@ -125,27 +125,21 @@ const ListOrder = () => {
                     <tbody>
                         {
                             order && order.map((item, index)=> {
-                                if(!item.IDTaiKhoan && item.ThongTinDatHang) {
-                                    const dataInfo = JSON.parse(item.ThongTinDatHang)
-
-                                    if(dataInfo) {
-                                        item = {...item, ...dataInfo}
-                                    }
-                                }
+                                
                                 var createdDate = new Date(item.ThoiGianTao * 1000)
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
                                         <td>
-                                            <span>{item.TaiKhoan_Email ? item.TaiKhoan_Email : item.Email}</span> <br/>
-                                            <span>{item.TaiKhoan_SoDienThoai ? item.TaiKhoan_SoDienThoai : item.SoDienThoai}</span>
+                                            <span>{item.ThongTinDatHang && item.ThongTinDatHang.Email ? item.ThongTinDatHang.Email : item.TaiKhoan_Email}</span> <br/>
+                                            <span>{item.ThongTinDatHang && item.ThongTinDatHang.SoDienThoai ? item.ThongTinDatHang.SoDienThoai : item.TaiKhoan_SoDienThoai}</span>
                                         </td>
                                         <td className={"text-danger"}>{StatusOrder[item.TrangThai]}</td>
                                         <td>{`${createdDate.getDate()} / ${createdDate.getMonth()} / ${createdDate.getFullYear()}`}</td>
                                         <td>{item.TongGiaTriDonHang}</td>
                                         <td style={{color: "red"}}>{item.MaChietKhau ? item.MaChietKhau : "Không"}</td>
                                         <td className="d-flex" style={{height: "100%"}}>
-                                            <span className="order-item-icon" onClick={()=>navigate(`./${item.id}`)}><AiOutlineFileSearch/></span>
+                                            <span className="order-item-icon" onClick={()=>navigate(`../detail?${item.id}`)}><AiOutlineFileSearch/></span>
                                         </td>
                                     </tr>
                                 )
