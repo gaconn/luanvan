@@ -1,18 +1,17 @@
 import ListGroup from 'react-bootstrap/ListGroup';
 
 
-const ItemCate = ({ categoryParent=[]}) => {
-  
+const ItemCate = ({ categoryParent = [],handleInfo }) => {
     return (
         <>
-        {
-            categoryParent.map((categories,index)=>(
-                <ListGroup key={index}>
-                <ListGroup.Item action href=''>{categories.Ten}</ListGroup.Item>
-            </ListGroup>
-            ))
-        }
-           
+            {
+                categoryParent.map((categories, index) => (
+                    <ListGroup key={index}>
+                        <ListGroup.Item action onClick={()=>handleInfo(categories)} href=''>{categories.Ten}</ListGroup.Item>
+                    </ListGroup>
+                ))
+            }
+
         </>);
 }
 

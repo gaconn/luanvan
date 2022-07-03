@@ -317,6 +317,7 @@ class ProductModel {
         }
         return strWhere
     }
+
 }
 
 module.exports = new ProductModel()

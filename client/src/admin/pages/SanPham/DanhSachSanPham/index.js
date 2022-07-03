@@ -155,7 +155,7 @@ const DanhSachSanPham = () => {
                                     <tr key={index}>
                                         <td>{item.id}</td>
                                         <td>{item.Ten}</td>
-                                        <td></td>
+                                        <td><img src={process.env.REACT_APP_API_IMAGE+JSON.parse(item.HinhAnh)}></img></td>
                                         <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
                                         <td>{item.SoLuong}</td>
                                         <td>{item.NhaCungCap_Ten}</td>

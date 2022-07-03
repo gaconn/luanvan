@@ -11,7 +11,6 @@ class ResponseUtil{
         if(!list || list.length === 0) {
             return null
         }
-        
         for (let p = 0 ; p< parent.length ; p++) {
             if(parent[p].children_id) {
                 var listChild = []
@@ -21,7 +20,6 @@ class ResponseUtil{
                         list.splice(i, 1)
                     }
                 }
-
                 var node = this.makeTree(listChild, list)
                 parent[p].listChild = node
             }

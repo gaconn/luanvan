@@ -1,7 +1,6 @@
 const CategoryModel = require("../models/CategoryModel")
 const { checkIsEmptyObject } = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
-
 class CategoryController {
     //method: GET
     //url: /category/get-all
@@ -132,13 +131,6 @@ class CategoryController {
             }
 
             return res.json(ResponseUtil.response(true, 'Thành công', result))
-        } catch (error) {
-            return res.json(ResponseUtil.response(false, error))
-        }
-    }
-    GetItemCategory = async (res, req) => {
-        try {
-
         } catch (error) {
             return res.json(ResponseUtil.response(false, error))
         }
