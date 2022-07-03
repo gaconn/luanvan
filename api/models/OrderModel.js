@@ -5,6 +5,8 @@ const OrderDetailModel = require("./OrderDetailModel")
 const ProductModel = require("./ProductModel")
 const UserModel = require("./UserModel")
 const uniqid = require('uniqid')
+const CartModel = require("./CartModel")
+const CartItemModel = require("./CartItemModel")
 
 class OrderModel {
     constructor() {
@@ -22,7 +24,7 @@ class OrderModel {
             var strSelect = 'select 1'
             strSelect += _buildSelect(['*'], this.table) // select donhang.*
             if(objCondition.joinUser) {
-                strJoin += ` left join taikhoan on ${this.table}.IDTaiKhoan = TaiKhoan.id`
+                strJoin += ` left join taikhoan on ${this.table}.IDTaiKhoan = taikhoan.id`
                 var arrFieldUserSelect = [
                     'HoTen',
                     'NgaySinh',
@@ -33,7 +35,7 @@ class OrderModel {
                     'PhuongXa',
                     'SoNha',
                 ]
-                strSelect += _buildSelect(arrFieldUserSelect, 'TaiKhoan', 'TaiKhoan_')
+                strSelect += _buildSelect(arrFieldUserSelect, 'taikhoan', 'TaiKhoan_')
             }
 
             if(objCondition.joinPaymentMethod) {
@@ -43,23 +45,6 @@ class OrderModel {
                 ]
 
                 strSelect += _buildSelect(arrFieldPaymentMethodSelect, 'phuongthucthanhtoan', 'PhuongThucThanhToan_')
-            }
-
-            if(objCondition.joinProduct) {
-                strJoin += ` left join sanpham on ${this.table}.IDSanPham = sanpham.id`
-                var arrFieldProductSelect = [
-                    'Ten',
-                    'HinhAnh',
-                    'XuatXu',
-                    'MauSac',
-                    'KichThuoc',
-                    'CanNang',
-                    'MoTa',
-                    'GiaGoc',
-                    'IDTheLoai',
-                    'IDNhaCungCap'
-                ]
-                strSelect += _buildSelect(arrFieldProductSelect, 'sanpham', 'SanPham_')
             }
             
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
@@ -233,19 +218,24 @@ class OrderModel {
             var TongGiaTriDonHang = 0
             var TongPhiVanChuyen = 0
             var arrErrors = [] //Trả về các sản phẩm thêm thất bại
-
+            var productCount = 0
             for (let index = 0; index < arrProduct.length; index++) {
                 var objDetailProduct = arrProduct[index]
                 if(objDetailProduct.SoLuong < objDetailProduct.SoLuongSanPham) {
                     arrErrors.push(`Hết Hàng ::${objDetailProduct.id}`)
+                    arrProduct.splice(index, 1) // xóa khỏi danh sách mua hàng
                     continue
                 }
                 var itemPrice = objDetailProduct.GiaGoc * objDetailProduct.SoLuongSanPham + objDetailProduct.PhiVanChuyen
                 TongGiaTriDonHang += itemPrice
                 TongPhiVanChuyen += arrProduct[index].PhiVanChuyen
                 arrProduct[index].ItemPrice = itemPrice
+                productCount ++
             }
 
+            if(productCount === 0) {
+                throw new Error('Không có sản phẩm nào có thể thanh toán được.')
+            }
             const objOrder = {
                 IDPhuongThucThanhToan: extraInfo.IDPhuongThucThanhToan,
                 ThoiGianTao: new Date().getTime()/1000,
@@ -330,6 +320,112 @@ class OrderModel {
         }
     }
 
+    /**
+     * checkout qua giỏ hàng khi chưa đăng nhập
+     * @param {Ojbect} objData 
+     * 
+     */
+    checkoutV3 = async (objData) => {
+        if(!objData) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+
+        const errors = []
+
+        if(!objData.IDGioHang) {
+            errors.push('Thiếu thông tin giỏ hàng')
+        }
+        if(!objData.IDPhuongThucThanhToan) {
+            errors.push('Thiếu phương thức thanh toán')
+        }
+        if(!objData.IDSanPham) {
+            errors.push('Thiếu thông tin sản phẩm cần thanh toán')
+        }
+        if(!objData.Email || !objData.SoDienThoai || !objData.TinhThanh || !objData.QuanHuyen || !objData.PhuongXa || !objData.SoNha) {
+            errors.push('Thiếu thông tin khách hàng')
+        }
+
+        if(errors.length >0) {
+            return ResponseUtil.response(false, 'Thiếu thông tin cần thiết', [], errors)
+        }
+
+        try {
+            //lấy ra cart và cartItem
+            const dataCartResponse = await CartModel.getCart({id: objData.IDGioHang})
+            const dataCartItemResponse = await CartItemModel.getListCartItem({IDGioHang: objData.IDGioHang, IDSanPham: objData.IDSanPham})
+
+            if(!dataCartResponse.success || dataCartResponse.data.length === 0 || !dataCartItemResponse.success || dataCartItemResponse.data.length === 0) {
+                return ResponseUtil.response(false, 'Lấy thông tin giỏ hàng thất bại, hoặc không có sản phẩm nào trong giỏ hàng')
+            }
+            // Lấy thông tin tất cả sản phẩm
+            const dataProductResponse = await ProductModel.get({id: objData.IDSanPham})
+
+            if(!dataProductResponse || !dataProductResponse.success || !dataCartItemResponse.data.length === 0) {
+                return ResponseUtil.response(false, 'Không lấy được thông tin sản phẩm')
+            }
+
+            const arrProduct = dataProductResponse.data.data
+            const arrCartItem= dataCartItemResponse.data
+
+            // lặp qua tất cả sản phẩm để gắn thêm tham số cần thiết cho tính toán
+            for (let index = 0; index < arrProduct.length; index++) {
+                for (let indexCartItem = 0; indexCartItem < arrCartItem.length; indexCartItem++) {
+                    if(arrProduct[index].id === arrCartItem[index].IDSanPham) {
+                        arrProduct[index].SoLuongSanPham = arrCartItem[index].SoLuong
+                        arrProduct[index].PhiVanChuyen = 40000 
+                    }
+                    
+                }
+            }
+
+            // thông tin đăt hàng
+            const MaDonHang = uniqid('DonHang-')
+            const ThongTinDatHang = {
+                Email: objData.Email,
+                SoDienThoai: objData.SoDienThoai,
+                TinhThanh: objData.TinhThanh,
+                QuanHuyen: objData.QuanHuyen,
+                PhuongXa: objData.PhuongXa,
+                SoNha: objData.SoNha
+            }
+            const encryptInfo = JSON.stringify(ThongTinDatHang)
+            const extraInfo = {
+                IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
+                MaDonHang,
+                ThongTinDatHang: encryptInfo
+            }
+
+            const resultCheckout =await this._checkout({arrProduct: arrProduct, extraInfo})
+
+            //thêm thành công thì xóa những sản phẩm vừa đặt hàng thành công, giữ lại những sản phẩm thất bại
+
+            if(resultCheckout.success) {
+                const arrListIDSanPham = objData.IDSanPham.split(',') 
+                if(resultCheckout.error.length > 0) {
+                    const arrListIDSanPhamFail = []
+                    for (let index = 0; index < resultCheckout.error.length; index++) {
+                        let strIDSanPham = resultCheckout.error[index].split('::')[1]
+                        arrListIDSanPhamFail.push(strIDSanPham)
+                    }
+
+                    for (let index = 0; index < arrListIDSanPham.length; index++) {
+                        for (let indexFail = 0; indexFail < arrListIDSanPhamFail.length; indexFail++) {
+                            if(arrListIDSanPham[index]/1 === arrListIDSanPhamFail[index]/1) {
+                                arrListIDSanPham.splice(index, 1)
+                            }
+                        }
+                    }
+                }
+                const listID = arrListIDSanPham.join(',')
+                if(listID) {
+                    const removeCartItemResponse = await CartModel.removeFromCart({IDSanPham: listID, IDGioHang: objData.IDGioHang})
+                }
+            }
+            return resultCheckout
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
+        }
+    }
     insert = async(objOrder) => {
         try {
             const strField = buildFieldQuery(objOrder)

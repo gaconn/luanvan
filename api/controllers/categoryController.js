@@ -113,8 +113,8 @@ class CategoryController {
     //GET /category/get-tree?id=?
     getTree = async (req, res) => {
         try {
-            const resParent = await CategoryModel.get({ parent: true, DaXoa: 0 })
-            const resAll = await CategoryModel.get({ DaXoa: 0 })
+            const resParent = await CategoryModel.get({ parent: true, DaXoa: 0 , joinChild: true})
+            const resAll = await CategoryModel.get({ DaXoa: 0, joinChild: true})
 
             if (!resParent || !resParent.success || !resAll || !resAll.success) {
                 throw new Error('Không thể truy xuất database')
@@ -124,7 +124,12 @@ class CategoryController {
                 throw new Error('Không có dữ liệu')
             }
 
-            const result = ResponseUtil.makeTree(resParent.data.data, resAll.data.data)
+            var dataParent = resParent.data.data
+            var dataItem = resAll.data.data
+
+            dataParent = this._makeChildID(dataParent)
+            dataItem = this._makeChildID(dataItem)
+            const result = ResponseUtil.makeTree(dataParent, dataItem)
 
             if (!result) {
                 return res.json(ResponseUtil.response(false, 'Lỗi xử lý'))

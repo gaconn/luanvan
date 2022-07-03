@@ -27,6 +27,22 @@ export const Content = styled.div`
         position: sticky;
         top: 0;
         left: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        ::-webkit-scrollbar{
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #35404d;
+
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF6C60;
+        }
         .category-list{
             padding: 0 0 0 10px;
             margin: 0;

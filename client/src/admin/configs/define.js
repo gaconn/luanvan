@@ -3,7 +3,8 @@ const FIELD_USER_NAME = "USER_NAME"
 export const LinkPage = {
     supplier : "/manage/supplier",
     category : "/manage/category",
-    product : "/manage/product"
+    product : "/manage/product",
+    order: "/manage/order"
 }
 export const LinkSupplierAction = {
     supplier_add:LinkPage.supplier + "/add",
@@ -24,4 +25,8 @@ export const LinkProductAction = {
     product_list:LinkPage.product + "/list",
     product_update:LinkPage.product + "/update",
     product_delete:LinkPage.product + "/delete",
+}
+
+export const LinkOrderAction = {
+    order_list: LinkPage.order + '/list'
 }

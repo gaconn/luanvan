@@ -2,6 +2,8 @@ import { Accordion } from "react-bootstrap"
 import { AiOutlinePlus } from "react-icons/ai"
 import { BsCardChecklist } from "react-icons/bs"
 import { GiBuyCard } from "react-icons/gi"
+import { Link } from "react-router-dom"
+import { LinkOrderAction } from "../../../configs/define"
 import IconTagToggle from "../IconTagToggle"
 import ListTagToggle from "../ListTagToggle"
 import { Item, List } from "../SideBar.style"
@@ -18,10 +20,10 @@ const quanLyDonHang = () => {
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkOrderAction.order_list} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><BsCardChecklist /></span>
                                 <span className="side-bar-item-label">Danh sách đơn hàng</span>   
-                            </div>
+                            </Link>
                         </Item>
                     </List>
                 </div>

@@ -78,6 +78,8 @@ export const Item = styled.li`
     }
     .side-bar-item-label{
         flex-grow: 1;
+        width: 190px;
+        word-wrap: break-word;
         a {
             text-decoration: none;
             color: inherit;

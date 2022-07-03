@@ -17,7 +17,7 @@ class OrderModel {
         try {
             var strWhere = this._buildWhere(objCondition, this.table)
             var strJoin = ''
-            var strSelect = 'select'
+            var strSelect = 'select 1'
             strSelect += _buildSelect(['*'], this.table) // select donhang.*
 
             if(objCondition.joinProduct) {
@@ -110,6 +110,7 @@ class OrderModel {
         if(objCondition.hasOwnProperty("TrangThai")) {
             strWhere += ` and ${table}.TrangThai = ${objCondition.TrangThai}`
         }
+        return strWhere
     }
 }
 

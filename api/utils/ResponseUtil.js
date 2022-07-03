@@ -15,7 +15,7 @@ class ResponseUtil{
             if(parent[p].children_id) {
                 var listChild = []
                 for(let i= 0 ; i < list.length ; i++) {
-                    if(list[i].id === parent[p].children_id) {
+                    if(list[i].id === parent[p].children_id[list[i].id]) {
                         listChild.push(list[i])
                         list.splice(i, 1)
                     }
@@ -23,6 +23,8 @@ class ResponseUtil{
                 var node = this.makeTree(listChild, list)
                 parent[p].listChild = node
             }
+            var node = this.makeTree(listChild, list)
+            parent[p].listChild = node
         }
         return parent
     }

@@ -14,8 +14,11 @@ class CategoryModel {
             const strWhere = this._buildWhereQuery(objCondition)
             var strSelect = 'select 1'
             strSelect += _buildSelect(['*'], this.table)
-            var strJoin = ` left join theloai tl2 on ${this.table}.id = tl2.IDTheLoaiCha`
-            strSelect += _buildSelect(['id'], 'tl2', 'children_')
+            var strJoin = ''
+            if(objCondition.joinChild) {
+                strJoin = ` left join theloai tl2 on ${this.table}.id = tl2.IDTheLoaiCha`
+                strSelect += _buildSelect(['id'], 'tl2', 'children_')
+            }
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere}`
             const arrData = await dbconnect.query(query)
             var arrCount = null;
@@ -167,7 +170,7 @@ class CategoryModel {
             if (arrDataResponse[0].affectedRows === 0) {
                 return ResponseUtil.response(false, 'Thất bại')
             }
-            return ResponseUtil.response(true, 'Xóa dữ liệu nhà cung cấp thành công')
+            return ResponseUtil.response(true, 'Xóa dữ liệu ngành hàng thành công')
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
