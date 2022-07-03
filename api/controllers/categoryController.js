@@ -140,6 +140,30 @@ class CategoryController {
             return res.json(ResponseUtil.response(false, error))
         }
     }
+
+    _makeChildID = (dataParent) => {
+        var parentID = -1
+        for (let index = 0; index < dataParent.length; index++) {
+            const objTmp = {}
+            if(dataParent[index].id === parentID) {
+                dataParent.splice(index,1)
+                index --
+                continue
+            }
+            parentID = dataParent[index].id
+            if(dataParent[index].children_id) {
+                objTmp[dataParent[index].children_id] = dataParent[index].children_id
+            }
+            for (let i = index +1; i < dataParent.length; i++) {
+                if(dataParent[index].id === dataParent[i].id) {
+                    objTmp[dataParent[i].children_id] = dataParent[i].children_id
+                    
+                }
+            }
+            dataParent[index].children_id = objTmp
+        }
+        return dataParent
+    }
 }
 
 module.exports = new CategoryController()
