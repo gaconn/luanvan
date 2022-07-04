@@ -36,17 +36,97 @@ class OrderModel {
                 ]
                 strSelect += _buildSelect(arrFieldProductSelect, 'sanpham', 'SanPham_')
             }
+
+            if(objCondition.joinOrder) {
+                strJoin += ` left join donhang on ${this.table}.IDDonHang = donhang.id`
+
+                var arrFieldOrderField = [
+                    'IDTaiKhoan',
+                    'IDPhuongThucThanhToan',
+                    'ThoiGianTao',
+                    'PhuPhi',
+                    'TrangThai',
+                    'MaChietKhau',
+                    'TongGiaTriChietKhau',
+                    'GiaVanChuyen',
+                    'MaDonHang',
+                    'ThongTinDatHang'
+                ]
+
+                strSelect += _buildSelect(arrFieldOrderField, 'donhang', 'DonHang_')
+
+                strJoin += ` left join taikhoan on donhang.IDTaiKhoan = taikhoan.id `
+
+                var arrFieldUser = [
+                    'HoTen',
+                    'Email',
+                    'SoDienThoai',
+                    'TinhThanh',
+                    'QuanHuyen',
+                    'PhuongXa',
+                    'SoNha'
+                ]
+                strSelect += _buildSelect(arrFieldUser, 'taikhoan', 'TaiKhoan_')
+            }
             
-            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere}`
 
             const response = await DBConnection.query(query)
-            const countResponse  = await DBConnection.query('select COUNT(id) rowCount from sanpham')
 
-            if(!response || !countResponse || !response[0] || !countResponse[0]) {
+            if(!response || !response[0]) {
                 throw new Error('Lỗi kết nối database')
             }
+            const dataOrder = response[0]
+            var tongPhiVanChuyen =0
+            var tongThanhTien = 0
+            const dataFormat = {
+                HoTen: dataOrder[0] && dataOrder[0].TaiKhoan_HoTen ? dataOrder[0].TaiKhoan_HoTen : null,
+                Email: dataOrder[0] && dataOrder[0].TaiKhoan_Email ? dataOrder[0].TaiKhoan_Email : null,
+                SoDienThoai: dataOrder[0] && dataOrder[0].TaiKhoan_SoDienThoai ? dataOrder[0].TaiKhoan_SoDienThoai : null,
+                TinhThanh: dataOrder[0] && dataOrder[0].TaiKhoan_TinhThanh ? dataOrder[0].TaiKhoan_TinhThanh : null,
+                PhuongXa: dataOrder[0] && dataOrder[0].TaiKhoan_PhuongXa ? dataOrder[0].TaiKhoan_PhuongXa : null,
+                QuanHuyen: dataOrder[0] && dataOrder[0].TaiKhoan_QuanHuyen ? dataOrder[0].TaiKhoan_QuanHuyen : null,
+                SoNha: dataOrder[0] && dataOrder[0].TaiKhoan_SoNha ? dataOrder[0].TaiKhoan_SoNha : null,
+                IDDonhang: dataOrder[0] && dataOrder[0].IDDonHang ? dataOrder[0].IDDonHang : 0,
+                GiaVanChuyen: dataOrder[0] && dataOrder[0].DonHang_GiaVanChuyen ? dataOrder[0].DonHang_GiaVanChuyen : 0,
+                IDPhuongThucThanhToan: dataOrder[0] && dataOrder[0].DonHang_IDPhuongThucThanhToan ? dataOrder[0].DonHang_IDPhuongThucThanhToan : 0,
+                IDTaiKhoan: dataOrder[0] && dataOrder[0].DonHang_IDTaiKhoan ? dataOrder[0].DonHang_IDTaiKhoan : null,
+                MaChietKhau: dataOrder[0] && dataOrder[0].DonHang_MaChietKhau  ? dataOrder[0].DonHang_MaChietKhau : null,
+                MaDonHang: dataOrder[0] && dataOrder[0].DonHang_MaDonHang ? dataOrder[0].DonHang_MaDonHang : null,
+                PhuPhi: dataOrder[0] && dataOrder[0].DonHang_PhuPhi ? dataOrder[0].DonHang_PhuPhi : null,
+                ThoiGianTao: dataOrder[0] && dataOrder[0].DonHang_ThoiGianTao ? dataOrder[0].DonHang_ThoiGianTao : null,
+                ThongTinDatHang:   dataOrder[0] && dataOrder[0].DonHang_ThongTinDatHang ? dataOrder[0].DonHang_ThongTinDatHang : null,
+                TongGiaTriChietKhau : dataOrder[0] && dataOrder[0].DonHang_TongGiaTriChietKhau ? dataOrder[0].DonHang_TongGiaTriChietKhau : null,
+                TrangThai: dataOrder[0] && dataOrder[0].DonHang_TrangThai ? dataOrder[0].DonHang_TrangThai : 0,
+                List: []
+            }
+            for (let index = 0; index < dataOrder.length; index++) {
+                tongPhiVanChuyen += dataOrder[index].PhiVanChuyen
+                tongThanhTien += dataOrder[index].ThanhTien
 
-            return ResponseUtil.response(true, 'Thành công', [response[0],countResponse[0][0]])
+                var dataItemFormat = {
+                    IDSanPham: dataOrder[index].IDSanPham,
+                    PhiVanChuyen: dataOrder[index].PhiVanChuyen,
+                    SanPham_CanNang: dataOrder[index].SanPham_CanNang,
+                    SanPham_GiaGoc: dataOrder[index].SanPham_GiaGoc,
+                    SanPham_HinhAnh: dataOrder[index].SanPham_HinhAnh,
+                    SanPham_IDNhaCungCap: dataOrder[index].SanPham_IDNhaCungCap,
+                    SanPham_IDTheLoai: dataOrder[index].SanPham_IDTheLoai,
+                    SanPham_KichThuoc: dataOrder[index].SanPham_KichThuoc,
+                    SanPham_MauSac: dataOrder[index].SanPham_MauSac,
+                    SanPham_MoTa: dataOrder[index].SanPham_MoTa,
+                    SanPham_Ten: dataOrder[index].SanPham_Ten,
+                    SanPham_XuatXu: dataOrder[index].SanPham_XuatXu,
+                    SoLuong: dataOrder[index].SoLuong,
+                    ThanhTien: dataOrder[index].ThanhTien,
+                    ThoiGianTao: dataOrder[index].ThoiGianTao,
+                    id: dataOrder[index].id
+                }
+                dataFormat.List.push(dataItemFormat)
+            }
+            dataFormat.TongPhiVanChuyen = tongPhiVanChuyen,
+            dataFormat.TongThanhTien = tongThanhTien
+            return ResponseUtil.response(true, 'Thành công', dataFormat)
         } catch (error) {
             return ResponseUtil.response(false, error.message)
         }
@@ -89,7 +169,7 @@ class OrderModel {
         }
     }
     _buildWhere = (objCondition, table) => {
-        var strWhere = " 1=1 "
+        var strWhere = " where 1=1 "
 
         if(objCondition.id) {
             strWhere += ` and ${table}.id = ${objCondition.id} `
@@ -102,7 +182,9 @@ class OrderModel {
         if(objCondition.IDPhuongThucThanhToan) {
             strWhere += ` and ${table}.IDPhuongThucThanhToan = ${objCondition.IDPhuongThucThanhToan} `
         }
-
+        if(objCondition.IDDonHang) {
+            strWhere += ` and ${table}.IDDonHang = ${objCondition.IDDonHang}`
+        }
         if(objCondition.hasOwnProperty("DaXoa")) {
             strWhere += ` and ${table}.DaXoa = ${objCondition.DaXoa} `
         }
