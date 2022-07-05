@@ -63,7 +63,6 @@ class UserController {
                     </div>
                 `;
                 // console.log(`${mailConfig.APP}/user/MatKhau/${data.Email}?token=${token}?MatKhau=${MatKhauRS}`);
-              
                 const UPDATEMK=await UserModel.resetPassword(data,MatKhauRS)
               if(UPDATEMK.data.length>0){
                 mailer.sendMail(data.Email,'Đặt lại mật khẩu',content)
