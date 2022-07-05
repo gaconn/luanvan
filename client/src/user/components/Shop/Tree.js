@@ -5,13 +5,11 @@ const Tree = ({ categoryParent = [] }) => {
     const showInfoParent = (item) => {
         setListparent(item);
     };
-    console.log(listparent)
     return (<>
         {categoryParent.map((node, index) => (
             <TreeITem key={index} node={node} handleInfoParent={showInfoParent}/>
         ))}
        
-
     </>);
 }
 

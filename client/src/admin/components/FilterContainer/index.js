@@ -8,13 +8,11 @@ import Form from "react-bootstrap/Form"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 
-
 const FilterContainer = ({children}) => {
     const [status, setStatus] = useState(0)
     return (
         <Container>
-            <Content>
-                
+            <Content>                
                 <Accordion defaultActiveKey= "0">
                     <Accordion.Collapse eventKey="filter-1">
                     {

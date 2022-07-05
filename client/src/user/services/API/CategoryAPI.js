@@ -12,15 +12,6 @@ const categoryAPI = {
             console.log(error);
         }
     },
-    detail: async (id) => {
-        try {
-            const url = `${categoryUrl}/get-detail`
-            const response = await axios.get(url, {params: {id}})
-            return response.data
-        } catch (error) {
-            console.warn(error)
-        }
-    },
     getTree: async () => {
         try {
             const url = `${categoryUrl}/get-tree`

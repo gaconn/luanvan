@@ -7,7 +7,6 @@ import Order from "./Order"
 const Main = () => {
     const {manage, option} = useParams()
     var pageBody 
-
     switch (manage) {
         case "supplier":
             pageBody = <NhaCungCap option={option} />

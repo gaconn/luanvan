@@ -1,46 +1,63 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ProducAPI from "../../services/API/ProductAPI";
+import ImageDetail from "./image";
 const DetailComponent = () => {
+    const [Detail, setDetail] = useState([])
+    const [imgProduct,setimgProduct]=useState({})
+    const navigate = useNavigate()
+    const handleInfo=(item)=>{
+        setimgProduct(item)
+    }
+    const fetchProductDetail = async (id) => {
+        const response = await ProducAPI.detail(id)
+        const data = response.data
+        if (response.success && response.error.length === 0) {
+            setDetail(data)
+            localStorage.removeItem('DetailID')
+        }
+        if (id === null && Detail.length === 0) {
+            navigate('../Shop')
+        }
+    }
+    useEffect(() => {
+        let id = localStorage.getItem('DetailID')
+        fetchProductDetail(id)
+    }, [])
+    const ProductState = (state) => {
+        let result = null
+        if (state.TrangThai != 1) {
+            return result = "Hết hàng"
+        }
+        return result = "Còn hàng";
+    }
+    console.log(Detail)
+    console.log(imgProduct)
     return (
         <>
             {/* Product Details Section Begin */}
             <section className="product-details spad">
                 <div className="container">
                     <div className="row">
+
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__pic">
                                 <div className="product__details__pic__item">
-                                    <img
-                                        className="product__details__pic__item--large"
-                                        src="img/product/details/product-details-1.jpg"
-                                        alt=""
-                                    />
+                                {
+                                        Detail && Detail.HinhAnh&& Detail.HinhAnh.map((item, k) => (
+                                            <ImageDetail key={k} IMAGE={item} handleInfo={handleInfo}/>
+                                        ))
+                                    }
                                 </div>
-                                <div className="product__details__pic__slider owl-carousel">
-                                    <img
-                                        data-imgbigurl="img/product/details/product-details-2.jpg"
-                                        src="img/product/details/thumb-1.jpg"
-                                        alt=""
-                                    />
-                                    <img
-                                        data-imgbigurl="img/product/details/product-details-3.jpg"
-                                        src="img/product/details/thumb-2.jpg"
-                                        alt=""
-                                    />
-                                    <img
-                                        data-imgbigurl="img/product/details/product-details-5.jpg"
-                                        src="img/product/details/thumb-3.jpg"
-                                        alt=""
-                                    />
-                                    <img
-                                        data-imgbigurl="img/product/details/product-details-4.jpg"
-                                        src="img/product/details/thumb-4.jpg"
-                                        alt=""
-                                    />
-                                </div>
+                                {/* Hình Ảnh Thêm */}
+
+
+
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__text">
-                                <h3>Vetgetable’s Package</h3>
+                                <h3>{Detail.Ten}</h3>
                                 <div className="product__details__rating">
                                     <i className="fa fa-star" />
                                     <i className="fa fa-star" />
@@ -49,12 +66,10 @@ const DetailComponent = () => {
                                     <i className="fa fa-star-half-o" />
                                     <span>(18 reviews)</span>
                                 </div>
-                                <div className="product__details__price">$50.00</div>
+                                <div className="product__details__price">${Detail.GiaGoc * 2}</div>
                                 <p>
-                                    Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
-                                    Vestibulum ac diam sit amet quam vehicula elementum sed sit amet
-                                    dui. Sed porttitor lectus nibh. Vestibulum ac diam sit amet quam
-                                    vehicula elementum sed sit amet dui. Proin eget tortor risus.
+                                    <b> Số Lượng:</b>{" "}
+                                    <span>{Detail.SoLuong}</span>
                                 </p>
                                 <div className="product__details__quantity">
                                     <div className="quantity">
@@ -71,7 +86,7 @@ const DetailComponent = () => {
                                 </a>
                                 <ul>
                                     <li>
-                                        <b>Tình Trạng</b> <span>Còn hàng</span>
+                                        <b>Tình Trạng</b> <span>{ProductState(Detail)}</span>
                                     </li>
                                     <li>
                                         <b>Giao Hàng</b>{" "}
@@ -80,7 +95,7 @@ const DetailComponent = () => {
                                         </span>
                                     </li>
                                     <li>
-                                        <b>Cân nặng</b> <span>0.5 kg</span>
+                                        <b>Cân nặng</b> <span>{Detail.CanNang}</span>
                                     </li>
                                     <li>
                                         <b>Chia sẻ</b>
@@ -122,10 +137,7 @@ const DetailComponent = () => {
                                         <div className="product__details__tab__desc">
                                             <h6>Thông tin sản phẩm</h6>
                                             <p>
-                                                ABABAB
-                                            </p>
-                                            <p>
-                                                ADFGHJKL
+                                                {Detail.MoTa}
                                             </p>
                                         </div>
                                     </div>
