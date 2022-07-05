@@ -1,3 +1,4 @@
+const OrderDetailModel = require("../models/OrderDetailModel")
 const OrderModel = require("../models/OrderModel")
 const ResponseUtil = require("../utils/ResponseUtil")
 
@@ -29,6 +30,24 @@ class OrderController {
         }
     }
 
+    getOrderDetail = async (req, res) => {
+        const data =req.query
+        try {
+            const condition = {
+                ...data,
+                joinOrder: true,
+                joinProduct: true,
+            }
+            const response = await OrderDetailModel.get(condition) 
+
+            if(!response) {
+                throw new Error('Không thể kết nối')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
     /**
      * Method: POST
      * /order/checkout-v1

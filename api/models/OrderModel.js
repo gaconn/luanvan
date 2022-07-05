@@ -50,7 +50,7 @@ class OrderModel {
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
 
             const response = await DBConnection.query(query)
-            const countResponse  = await DBConnection.query('select COUNT(id) rowCount from sanpham')
+            const countResponse  = await DBConnection.query('select COUNT(id) rowCount from donhang')
 
             if(!response || !countResponse || !response[0] || !countResponse[0]) {
                 throw new Error('Lỗi kết nối database')

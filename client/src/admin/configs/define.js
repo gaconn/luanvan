@@ -28,5 +28,6 @@ export const LinkProductAction = {
 }
 
 export const LinkOrderAction = {
-    order_list: LinkPage.order + '/list'
+    order_list: LinkPage.order + '/list',
+    order_detail: LinkPage.order + '/detail'
 }

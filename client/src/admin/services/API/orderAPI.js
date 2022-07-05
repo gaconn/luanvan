@@ -7,6 +7,11 @@ const orderAPI = {
         const url = orderUrl + '/get-orders'
         const response = await axios.get(url, {params: params})
         return response.data
+    },
+    getDetail: async (params) => {
+        const url = orderUrl + '/get-order-detail'
+        const response = await axios.get(url, {params: params})
+        return response.data
     }
 }
 
