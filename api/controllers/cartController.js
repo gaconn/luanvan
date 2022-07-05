@@ -3,7 +3,19 @@ const ResponseUtil = require("../utils/ResponseUtil")
 
 class CartController {
     getCart = async (req, res) => {
+        const condition = req.query 
 
+        try {
+            const response = await CartModel.getCart(condition)
+
+            if(!response) {
+                throw new Error('Lỗi kết nối')
+            }
+
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
     }
     /**
      * Method: post
