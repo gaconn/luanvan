@@ -1,9 +1,9 @@
 const Category = () => {
     return (
         <div className="checkout__order">
-            <h4>Your Order</h4>
+            <h4>Đơn đặt hàng của bạn</h4>
             <div className="checkout__order__products">
-                Products <span>Total</span>
+                Sản phẩm<span>Tổng cộng</span>
             </div>
             <ul>
                 <li>
@@ -17,14 +17,14 @@ const Category = () => {
                 </li>
             </ul>
             <div className="checkout__order__subtotal">
-                Subtotal <span>$750.99</span>
+            Tổng phụ <span>$750.99</span>
             </div>
             <div className="checkout__order__total">
-                Total <span>$750.99</span>
+            Thành tiền <span>$750.99</span>
             </div>
             <div className="checkout__input__checkbox">
                 <label htmlFor="acc-or">
-                    Create an account?
+                Tạo một tài khoản?
                     <input type="checkbox" id="acc-or" />
                     <span className="checkmark" />
                 </label>
@@ -35,7 +35,7 @@ const Category = () => {
             </p>
             <div className="checkout__input__checkbox">
                 <label htmlFor="payment">
-                    Check Payment
+                Kiểm tra thanh toán
                     <input type="checkbox" id="payment" />
                     <span className="checkmark" />
                 </label>
@@ -48,7 +48,7 @@ const Category = () => {
                 </label>
             </div>
             <button type="submit" className="site-btn">
-                PLACE ORDER
+            ĐẶT HÀNG TẬN NƠI
             </button>
         </div>
     );

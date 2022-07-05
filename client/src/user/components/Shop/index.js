@@ -14,7 +14,6 @@ const ShopComponent = () => {
         fetchCategory();
     }, [])
    
-console.log(categories)
     return (
         <>
             <section className="product spad">
