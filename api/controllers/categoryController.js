@@ -156,8 +156,7 @@ class CategoryController {
             }
             for (let i = index +1; i < dataParent.length; i++) {
                 if(dataParent[index].id === dataParent[i].id) {
-                    objTmp[dataParent[i].children_id] = dataParent[i].children_id
-                    
+                    objTmp[dataParent[i].children_id] = dataParent[i].children_id                    
                 }
             }
             dataParent[index].children_id = objTmp
