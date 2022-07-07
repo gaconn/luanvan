@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import CartAPI from "../../services/API/Cart";
 import ProducAPI from "../../services/API/ProductAPI";
 import ImageDetail from "./image";
+import uniqid from 'uniqid';
 const DetailComponent = () => {
     const [Detail, setDetail] = useState([])
     const navigate = useNavigate()
-    let SessionID = Math.floor(Math.random() * 100) + 1 
     let id = localStorage.getItem('DetailID')
-    const [cart, setCart] = useState({ SoLuong:1 })
+    const [cart, setCart] = useState({ SoLuong: 1 })
     const changeInput = (event) => {
         setCart({ ...cart, [event.target.name]: event.target.value })
     }
@@ -34,14 +34,19 @@ const DetailComponent = () => {
         }
         return result = "Còn hàng";
     }
- 
-    const handleInfoCart = async (item,CartSL,SessionID) => {
-        localStorage.setItem('SessionID',SessionID)
-        const data={IDSanPham:item.id,SoLuong:CartSL.SoLuong,SessionID:SessionID}
-        const addToCart=CartAPI.AddToCart(data)
+
+    const handleInfoCart = async (item, CartSL) => {
+        //localStorage.removeItem('SessionID')
+        let SessionID=localStorage.getItem('SessionID')
+        if (!SessionID) {
+            let session = uniqid()
+             SessionID = localStorage.setItem('SessionID', session)
+        }
+        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong, SessionID: SessionID }
+        const addToCart = CartAPI.AddToCart(data)
     }
 
- 
+
 
     return (
         <>
@@ -92,7 +97,7 @@ const DetailComponent = () => {
                                     </div>
 
                                 </div>
-                                <a href='/Cart' className="primary-btn" onClick={() => handleInfoCart(Detail,cart,SessionID)}>
+                                <a href='/Cart' className="primary-btn" onClick={() => handleInfoCart(Detail, cart)}>
                                     Thêm Vào Giỏ Hàng
                                 </a>
                                 <a href="#" className="heart-icon">

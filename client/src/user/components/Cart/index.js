@@ -1,22 +1,59 @@
 import { useEffect, useState } from "react";
 import CartAPI from "../../services/API/Cart";
-
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal'
+import Loading from "./loading";
 
 const CartComponent = () => {
-    var SessionID=localStorage.getItem('SessionID')
-    const fethDataCart=async(SectionID)=>{
-        const response= await CartAPI.GetCart(SessionID)
-        console.log(response)
+    const [cart, setCart] = useState([])
+    //localStorage.removeItem('SessionID')
+    const [updateCart, setUpdateCart] = useState({})
+    const [loading, setLoading] = useState(false);
+    const TongCong = 0
+    const fethDataCart = async () => {
+        let Session = localStorage.getItem('SessionID')
+        console.log(Session)
+        const response = await CartAPI.GetCart(Session)
+        if (response) {
+            const data = response.data
+            const cartResponse = await CartAPI.getItemCart(data[0].id)
+            setCart(cartResponse.data)
+        }
     }
     useEffect(
-        ()=>{
-          
-            fethDataCart(SessionID)
+        () => {
+            fethDataCart()
         }
-        ,[])
+        , [])
+    const RemoveProduct = async (idGH, idSP) => {
+        const removeCart = await CartAPI.getRemoveCart(idGH, idSP)
+        if (removeCart) {
+            window.location.reload();
+        }
+    }
+    const ChangInput = (e, item) => {
+        setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
+        setLoading(true)
+
+        setLoading(false)
+        console.log(cart)
+    }
+  
+    const UpdateCart = async (cart, updateCart) => {
+        const update = cart.forEach(element => {
+            if (element.IDSanPham === updateCart.IDSanPham && element.IDGioHang === updateCart.IDGioHang) {
+                element.SoLuong = updateCart.SoLuong
+            }
+        });
+        console.log(cart)
+    }
+
+  
+
     return (
         <>
-            {/* Shoping Cart Section Begin */}
+        {loading ?(Loading):(
+
             <section className="shoping-cart spad">
                 <div className="container">
                     <div className="row">
@@ -33,24 +70,28 @@ const CartComponent = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td className="shoping__cart__item">
-                                                <img src="img/cart/cart-1.jpg" alt="" />
-                                                <h5>Vegetable’s Package</h5>
-                                            </td>
-                                            <td className="shoping__cart__price">$55.00</td>
-                                            <td className="shoping__cart__quantity">
-                                                <div className="quantity">
-                                                    <div className="pro-qty">
-                                                        <input type="text" defaultValue={1} />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="shoping__cart__total">$110.00</td>
-                                            <td className="shoping__cart__item__close">
-                                                <span className="icon_close" />
-                                            </td>
-                                        </tr>
+                                        {
+                                            cart && cart.map && cart.map((item, k) => (
+                                                <tr key={k}>
+                                                    <td className="shoping__cart__item">
+                                                        <img src={process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0]} alt="" style={{ width: 50, height: 50 }} />
+                                                        <h5>{item.SanPhamTen}</h5>
+                                                    </td>
+                                                    <td className="shoping__cart__price">${item.SanPhamGiaGoc }</td>
+                                                    <td className="shoping__cart__quantity">
+                                                        <div className="quantity">
+                                                            <div className="pro-qty">
+                                                                <input type="number" min={1} defaultValue={item.SoLuong} onChange={(e) => ChangInput(e,item)} />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="shoping__cart__total">${item.SanPhamGiaGoc * item.SoLuong}</td>
+                                                    <td className="shoping__cart__item__close">
+                                                        <span className="icon_close" onClick={() => RemoveProduct(item.IDGioHang, item.IDSanPham)} />
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -62,7 +103,7 @@ const CartComponent = () => {
                                 <a href="#" className="primary-btn cart-btn">
                                     Tiếp Tục Mua Săm
                                 </a>
-                                <a href="#" className="primary-btn cart-btn cart-btn-right">
+                                <a href="#" className="primary-btn cart-btn cart-btn-right" onClick={() => UpdateCart(cart, updateCart)}>
                                     <span className="icon_loading" />
                                     Cập nhật giỏ hàng
                                 </a>
@@ -100,6 +141,7 @@ const CartComponent = () => {
                     </div>
                 </div>
             </section>
+        )}
         </>
 
     );
