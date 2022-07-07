@@ -1,4 +1,19 @@
+import { useEffect, useState } from "react";
+import CartAPI from "../../services/API/Cart";
+
+
 const CartComponent = () => {
+    var SessionID=localStorage.getItem('SessionID')
+    const fethDataCart=async(SectionID)=>{
+        const response= await CartAPI.GetCart(SessionID)
+        console.log(response)
+    }
+    useEffect(
+        ()=>{
+          
+            fethDataCart(SessionID)
+        }
+        ,[])
     return (
         <>
             {/* Shoping Cart Section Begin */}

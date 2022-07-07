@@ -139,7 +139,7 @@ const ListOrder = () => {
                                         <td>{item.TongGiaTriDonHang}</td>
                                         <td style={{color: "red"}}>{item.MaChietKhau ? item.MaChietKhau : "Không"}</td>
                                         <td className="d-flex" style={{height: "100%"}}>
-                                            <span className="order-item-icon" onClick={()=>navigate(`../detail?${item.id}`)}><AiOutlineFileSearch/></span>
+                                            <span className="order-item-icon" onClick={()=>navigate(`${LinkOrderAction.order_detail}?id=${item.id}`)}><AiOutlineFileSearch/></span>
                                         </td>
                                     </tr>
                                 )
