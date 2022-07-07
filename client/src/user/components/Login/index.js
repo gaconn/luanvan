@@ -52,6 +52,7 @@ const Logincomponents = () => {
             return {show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại"}
         })
          const data = response.data[0]
+         console.log(data);
          if(response) {
              if(response.success && response.error.length ===0 ) {
                  if(data.token) {
