@@ -18,9 +18,10 @@ import BlogComponent from './components/Blog'
 import RegisterComponent from './components/Register'
 import Logincomponents from "./components/Login"
 import Authenticate from "./components/Authenticate"
-import CheckoutSuccess from "./components/CheckOut/CheckoutSuccess";
+import CheckoutSuccess from "./components/Checkout/CheckoutSuccess";
 import { WOW } from 'wowjs'
 import Main from "./pages/Main";
+import Checkout from "./components/Checkout"
 
 
 class Landing extends Component {
@@ -44,12 +45,12 @@ class Landing extends Component {
     }
     render() {
         return (
-            <Routes>]
+            <Routes>
             <Route path="/*" element={<All/>} >
             <Route index element={<HomeComponent/>} />
             <Route path="Home" element={<HomeComponent />} />
             <Route path="Shop" element={<ShopComponent/>}/>
-            <Route path="Checkout" element={<CheckoutComponent/>}/>
+            <Route path="Checkout" element={<Checkout/>}/>
             <Route path="checkout-success" element={<CheckoutSuccess/>}/>
             <Route path="Contact" element={<ContactComponent/>}/>
             <Route path="Blog" element={<BlogComponent/>}/>

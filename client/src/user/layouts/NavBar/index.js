@@ -11,9 +11,9 @@ const NavbarHeader = () => {
     const navigate = useNavigate()
     const logoutHandler = () => {
         localStorage.removeItem("UID")
-        localStorage.removeItem("USERNAME")
+        localStorage.removeItem("USER_NAME")
         token.deleteToken()
-        navigate("/login", {replace:true})
+        navigate("/home", {replace:true})
     }
     console.log(localStorage.getItem("UID"));
     return (

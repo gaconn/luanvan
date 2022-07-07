@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import CartComponent from "../components/Cart"
 import DetailComponent from "../components/Detail"
-import ChechOutComponent from "../components/CheckOut"
+import Checkout from "../components/Checkout"
 const Main = () => {
     const { option} = useParams()
     var pageBody 
@@ -13,7 +13,7 @@ const Main = () => {
             pageBody = < DetailComponent/>
             break;
         case "CheckOut":
-            pageBody = <ChechOutComponent/>
+            pageBody = <Checkout/>
             break;
         default:
             break;
