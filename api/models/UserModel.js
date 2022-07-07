@@ -134,7 +134,7 @@ class UserModel {
             return ResponseUtil.response(false, 'Mật khẩu không hợp lệ')
         }
         try {
-            const query = "select * from taikhoan where Email = ?  and DaXoa = 0 and IDCapDoTaiKhoan = 4 limit 1 "
+            const query = "select * from taikhoan where Email = ?  and DaXoa = 0 limit 1 "
             const result = await dbconnect.query(query, objDataUser.Email)
             if (!result[0] || result[0].length === 0) {
                 return ResponseUtil.response(true, 'Đăng nhập không thành công', [], ['Email hoặc mật khẩu không chính xác'])

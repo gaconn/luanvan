@@ -18,6 +18,7 @@ import BlogComponent from './components/Blog'
 import RegisterComponent from './components/Register'
 import Logincomponents from "./components/Login"
 import Authenticate from "./components/Authenticate"
+import CheckoutSuccess from "./components/CheckOut/CheckoutSuccess";
 import { WOW } from 'wowjs'
 import Main from "./pages/Main";
 
@@ -43,20 +44,23 @@ class Landing extends Component {
     }
     render() {
         return (
-            <Routes>
-                <Route path="/*" element={<All />} >
-                    <Route index element={<HomeComponent />} />
-                    <Route path="Home" element={<HomeComponent />} />
-                    <Route path="Shop" element={<ShopComponent />} />
-                    <Route path="Contact" element={<ContactComponent />} />
-                    <Route path="Blog" element={<BlogComponent />} />
-                    <Route path=":option" element={<Main />}>
-                        <Route path="*" element={<div>option not found</div>} />
-                    </Route>
-                    <Route path="Login" element={<Logincomponents />} />
-                    <Route path="NewPassword" element={<Authenticate />} />
-                    <Route path="Register" element={<RegisterComponent />} />
-                </Route>
+            <Routes>]
+            <Route path="/*" element={<All/>} >
+            <Route index element={<HomeComponent/>} />
+            <Route path="Home" element={<HomeComponent />} />
+            <Route path="Shop" element={<ShopComponent/>}/>
+            <Route path="Checkout" element={<CheckoutComponent/>}/>
+            <Route path="checkout-success" element={<CheckoutSuccess/>}/>
+            <Route path="Contact" element={<ContactComponent/>}/>
+            <Route path="Blog" element={<BlogComponent/>}/>
+            </Route> 
+            <Route path=":option" element={<Main />}>
+                <Route path="*" element={<div>option not found</div>} />
+            </Route>
+            
+            <Route path="Login" element={<Logincomponents/>}/>
+            <Route path="NewPassword" element={<Authenticate/>}/>
+            <Route path="Register" element={<RegisterComponent/>}/>
             </Routes>
         );
     }
