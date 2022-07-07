@@ -57,6 +57,7 @@ const Logincomponents = () => {
                  if(data.token) {
                      token.setAuthToken(data.token)
                      localStorage.setItem('USER_NAME', data.HoTen)
+                     localStorage.setItem('UID', data.id)
                    navigate('../Home')
                  }
                      

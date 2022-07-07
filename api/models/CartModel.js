@@ -309,7 +309,7 @@ class CartModel {
             strWhere += ` and ${this.table}.IDTaiKhoan = ${condition.IDTaiKhoan}`
         }
 
-        if(condition.SessionID) {
+        if(condition.SessionID && !condition.IDTaiKhoan) {
             strWhere += ` and ${this.table}.SessionID = '${condition.SessionID}'`
         }
         return strWhere

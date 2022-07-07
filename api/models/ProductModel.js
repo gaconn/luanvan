@@ -15,9 +15,9 @@ class ProductModel {
         if(objCondition.page< 1) {
             return ResponseUtil.response(false, "Trang không hợp lệ")
         }
-        var start= (objCondition.page-1)*10
+        var start= (objCondition.page-1)*20
         try {
-            const strWhere = this._buildWhereQuery(objCondition)
+            var strWhere = this._buildWhereQuery(objCondition)
             var strSelect = 'select 1'
             var strJoin = ""
             strSelect += _buildSelect(['*'], this.table)
@@ -39,7 +39,33 @@ class ProductModel {
                 ]
                 strSelect += _buildSelect(arrFieldSupplierSelect, 'nhacungcap', 'NhaCungCap_')
             }
-            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${start}`
+
+            if((objCondition.SessionID || objCondition.IDTaiKhoan) && objCondition.fromCart) {
+                strJoin += ` left join chitietgiohang on ${this.table}.id = chitietgiohang.IDSanPham`
+                strJoin += ` left join giohang on chitietgiohang.IDGioHang = giohang.id`
+
+                var arrFieldCartItemSelect = [
+                    'id',
+                    'SoLuong',
+                ]
+                strSelect += _buildSelect(arrFieldCartItemSelect, 'chitietgiohang', 'ChiTietGioHang_')
+                
+                var arrFieldCartSelect = [
+                    'id',
+                    'IDTaiKhoan',
+                    'SessionID'
+                ]
+
+                strSelect += _buildSelect(arrFieldCartSelect, 'giohang', 'GioHang_')
+
+                if(objCondition.IDTaiKhoan) {
+                    strWhere += ` and giohang.IDTaiKhoan = ${objCondition.IDTaiKhoan}`
+                }else {
+                    strWhere += ` and giohang.SessionID = ${objCondition.SessionID}`
+                }
+            }
+
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 20 offset ${start}`
             const arrData = await dbconnect.query(query)
 
             if(!arrData ) {
@@ -49,17 +75,20 @@ class ProductModel {
                 return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
             }
 
-            const queryCount = `select COUNT(sanpham.id) as rowCount from sanpham ${strWhere}`
-            const arrCount = await dbconnect.query(queryCount)
+            if(objCondition.getRowCount) {
+                const queryCount = `select COUNT(sanpham.id) as rowCount from sanpham ${strWhere}`
+                const arrCount = await dbconnect.query(queryCount)
 
-            if( !arrCount) {
-                return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
-            }
-            if(!arrCount[0]) {
-                return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
-            }
+                if( !arrCount) {
+                    return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                }
+                if(!arrCount[0]) {
+                    return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                }
 
-            return ResponseUtil.response(true, 'Thành công', {data:arrData[0], rowCount: arrCount[0][0].rowCount})
+                return ResponseUtil.response(true, 'Thành công', {data:arrData[0], rowCount: arrCount[0][0].rowCount})
+            }
+            return ResponseUtil.response(true, 'Thành công', arrData[0])
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }

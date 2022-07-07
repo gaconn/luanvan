@@ -147,23 +147,8 @@ class OrderModel {
         if(!objData.IDPhuongThucThanhToan) {
             errors.push('Thiếu phương thức thanh toán')
         }
-        if(!objData.Email) {
-            errors.push('Thiếu thông tin email')
-        }
-        if(!objData.SoDienThoai) {
-            errors.push('Thiếu số điện thoại liên lạc')
-        }
-        if(!objData.TinhThanh) {
-            errors.push('Tỉnh thành không được để trống')
-        }
-        if(!objData.QuanHuyen) {
-            errors.push('Quận huyện không được để trống')
-        }
-        if(!objData.PhuongXa) {
-            errors.push('Phường xã không được để trống')
-        }
-        if(!objData.SoNha) {
-            errors.push('Địa chỉ nhà không được để trống')
+        if((!objData.Email || !objData.SoDienThoai || !objData.TinhThanh ||!objData.QuanHuyen ||!objData.PhuongXa || !objData.SoNha) && !objData.IDTaiKhoan) {
+            errors.push('Thiếu thông tin đặt hàng')
         }
 
         if(errors.length >0) {
@@ -182,23 +167,26 @@ class OrderModel {
             productDetail.PhiVanChuyen = 40000
             const MaDonHang = uniqid('DonHang-')
 
-            const ThongTinDatHang = {
-                Email: objData.Email,
-                SoDienThoai: objData.SoDienThoai,
-                TinhThanh: objData.TinhThanh,
-                QuanHuyen: objData.QuanHuyen,
-                PhuongXa: objData.PhuongXa,
-                SoNha: objData.SoNha
-            }
-
-            const encryptInfo = JSON.stringify(ThongTinDatHang)
-
             const extraInfo = {
                 IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
                 MaDonHang,
-                ThongTinDatHang: encryptInfo
             }
-
+            
+            if(!objData.IDTaiKhoan) {
+                const ThongTinDatHang = {
+                    Email: objData.Email,
+                    SoDienThoai: objData.SoDienThoai,
+                    TinhThanh: objData.TinhThanh,
+                    QuanHuyen: objData.QuanHuyen,
+                    PhuongXa: objData.PhuongXa,
+                    SoNha: objData.SoNha
+                }
+                const encryptInfo = JSON.stringify(ThongTinDatHang)
+                extraInfo.ThongTinDatHang= encryptInfo
+            } else {
+                extraInfo.IDTaiKhoan = objData.IDTaiKhoan
+            }
+            
             const resultCheckout = this._checkout({arrProduct:[productDetail], extraInfo})
 
             return resultCheckout
@@ -341,7 +329,7 @@ class OrderModel {
         if(!objData.IDSanPham) {
             errors.push('Thiếu thông tin sản phẩm cần thanh toán')
         }
-        if(!objData.Email || !objData.SoDienThoai || !objData.TinhThanh || !objData.QuanHuyen || !objData.PhuongXa || !objData.SoNha) {
+        if((!objData.Email || !objData.SoDienThoai || !objData.TinhThanh || !objData.QuanHuyen || !objData.PhuongXa || !objData.SoNha) && !objData.IDTaiKhoan) {
             errors.push('Thiếu thông tin khách hàng')
         }
 
@@ -364,7 +352,7 @@ class OrderModel {
                 return ResponseUtil.response(false, 'Không lấy được thông tin sản phẩm')
             }
 
-            const arrProduct = dataProductResponse.data.data
+            const arrProduct = dataProductResponse.data
             const arrCartItem= dataCartItemResponse.data
 
             // lặp qua tất cả sản phẩm để gắn thêm tham số cần thiết cho tính toán
@@ -380,20 +368,25 @@ class OrderModel {
 
             // thông tin đăt hàng
             const MaDonHang = uniqid('DonHang-')
-            const ThongTinDatHang = {
-                Email: objData.Email,
-                SoDienThoai: objData.SoDienThoai,
-                TinhThanh: objData.TinhThanh,
-                QuanHuyen: objData.QuanHuyen,
-                PhuongXa: objData.PhuongXa,
-                SoNha: objData.SoNha
-            }
-            const encryptInfo = JSON.stringify(ThongTinDatHang)
             const extraInfo = {
                 IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
-                MaDonHang,
-                ThongTinDatHang: encryptInfo
+                MaDonHang
             }
+            if(!objData.IDTaiKhoan) {
+                const ThongTinDatHang = {
+                    Email: objData.Email,
+                    SoDienThoai: objData.SoDienThoai,
+                    TinhThanh: objData.TinhThanh,
+                    QuanHuyen: objData.QuanHuyen,
+                    PhuongXa: objData.PhuongXa,
+                    SoNha: objData.SoNha
+                }
+                const encryptInfo = JSON.stringify(ThongTinDatHang)
+                extraInfo.ThongTinDatHang = encryptInfo
+            } else {
+                extraInfo.IDTaiKhoan = objData.IDTaiKhoan
+            }
+            
 
             const resultCheckout =await this._checkout({arrProduct: arrProduct, extraInfo})
 

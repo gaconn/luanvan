@@ -1,56 +1,37 @@
-const Category = () => {
+const Category = ({data, SoLuong}) => {
+    console.log(data);
     return (
-        <div className="checkout__order">
-            <h4>Your Order</h4>
+        <>
+        {data && Object.keys(data).length >0 &&  <div className="checkout__order">
+            <h4>Đơn hàng của bạn</h4>
             <div className="checkout__order__products">
-                Products <span>Total</span>
+                Sản phẩm <span>Tổng cộng</span>
             </div>
             <ul>
-                <li>
-                    Vegetable’s Package <span>$75.99</span>
-                </li>
-                <li>
-                    Fresh Vegetable <span>$151.99</span>
-                </li>
-                <li>
-                    Organic Bananas <span>$53.99</span>
-                </li>
+                {
+                    data && data.list && data.list.map((item, index)=> {
+                        return <li key={index}>
+                                    {item && item.Ten} x{item.ChiTietGioHang_SoLuong ? item.ChiTietGioHang_SoLuong : SoLuong} <span>{item.GiaGoc * (item.ChiTietGioHang_SoLuong ? item.ChiTietGioHang_SoLuong : SoLuong)}</span>
+                                </li>
+                    })
+                }
             </ul>
+            
             <div className="checkout__order__subtotal">
-                Subtotal <span>$750.99</span>
+                Phí vận chuyển <span>{data && data.PhiVanChuyen.toLocaleString('en-US')} VND</span>
+            </div>
+
+            <div className="checkout__order__subtotal">
+                Phụ phí <span>{data && data.PhuPhi.toLocaleString('en-US')} VND</span>
             </div>
             <div className="checkout__order__total">
-                Total <span>$750.99</span>
-            </div>
-            <div className="checkout__input__checkbox">
-                <label htmlFor="acc-or">
-                    Create an account?
-                    <input type="checkbox" id="acc-or" />
-                    <span className="checkmark" />
-                </label>
-            </div>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adip elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            <div className="checkout__input__checkbox">
-                <label htmlFor="payment">
-                    Check Payment
-                    <input type="checkbox" id="payment" />
-                    <span className="checkmark" />
-                </label>
-            </div>
-            <div className="checkout__input__checkbox">
-                <label htmlFor="paypal">
-                    Paypal
-                    <input type="checkbox" id="paypal" />
-                    <span className="checkmark" />
-                </label>
+                Tổng thành tiền <span>{data && data.TongGiaTriDonHang.toLocaleString('en-US')} VND</span>
             </div>
             <button type="submit" className="site-btn">
-                PLACE ORDER
+                Xác nhận đặt hàng
             </button>
-        </div>
+        </div>}
+        </>
     );
 }
 

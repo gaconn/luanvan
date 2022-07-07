@@ -103,6 +103,34 @@ class OrderController {
             return res.json(false, error.message)
         }
     }
+
+    checkout = async (req,res) => {
+        const data = req.body
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+
+        try {
+            var response 
+            if(data.IDSanPham && !data.IDGioHang) {
+                //chưa thêm giỏ hàng
+                //tham số {IDSanPham, SoLuong, IDPhuongThucThanhToan, (Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha) || IDTaiKhoan}
+                response = await OrderModel.checkoutV2(data)
+            } else if( data.IDSanPham && data.IDGioHang) {
+                //đã thêm sản phẩm vào giỏ hàng
+                // tham số {IDSanPham, IDPhuongThucThanhToan (Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha) || IDTaiKhoan}
+                response = await OrderModel.checkoutV3(data)
+            } 
+
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
 }
 
 module.exports = new OrderController()
