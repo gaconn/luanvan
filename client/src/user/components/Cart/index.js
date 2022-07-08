@@ -3,17 +3,28 @@ import CartAPI from "../../services/API/Cart";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import Loading from "./loading";
-
+import {AiOutlinePlusSquare} from "react-icons/ai"
+import { Toast, ToastContainer } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 const CartComponent = () => {
     const [cart, setCart] = useState([])
     //localStorage.removeItem('SessionID')
     const [updateCart, setUpdateCart] = useState({})
     const [loading, setLoading] = useState(false);
-    const TongCong = 0
+    const [choose, setChoose] = useState({})
+    const [notify, setNotify] = useState({show: false, message: "", success: false})
+    const [cartInfo, setCartInfo] = useState({})
+    const navigate = useNavigate()
     const fethDataCart = async () => {
         let Session = localStorage.getItem('SessionID')
-        console.log(Session)
         const response = await CartAPI.GetCart(Session)
+        console.log(response);
+        setCartInfo((cartInfo)=> {
+            if(!response || !response.success || response.data.length === 0) {
+                return cartInfo 
+            }
+            return response.data[0]
+        })
         if (response) {
             const data = response.data
             const cartResponse = await CartAPI.getItemCart(data[0].id)
@@ -31,30 +42,85 @@ const CartComponent = () => {
             window.location.reload();
         }
     }
-    const ChangInput = (e, item) => {
-        setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
-        setLoading(true)
-
-        setLoading(false)
-        console.log(cart)
-    }
-  
-    const UpdateCart = async (cart, updateCart) => {
-        const update = cart.forEach(element => {
-            if (element.IDSanPham === updateCart.IDSanPham && element.IDGioHang === updateCart.IDGioHang) {
-                element.SoLuong = updateCart.SoLuong
+    const ChangInput = async(e, item) => {
+        // setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
+        const response = await CartAPI.updateSL({SoLuong: e.target.value, IDGioHang:item.IDGioHang, IDSanPham: item.IDSanPham})
+        setNotify((notify)=> {
+            if(!response || !response.success) {
+                return {show: true, message: response.message, success: response.success}
             }
-        });
-        console.log(cart)
+            return notify
+        })
+        const cartResponse = await CartAPI.getItemCart(item.IDGioHang)
+        setCart(cartResponse.data)
+    }
+    const chooseHandler = (e, product) => {
+        setChoose((choose) => {
+            if(e.target.name === "all") {
+                console.log(e.target);
+                if(Object.keys(choose).length === cart.length) {
+                    return {}
+                }else  {
+                    var tmpObj = {}
+                    for (let index = 0; index < cart.length; index++) {
+                        tmpObj[cart[index].IDSanPham] = cart[index].IDSanPham
+                    }
+                    return tmpObj
+                }
+            }
+            if(choose[product.IDSanPham]) {
+                delete choose[product.IDSanPham]
+                return {...choose}
+            }
+            return {...choose, [product.IDSanPham]:product.IDSanPham}
+        })
     }
 
-  
+    const checkoutClickHandler = (e) => {
+        e.preventDefault()
+        const number = Object.keys(choose).length
+        setNotify((notify)=> {
+            if(Object.keys(choose).length === 0) {
+                return {show: true, message: "Vui lòng chọn sản phẩm", success: false}
+            }
+            return {...notify}
+        })
 
+        if(number === 0) return
+
+        var arrIDSanPham = []
+        for (let index = 0; index < cart.length; index++) {
+            if(choose[cart[index].IDSanPham]) {
+                arrIDSanPham.push(choose[cart[index].IDSanPham])
+            }
+        }
+
+        var strIDSanPham = arrIDSanPham.join(",")
+        setNotify((notify)=> {
+            if(!strIDSanPham) {
+                return {show: true, message: "Vui lòng chọn sản phẩm", success: false}
+            }
+            return {...notify}
+        })
+
+        navigate(`/checkout?product_id=${strIDSanPham}&from_cart=1&IDGioHang=${cartInfo.id}`)
+    }
+    console.log(cartInfo);
     return (
         <>
         {loading ?(Loading):(
 
             <section className="shoping-cart spad">
+                <ToastContainer position="top-end" className="p-3 position-fixed">
+                    <Toast bg={notify.success ? "success": "danger"} onClose={()=> setNotify({...notify, show: false})} show={notify.show} delay={3000} autohide>
+                    <Toast.Header>
+                        <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+                        <strong className="me-auto">Thông báo</strong>
+                        <small className="text-muted">just now</small>
+                    </Toast.Header>
+                    <Toast.Body>{notify.message ? notify.message : ""}</Toast.Body>
+                    </Toast>
+                </ToastContainer>
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12">
@@ -62,10 +128,13 @@ const CartComponent = () => {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th className="shoping__product">Sản Phẩm</th>
+                                            <th style={{width:"150px",textAlign:"left"}}>
+                                                <input id="choose-all" type="checkbox" name="all" checked={Object.keys(choose).length === cart.length ? true: ""} onChange= {(e)=>chooseHandler(e, cart)}/>
+                                                <label for="choose-all">Chọn tất cả</label>
+                                            </th>
+                                            <th className="shoping__product pl-3">Sản Phẩm</th>
                                             <th>Giá</th>
                                             <th>Số Lượng</th>
-                                            <th>Thành Tiền</th>
                                             <th />
                                         </tr>
                                     </thead>
@@ -73,19 +142,21 @@ const CartComponent = () => {
                                         {
                                             cart && cart.map && cart.map((item, k) => (
                                                 <tr key={k}>
-                                                    <td className="shoping__cart__item">
-                                                        <img src={process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0]} alt="" style={{ width: 50, height: 50 }} />
+                                                    <td style={{textAlign:"left"}}>
+                                                        <input type="checkbox" name={item.IDSanPham } value={item.IDSanPham} checked={choose[item.IDSanPham ] ? true : ""} onChange= {(e)=>chooseHandler(e, item)}/>
+                                                    </td>
+                                                    <td className="shoping__cart__item pl-3">
+                                                        <img src={ item.HinhAnh && item.HinhAnh.length >0 ? process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0] : ""} alt="" style={{ width: 50, height: 50 }} />
                                                         <h5>{item.SanPhamTen}</h5>
                                                     </td>
-                                                    <td className="shoping__cart__price">${item.SanPhamGiaGoc }</td>
+                                                    <td className="shoping__cart__price">{item.SanPhamGiaGoc ? (item.SanPhamGiaGoc*item.SoLuong).toLocaleString('en-US'): 0} VND</td>
                                                     <td className="shoping__cart__quantity">
                                                         <div className="quantity">
-                                                            <div className="pro-qty">
-                                                                <input type="number" min={1} defaultValue={item.SoLuong} onChange={(e) => ChangInput(e,item)} />
+                                                            <div className="pro-qty d-flex align-items-center justify-content-center m-auto fs-4">
+                                                                <input type="number" className="text-center" name="SoLuong" min={1} value={item.SoLuong} onChange={(e) => ChangInput(e,item)} />
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="shoping__cart__total">${item.SanPhamGiaGoc * item.SoLuong}</td>
                                                     <td className="shoping__cart__item__close">
                                                         <span className="icon_close" onClick={() => RemoveProduct(item.IDGioHang, item.IDSanPham)} />
                                                     </td>
@@ -99,15 +170,7 @@ const CartComponent = () => {
                     </div>
                     <div className="row">
                         <div className="col-lg-12">
-                            <div className="shoping__cart__btns">
-                                <a href="#" className="primary-btn cart-btn">
-                                    Tiếp Tục Mua Săm
-                                </a>
-                                <a href="#" className="primary-btn cart-btn cart-btn-right" onClick={() => UpdateCart(cart, updateCart)}>
-                                    <span className="icon_loading" />
-                                    Cập nhật giỏ hàng
-                                </a>
-                            </div>
+                            
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__continue">
@@ -124,17 +187,8 @@ const CartComponent = () => {
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__checkout">
-                                <h5>Tổng số giỏ hàng</h5>
-                                <ul>
-                                    <li>
-                                        Tổng phụ <span>$454.98</span>
-                                    </li>
-                                    <li>
-                                        Tổng cộng <span>$454.98</span>
-                                    </li>
-                                </ul>
-                                <a href="#" className="primary-btn">
-                                    TIẾN HÀNH KIỂM TRA
+                                <a href=" " className="primary-btn" onClick={checkoutClickHandler}>
+                                    Mua hàng
                                 </a>
                             </div>
                         </div>

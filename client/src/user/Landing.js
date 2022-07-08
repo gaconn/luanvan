@@ -22,6 +22,7 @@ import CheckoutSuccess from "./components/Checkout/CheckoutSuccess";
 import { WOW } from 'wowjs'
 import Main from "./pages/Main";
 import Checkout from "./components/Checkout"
+import Cart from "./components/Cart"
 
 
 class Landing extends Component {
@@ -58,7 +59,7 @@ class Landing extends Component {
             <Route path=":option" element={<Main />}>
                 <Route path="*" element={<div>option not found</div>} />
             </Route>
-            
+            <Route path="cart" element={<Cart />} />
             <Route path="Login" element={<Logincomponents/>}/>
             <Route path="NewPassword" element={<Authenticate/>}/>
             <Route path="Register" element={<RegisterComponent/>}/>

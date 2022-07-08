@@ -22,12 +22,12 @@ const ChechOutComponent = () => {
             const SoLuong = searchParams.get('soluong')
             const IDTaiKhoan = localStorage.getItem('UID')
             const SessionID = localStorage.getItem('SessionID')
+            const IDGioHang = localStorage.getItem('IDGioHang')
             var cartResponse 
 
             if(fromCart) { //nếu checkout từ cart
                 cartResponse = await cartAPI.getCart({SessionID, IDTaiKhoan})
             }
-            const IDGioHang = cartResponse && cartResponse.data ? cartResponse.data.id : null
             const response = await productAPI.getCheckoutList({id: productID, IDTaiKhoan, SessionID, fromCart})
             setNotify(noti=> {
                 if(response && response.success && response.data) {
@@ -74,7 +74,6 @@ const ChechOutComponent = () => {
             navigate("../checkout-success")
         }
     }
-    console.log(order);
     const inputHandler = (e) => {
         setOrder((order)=> {
             return {...order, [e.target.name]: e.target.value}

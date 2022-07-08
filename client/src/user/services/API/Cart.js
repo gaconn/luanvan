@@ -37,10 +37,10 @@ const CartAPI = {
             console.log(error)
         }
     },
-    updateSL:async(idGH,SL,idSP)=>{
+    updateSL:async(params)=>{
         try {
             const url = BASE_URL+'/update-cart-item'
-            const response = await axios.put(url, { params: { IDGioHang: idGH ,IDSanPham:idSP,SoLuong:SL} })
+            const response = await axios.put(url, params )
             return response.data
         } catch (error) {
             console.log(error)
