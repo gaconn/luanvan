@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import productAPI from "../../services/API/ProductAPI";
+import productAPI from "../../services/API/productAPI";
 import { Link } from "react-router-dom";
 const List = () => {
     const [product, setProduct] = useState([])

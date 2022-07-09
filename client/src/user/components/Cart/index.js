@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import CartAPI from "../../services/API/Cart";
+
+const CartComponent = () => {
+    const [cart, setCart] = useState([])
+
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal'
 import Loading from "./loading";
@@ -31,6 +35,7 @@ const CartComponent = () => {
             setCart(cartResponse.data)
         }
     }
+ 
     useEffect(
         () => {
             fethDataCart()
@@ -42,6 +47,7 @@ const CartComponent = () => {
             window.location.reload();
         }
     }
+
     const ChangInput = async(e, item) => {
         // setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
         const response = await CartAPI.updateSL({SoLuong: e.target.value, IDGioHang:item.IDGioHang, IDSanPham: item.IDSanPham})
@@ -108,8 +114,6 @@ const CartComponent = () => {
     console.log(cartInfo);
     return (
         <>
-        {loading ?(Loading):(
-
             <section className="shoping-cart spad">
                 <ToastContainer position="top-end" className="p-3 position-fixed">
                     <Toast bg={notify.success ? "success": "danger"} onClose={()=> setNotify({...notify, show: false})} show={notify.show} delay={3000} autohide>
@@ -149,6 +153,7 @@ const CartComponent = () => {
                                                         <img src={ item.HinhAnh && item.HinhAnh.length >0 ? process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0] : ""} alt="" style={{ width: 50, height: 50 }} />
                                                         <h5>{item.SanPhamTen}</h5>
                                                     </td>
+
                                                     <td className="shoping__cart__price">{item.SanPhamGiaGoc ? (item.SanPhamGiaGoc*item.SoLuong).toLocaleString('en-US'): 0} VND</td>
                                                     <td className="shoping__cart__quantity">
                                                         <div className="quantity">
@@ -170,7 +175,7 @@ const CartComponent = () => {
                     </div>
                     <div className="row">
                         <div className="col-lg-12">
-                            
+
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__continue">
@@ -187,6 +192,7 @@ const CartComponent = () => {
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__checkout">
+
                                 <a href=" " className="primary-btn" onClick={checkoutClickHandler}>
                                     Mua hàng
                                 </a>
@@ -195,7 +201,7 @@ const CartComponent = () => {
                     </div>
                 </div>
             </section>
-        )}
+
         </>
 
     );

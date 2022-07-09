@@ -22,8 +22,9 @@ import CheckoutSuccess from "./components/Checkout/CheckoutSuccess";
 import { WOW } from 'wowjs'
 import Main from "./pages/Main";
 import Checkout from "./components/Checkout"
+import AllItem from "./pages/AllItem";
+import ManageComponents from "./mange";
 import Cart from "./components/Cart"
-
 
 class Landing extends Component {
     componentDidMount() {
@@ -47,6 +48,7 @@ class Landing extends Component {
     render() {
         return (
             <Routes>
+
             <Route path="/*" element={<All/>} >
             <Route index element={<HomeComponent/>} />
             <Route path="Home" element={<HomeComponent />} />
