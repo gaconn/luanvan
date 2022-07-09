@@ -54,11 +54,10 @@ class Landing extends Component {
             <Route path="checkout-success" element={<CheckoutSuccess/>}/>
             <Route path="Contact" element={<ContactComponent/>}/>
             <Route path="Blog" element={<BlogComponent/>}/>
-            </Route> 
             <Route path=":option" element={<Main />}>
                 <Route path="*" element={<div>option not found</div>} />
             </Route>
-            
+            </Route> 
             <Route path="Login" element={<Logincomponents/>}/>
             <Route path="NewPassword" element={<Authenticate/>}/>
             <Route path="Register" element={<RegisterComponent/>}/>
