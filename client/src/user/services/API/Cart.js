@@ -10,10 +10,10 @@ const CartAPI = {
             console.log(error)
         }
     },
-    GetCart: async (id) => {
+    GetCart: async (params) => {
         try {
             const url = BASE_URL + '/get-cart'
-            const response = await axios.get(url, { params: { SessionID: id } })
+            const response = await axios.get(url, { params: params })
             return response.data
         } catch (error) {
             console.log(error)

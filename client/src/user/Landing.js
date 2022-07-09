@@ -49,22 +49,25 @@ class Landing extends Component {
         return (
             <Routes>
 
-            <Route path="/*" element={<All/>} >
-            <Route index element={<HomeComponent/>} />
-            <Route path="Home" element={<HomeComponent />} />
-            <Route path="Shop" element={<ShopComponent/>}/>
-            <Route path="Checkout" element={<Checkout/>}/>
-            <Route path="checkout-success" element={<CheckoutSuccess/>}/>
-            <Route path="Contact" element={<ContactComponent/>}/>
-            <Route path="Blog" element={<BlogComponent/>}/>
-            </Route> 
-            <Route path=":option" element={<Main />}>
-                <Route path="*" element={<div>option not found</div>} />
-            </Route>
-            <Route path="cart" element={<Cart />} />
-            <Route path="Login" element={<Logincomponents/>}/>
-            <Route path="NewPassword" element={<Authenticate/>}/>
-            <Route path="Register" element={<RegisterComponent/>}/>
+                <Route path="/*" element={<All />} >
+                    <Route index element={<HomeComponent />} />
+                    <Route path="Home" element={<HomeComponent />} />
+                    <Route path="Shop" element={<ShopComponent />} />
+                    <Route path="Checkout" element={<Checkout />} />
+                    <Route path="checkout-success" element={<CheckoutSuccess />} />
+                    <Route path="Contact" element={<ContactComponent />} />
+                    <Route path="Blog" element={<BlogComponent />} />
+                </Route>
+                <Route  element={<AllItem />} >
+                    <Route path=":option" element={<Main />}>
+                        <Route path="*" element={<div>option not found</div>} />
+                    </Route>
+                    <Route path="InformationCustomer" element={<ManageComponents />} />
+                    <Route path="Cart" element={<Cart />} />
+                    <Route path="Login" element={<Logincomponents />} />
+                    <Route path="NewPassword" element={<Authenticate />} />
+                    <Route path="Register" element={<RegisterComponent />} />
+                </Route>
             </Routes>
         );
     }
