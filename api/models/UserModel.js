@@ -150,8 +150,6 @@ class UserModel {
             if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
                 return ResponseUtil.response(true, 'Đăng nhập không thành công', [], ['Email hoặc mật khẩu không chính xác'])
             }
-
-
             
             // nếu có Remember thì giữ đăng nhập 1 tháng, nếu không có thì giữ đăng nhập 1 ngày
             const token = jwt.sign(
@@ -200,9 +198,6 @@ class UserModel {
         if (!objUserInfo.HoTen) {
             arrError.push("Họ tên không được để trống")
         }
-        // if(!objUserInfo.SoDienThoai) {
-        //     arrError.push("Số điện thoại không được để trống")
-        // }
         if (!objUserInfo.Email) {
             arrError.push("Email không được bỏ trống")
         }

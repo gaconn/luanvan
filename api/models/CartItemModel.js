@@ -74,7 +74,7 @@ class CartItemModel {
                 throw new Error('Không thể kết nối tới database')
             }
             if(result[0].affectedRows === 0 ){
-                return ResponseUtil.response(false, 'Cập nhật thất bại')
+                return ResponseUtil.response(false, 'Cập nhật thất bại',[],error.message)
             }
             return ResponseUtil.response(true, 'Thành công')
         } catch (error) {

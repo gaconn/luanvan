@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 import CartAPI from "../../services/API/Cart";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal'
-import Loading from "./loading";
-
 const CartComponent = () => {
     const [cart, setCart] = useState([])
-    //localStorage.removeItem('SessionID')
-    const [updateCart, setUpdateCart] = useState({})
-    const [loading, setLoading] = useState(false);
-    const TongCong = 0
     const fethDataCart = async () => {
         let Session = localStorage.getItem('SessionID')
         console.log(Session)
@@ -32,27 +24,24 @@ const CartComponent = () => {
         }
     }
     const ChangInput = (e, item) => {
-        setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
-        setLoading(true)
-
-        setLoading(false)
-        console.log(cart)
+        const updateData={IDSanPham:item.IDSanPham,IDGioHang:item.IDGioHang,SoLuong:e.target.value}
+        if(updateData){
+            const responseupdate=CartAPI.updateSL( updateData)
+            if(responseupdate){
+                if(responseupdate.success && responseupdate.error.length===0){
+                    fethDataCart()
+                }
+            }
+        }
     }
   
-    const UpdateCart = async (cart, updateCart) => {
-        const update = cart.forEach(element => {
-            if (element.IDSanPham === updateCart.IDSanPham && element.IDGioHang === updateCart.IDGioHang) {
-                element.SoLuong = updateCart.SoLuong
-            }
-        });
-        console.log(cart)
-    }
+
 
   
 
     return (
         <>
-        {loading ?(Loading):(
+        
 
             <section className="shoping-cart spad">
                 <div className="container">
@@ -77,7 +66,7 @@ const CartComponent = () => {
                                                         <img src={process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0]} alt="" style={{ width: 50, height: 50 }} />
                                                         <h5>{item.SanPhamTen}</h5>
                                                     </td>
-                                                    <td className="shoping__cart__price">${item.SanPhamGiaGoc }</td>
+                                                    <td className="shoping__cart__price">{item.SanPhamGiaGoc }VND</td>
                                                     <td className="shoping__cart__quantity">
                                                         <div className="quantity">
                                                             <div className="pro-qty">
@@ -100,12 +89,8 @@ const CartComponent = () => {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="shoping__cart__btns">
-                                <a href="#" className="primary-btn cart-btn">
+                                <a href="/home" className="primary-btn cart-btn">
                                     Tiếp Tục Mua Săm
-                                </a>
-                                <a href="#" className="primary-btn cart-btn cart-btn-right" onClick={() => UpdateCart(cart, updateCart)}>
-                                    <span className="icon_loading" />
-                                    Cập nhật giỏ hàng
                                 </a>
                             </div>
                         </div>
@@ -127,10 +112,10 @@ const CartComponent = () => {
                                 <h5>Tổng số giỏ hàng</h5>
                                 <ul>
                                     <li>
-                                        Tổng phụ <span>$454.98</span>
+                                        Tổng phụ <span>?VND</span>
                                     </li>
                                     <li>
-                                        Tổng cộng <span>$454.98</span>
+                                        Tổng cộng <span>?VND</span>
                                     </li>
                                 </ul>
                                 <a href="#" className="primary-btn">
@@ -141,7 +126,7 @@ const CartComponent = () => {
                     </div>
                 </div>
             </section>
-        )}
+        
         </>
 
     );
