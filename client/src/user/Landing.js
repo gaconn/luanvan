@@ -24,6 +24,7 @@ import Main from "./pages/Main";
 import Checkout from "./components/Checkout"
 import AllItem from "./pages/AllItem";
 import ManageComponents from "./mange";
+import Cart from "./components/Cart"
 
 class Landing extends Component {
     componentDidMount() {
@@ -47,24 +48,23 @@ class Landing extends Component {
     render() {
         return (
             <Routes>
-                <Route path="/*" element={<All />} >
-                    <Route index element={<HomeComponent />} />
-                    <Route path="Home" element={<HomeComponent />} />
-                    <Route path="Shop" element={<ShopComponent />} />
-                    <Route path="Checkout" element={<Checkout />} />
-                    <Route path="checkout-success" element={<CheckoutSuccess />} />
-                    <Route path="Contact" element={<ContactComponent />} />
-                    <Route path="Blog" element={<BlogComponent />} />
-                    <Route path=":option" element={<Main />}>
-                        <Route path="*" element={<div>option not found</div>} />
-                    </Route>
-                </Route>
-                <Route element={< AllItem />} >
-                    <Route path="InformationCustomer" element={< ManageComponents />} />
-                    <Route path="Login" element={<Logincomponents />} />
-                    <Route path="NewPassword" element={<Authenticate />} />
-                    <Route path="Register" element={<RegisterComponent />} />
-                </Route>
+
+            <Route path="/*" element={<All/>} >
+            <Route index element={<HomeComponent/>} />
+            <Route path="Home" element={<HomeComponent />} />
+            <Route path="Shop" element={<ShopComponent/>}/>
+            <Route path="Checkout" element={<Checkout/>}/>
+            <Route path="checkout-success" element={<CheckoutSuccess/>}/>
+            <Route path="Contact" element={<ContactComponent/>}/>
+            <Route path="Blog" element={<BlogComponent/>}/>
+            </Route> 
+            <Route path=":option" element={<Main />}>
+                <Route path="*" element={<div>option not found</div>} />
+            </Route>
+            <Route path="cart" element={<Cart />} />
+            <Route path="Login" element={<Logincomponents/>}/>
+            <Route path="NewPassword" element={<Authenticate/>}/>
+            <Route path="Register" element={<RegisterComponent/>}/>
             </Routes>
         );
     }

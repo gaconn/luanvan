@@ -44,7 +44,7 @@ class ProductController {
                 for (let index = 0; index < dataProduct.length; index++) {
                     PhiVanChuyen += 40000 //mặc định, sau này sửa sau
                     PhuPhi += 0 
-                    var PhiSanPham = PhiVanChuyen + dataProduct[index].GiaGoc * (objCondition.SoLuong ? objCondition.SoLuong : 1)
+                    var PhiSanPham = 40000 + dataProduct[index].GiaGoc * (objCondition.SoLuong ? objCondition.SoLuong : dataProduct[index].ChiTietGioHang_SoLuong)
                     TongGiaTriDonHang += PhiSanPham
                     dataProduct[index].PhiVanChuyen =PhiVanChuyen
                     dataProduct[index].PhiSanPham = PhiSanPham
@@ -54,7 +54,7 @@ class ProductController {
                 for (let index = 0; index < dataProduct.length; index++) {
                     PhiVanChuyen += 40000 //mặc định, sau này sửa sau
                     PhuPhi += 0 
-                    var PhiSanPham = PhiVanChuyen + dataProduct[index].GiaGoc * (dataProduct[index].ChiTietGioHang_SoLuong ? dataProduct[index].ChiTietGioHang_SoLuong : 1)
+                    var PhiSanPham = 40000 + dataProduct[index].GiaGoc * (dataProduct[index].ChiTietGioHang_SoLuong ? dataProduct[index].ChiTietGioHang_SoLuong : 1)
                     TongGiaTriDonHang += PhiSanPham
                     dataProduct[index].PhiVanChuyen =PhiVanChuyen
                     dataProduct[index].PhiSanPham = PhiSanPham

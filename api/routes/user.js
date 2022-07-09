@@ -7,4 +7,7 @@ const UserController = require("../controllers/userController")
     router.post('/login',UserController.login)
     router.post("/register", UserController.Register)
     router.post('/send-mail', UserController.sendResetLinkEmail)
+    router.get('/get-list', UserController.getList)
+    router.delete('/delete', UserController.delete)
+    router.put('/update', UserController.update)
 module.exports = router
