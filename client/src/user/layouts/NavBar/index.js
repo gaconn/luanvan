@@ -42,7 +42,7 @@ const NavbarHeader = () => {
                                         <div className="p-1">{localStorage.getItem("USER_NAME") ?localStorage.getItem("USER_NAME"): "Tài khoản"}</div>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu variant="dark">
-                                        <Dropdown.Item href="#/action-1" active>
+                                        <Dropdown.Item href="/InformationCustomer" active>
                                             Thông tin khách hàng
                                         </Dropdown.Item>
                                         {!localStorage.getItem("UID") && 

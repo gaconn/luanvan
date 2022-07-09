@@ -1,4 +1,7 @@
 import Carousel from 'react-bootstrap/Carousel'
+import img1 from '../../assets/img/banner/banner-1.png'
+import img2 from '../../assets/img/banner/banner-2.png'
+import img3 from '../../assets/img/banner/banner-3.png'
 const Banner = () => {
     return ( 
         
@@ -6,7 +9,7 @@ const Banner = () => {
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="https://phukienxehoi.com.vn/image/cache/catalog/banner1-3-1140x380.jpg"
+            src={img1}
             style={{width:1000,height:500}}
             alt="First slide"
           />
@@ -18,7 +21,7 @@ const Banner = () => {
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="https://phutungotoacb.com/wp-content/uploads/2019/11/phu-tung-oto-chinh-hang-o-dau-tai-ha-noi.jpg"
+            src={img2}
             style={{width:1000,height:500}}
             alt="Second slide"
           />
@@ -31,7 +34,7 @@ const Banner = () => {
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="https://duchungauto.com.vn/user-upload/imgs/phu-tung-xe-hoi-quang-ngai-2.png"
+            src={img3}
             style={{width:1000,height:500}}
             alt="Third slide"
           />

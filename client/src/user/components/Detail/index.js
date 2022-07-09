@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CartAPI from "../../services/API/Cart";
-import ProducAPI from "../../services/API/ProductAPI";
+import ProducAPI from "../../services/API/productAPI";
 import ImageDetail from "./image";
 import uniqid from 'uniqid';
 const DetailComponent = () => {
