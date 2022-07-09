@@ -17,8 +17,24 @@ class UserController {
         return res.json(objResult)
     }
     getDetail = async (req, res) => {
-        console.log("getting");
-         UserModel.get();
+        const data = req.query
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+        try {
+            const condition = {
+                ...data,
+                DaXoa: 0,
+                joinPermission: true
+            }
+            const response = await UserModel.get(condition)
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
     }
 
     login = async(req, res) => {
@@ -69,9 +85,78 @@ class UserController {
               }
                 return res.json(UPDATEMK)
     }
+    
     // ChangePassword=async(req,res)=>{
     //    //ThayDoiPass
     // }
+
+    /**
+     * Method: get
+     * url: /user/get-list
+     */
+
+    getList = async(req, res) => {
+        const query  = req.query
+
+        try {
+            const condition = {
+                ...query, 
+                DaXoa: 0,
+                joinPermission: true,
+                count: true
+            }
+            const response = await UserModel.get(condition)
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+            
+        }
+    }
+
+    /**
+     * Method: delete
+     * url: /user/delete
+     * params: id
+     */
+    delete = async(req, res) => {
+        const id = req.query.id
+        if(!id) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+        try {
+            // const response = await UserModel.update()
+        } catch (error) {
+            
+        }
+    }
+
+    /**
+     * method: put 
+     * url: /user/update
+     * 
+     */
+    update = async (req, res) => {
+        const data = req.body
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+
+        try {
+            const objCondition = {
+                id: data.id
+            }
+            const response = await UserModel.update(data, objCondition)
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
 }
 
 module.exports = new UserController()
