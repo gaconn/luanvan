@@ -59,9 +59,9 @@ class ProductModel {
                 strSelect += _buildSelect(arrFieldCartSelect, 'giohang', 'GioHang_')
 
                 if(objCondition.IDTaiKhoan) {
-                    strWhere += ` and giohang.IDTaiKhoan = ${objCondition.IDTaiKhoan}`
+                    strWhere += ` and giohang.IDTaiKhoan = '${objCondition.IDTaiKhoan}'`
                 }else {
-                    strWhere += ` and giohang.SessionID = ${objCondition.SessionID}`
+                    strWhere += ` and giohang.SessionID = '${objCondition.SessionID}'`
                 }
             }
 

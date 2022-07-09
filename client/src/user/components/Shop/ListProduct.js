@@ -1,30 +1,29 @@
 import { useEffect, useState } from "react";
 import productAPI from "../../services/API/productAPI";
 import { Link } from "react-router-dom";
+import uniqid from 'uniqid';
+import CartAPI from "../../services/API/Cart";
 const List = () => {
     const [product, setProduct] = useState([])
-    const [page, setPage] = useState({ rowCount: 0, now: 1, next: null, prev: null })
     const HandleInfo = (item) => {
         localStorage.setItem('DetailID', item)
     };
     useEffect(() => {
         const fetchProduct = async () => {
-            const productResponse = await productAPI.getAll(page.now)
+            const productResponse = await productAPI.getAll()
             setProduct(productResponse.data)
-            setPage((page) => {
-                if (productResponse.success) {
-                    if (productResponse.data.rowCount) {
-                        let next = (page.now) * 10 < productResponse.data.rowCount ? page.now + 1 : null
-                        let prev = page.now > 1 ? page.now - 1 : null
-                        return { ...page, rowCount: productResponse.data.rowCount, next, prev }
-                    }
-                }
-                return { ...page }
-            })
         }
         fetchProduct()
-    }, [page.now])
-
+    }, [])
+    const handleInfoCart = async (item) => {
+        let SessionID=localStorage.getItem('SessionID')
+        if (!SessionID) {
+            let session = uniqid()
+             SessionID = localStorage.setItem('SessionID', session)
+        }
+        const data = { IDSanPham: item.id, SoLuong: 1, SessionID: SessionID }
+        const addToCart = CartAPI.AddToCart(data)
+    }
     return (
         <>
             {
@@ -53,13 +52,13 @@ const List = () => {
                                         </a>
                                     </li>
                                     <li>
-                                        <Link to="/ProductDetail" >
+                                        <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}   >
                                             <i className="fa fa-retweet" />
                                         </Link>
                                     </li>
                                     <li>
                                         <a href='#'>
-                                            <i className="fa fa-shopping-cart" />
+                                            <i className="fa fa-shopping-cart" onClick={() => handleInfoCart(item)}/>
                                         </a>
                                     </li>
                                 </ul>

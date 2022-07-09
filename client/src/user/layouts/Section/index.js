@@ -1,6 +1,3 @@
-
-import Dropdown from 'react-bootstrap/Dropdown'
-
 const Section = () => {
     return (
         <>
@@ -10,18 +7,6 @@ const Section = () => {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="hero__categories">
-
-                                <Dropdown >
-                                    <Dropdown.Toggle variant='success' id="dropdown-basic"  >
-                                         <i className="fa fa-bars" /> 
-                                        <span>  Tất cả danh mục</span>
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                                    </Dropdown.Menu>
-                                </Dropdown>
                             </div>
                         </div>
                         <div className="col-lg-9">
@@ -40,7 +25,7 @@ const Section = () => {
                                         <i className="fa fa-phone" />
                                     </div>
                                     <div className="hero__search__phone__text">
-                                        <h5>+85 0334596482</h5>
+                                        <h5>+84 0334596482</h5>
                                         <span>thời gian hỗ trợ 24/7</span>
                                     </div>
                                 </div>

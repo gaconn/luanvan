@@ -22,8 +22,8 @@ import CheckoutSuccess from "./components/Checkout/CheckoutSuccess";
 import { WOW } from 'wowjs'
 import Main from "./pages/Main";
 import Checkout from "./components/Checkout"
-import AllItem from "./pages/AllItem";
-import ManageComponents from "./mange";
+import Cart from "./components/Cart"
+import AllItem from './pages/AllItem'
 
 class Landing extends Component {
     componentDidMount() {
@@ -50,17 +50,17 @@ class Landing extends Component {
                 <Route path="/*" element={<All />} >
                     <Route index element={<HomeComponent />} />
                     <Route path="Home" element={<HomeComponent />} />
-                    <Route path="Shop" element={<ShopComponent />} />
                     <Route path="Checkout" element={<Checkout />} />
                     <Route path="checkout-success" element={<CheckoutSuccess />} />
                     <Route path="Contact" element={<ContactComponent />} />
                     <Route path="Blog" element={<BlogComponent />} />
+                </Route>
+                <Route element={<AllItem />}>
                     <Route path=":option" element={<Main />}>
                         <Route path="*" element={<div>option not found</div>} />
                     </Route>
-                </Route>
-                <Route element={< AllItem />} >
-                    <Route path="InformationCustomer" element={< ManageComponents />} />
+                    <Route path="Cart" element={<Cart />} />
+                    <Route path="Shop" element={<ShopComponent />} />
                     <Route path="Login" element={<Logincomponents />} />
                     <Route path="NewPassword" element={<Authenticate />} />
                     <Route path="Register" element={<RegisterComponent />} />

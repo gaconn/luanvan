@@ -1,4 +1,4 @@
-import imgIcon from '../assets/img/icon/icon1.png'
+import imgIcon from '../../assets/img/icon/icon1.png'
 const Information = () => {
     return (
         <>
