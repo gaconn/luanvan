@@ -18,7 +18,7 @@ export const toTimeString = (timestamp) => {
         strDatetime += date.getDate()
     }
 
-    if(date.getMonth() <10) {
+    if((date.getMonth() +1) <10) {
         strDatetime += ` / 0${date.getMonth()+1}`
     } else {
         strDatetime += ' / '+(date.getMonth()+1)

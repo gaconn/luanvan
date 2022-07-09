@@ -12,7 +12,8 @@ const CartComponent = () => {
     const navigate = useNavigate()
     const fethDataCart = async () => {
         let Session = localStorage.getItem('SessionID')
-        const response = await CartAPI.GetCart(Session)
+        let UID = localStorage.getItem('UID')
+        const response = await CartAPI.GetCart({SessionID:Session,IDTaiKhoan: UID})
         console.log(response);
         setCartInfo((cartInfo)=> {
             if(!response || !response.success || response.data.length === 0) {
@@ -141,7 +142,7 @@ const CartComponent = () => {
                                                         <input type="checkbox" name={item.IDSanPham } value={item.IDSanPham} checked={choose[item.IDSanPham ] ? true : ""} onChange= {(e)=>chooseHandler(e, item)}/>
                                                     </td>
                                                     <td className="shoping__cart__item pl-3">
-                                                        <img src={ item.HinhAnh && item.HinhAnh.length >0 ? process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0] : ""} alt="" style={{ width: 50, height: 50 }} />
+                                                        <img src={ item.SanPhamHinhAnh ? process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0] : ""} alt="" style={{ width: 50, height: 50 }} />
                                                         <h5>{item.SanPhamTen}</h5>
                                                     </td>
 

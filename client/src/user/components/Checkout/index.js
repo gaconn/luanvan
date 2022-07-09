@@ -22,7 +22,7 @@ const ChechOutComponent = () => {
             const SoLuong = searchParams.get('soluong')
             const IDTaiKhoan = localStorage.getItem('UID')
             const SessionID = localStorage.getItem('SessionID')
-            const IDGioHang = localStorage.getItem('IDGioHang')
+            const IDGioHang = searchParams.get('IDGioHang')
             var cartResponse 
 
             if(fromCart) { //nếu checkout từ cart
@@ -65,7 +65,7 @@ const ChechOutComponent = () => {
         
         setNotify((noti) => {
             if(!response || !response.success) {
-                return {show: true, message: "Đặt hàng không thành công.Vui lòng kiểm tra thông tin.", success: response.success}
+                return {show: true, message: "Đặt hàng không thành công. Không đủ sản phẩm trong kho", success: response.success}
             }
             return noti
         })
