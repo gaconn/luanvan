@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
 import CartAPI from "../../services/API/Cart";
-
-const CartComponent = () => {
-    const [cart, setCart] = useState([])
-
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal'
-import Loading from "./loading";
-import {AiOutlinePlusSquare} from "react-icons/ai"
 import { Toast, ToastContainer } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 const CartComponent = () => {
     const [cart, setCart] = useState([])
     //localStorage.removeItem('SessionID')
-    const [updateCart, setUpdateCart] = useState({})
     const [loading, setLoading] = useState(false);
     const [choose, setChoose] = useState({})
     const [notify, setNotify] = useState({show: false, message: "", success: false})
