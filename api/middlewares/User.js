@@ -4,7 +4,7 @@ const GeneralUtil = require("../utils/GeneralUtil")
 
 const User = {
     CheckToken: (req, res, next) => {
-        const token = req.header('Authorization')
+        const token = req.headers['authorization']
   
 
         if(!token) {
@@ -18,6 +18,7 @@ const User = {
             }
             if(!GeneralUtil.checkIsEmptyObject(decoded)) {
                 req.Email = decoded.Email
+                req.Permission = decoded.IDCapDoTaiKhoan ? decoded.IDCapDoTaiKhoan : 4;
             }
 
             next()

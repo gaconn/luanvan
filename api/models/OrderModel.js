@@ -449,7 +449,7 @@ class OrderModel {
         try {
             var objOrder = {
                 IDTaiKhoan: objData.IDTaiKhoan ? objData.IDTaiKhoan : undefined,
-                IDPhuongThucThanhToan: extraInfo.IDPhuongThucThanhToan ? extraInfo.IDPhuongThucThanhToan : undefined,
+                IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan ? objData.IDPhuongThucThanhToan : undefined,
                 ThoiGianCapNhat: new Date().getTime()/1000,
                 DaXoa: objData.DaXoa ? objData.DaXoa : undefined,
                 TongGiaTriDonHang: objData.TongGiaTriDonHang ? objData.TongGiaTriDonHang : undefined,
