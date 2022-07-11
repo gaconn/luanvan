@@ -14,53 +14,59 @@ import QuanLyPhuongThucThanhToan from "./Item/QuanLyPhuongThucThanhToan"
 import QuanLyNguoiDung from "./Item/QuanLyNguoiDung"
 import QuanLyPhanQuyen from "./Item/QuanLyPhanQuyen"
 import QuanLyTheLoai from "./Item/QuanLyTheLoai"
+import Account from "./Item/Account"
 const SideBar = () => {
     
     return (
         <>
-            <Container>
-            <Content>
+            <Container className="side-bar-container">
+            <Content className="side-bar-content">
                 <Accordion defaultActiveKey="0">
                 <List className="side-bar-list-1">
                     <Home/>
                     
-                    <QuanLyKhoHang/>
+                    { localStorage.getItem('USER_LEVEL') < 4 && <QuanLyKhoHang/>}
 
-                    <QuanLyDonHang />
-                    
-                    <QuanLyNhaCungCap />
-                    
-                    <QuanLyGianHang />
-                    
-                    <QuanLyDoiTra />
-                    
-                    <QuanLyKhuyenMai/>
-                    
-                    <QuanLyPhuongThucThanhToan/>
-                    
-                    <QuanLyNguoiDung/>
-                    
-                    <QuanLyPhanQuyen/>
+                    { localStorage.getItem('USER_LEVEL') < 3 &&
+                        <>
+                            <QuanLyDonHang />
+                        
+                            <QuanLyNhaCungCap />
+                            
+                            <QuanLyGianHang />
+                            
+                            <QuanLyDoiTra />
+                            
+                            <QuanLyKhuyenMai/>
+                            
+                            <QuanLyPhuongThucThanhToan/>
+                            
+                            <QuanLyTheLoai />
+                            
+                        </>
+                    }
+                    {   localStorage.getItem('USER_LEVEL') < 2 &&
+                        <>
+                            <QuanLyNguoiDung/>
+                            
+                            <QuanLyPhanQuyen/>
+                        </>
+                    }
 
-                    <QuanLyTheLoai />
                 </List>
                 </Accordion>
-                <List>
-                    <Item>
-                        <div className="side-bar-item-control">
-                            <span className="side-bar-item-icon"><RiAccountCircleLine /></span>
-                            <span className="side-bar-item-label">Account</span>
-                            <span className="side-bar-item-icon-expand"><AiOutlinePlus/></span>    
-                        </div>
-                    </Item>
-                    <Item>
-                        <div className="side-bar-item-control">
-                            <span className="side-bar-item-icon"><FiSettings /></span>
-                            <span className="side-bar-item-label">Setting</span>
-                            <span className="side-bar-item-icon-expand"><AiOutlinePlus/></span>
-                        </div>
-                    </Item>
-                </List>
+                <Accordion defaultActiveKey="0">
+                    <List>
+                        <Account />
+                        <Item>
+                            <div className="side-bar-item-control">
+                                <span className="side-bar-item-icon"><FiSettings /></span>
+                                <span className="side-bar-item-label">Setting</span>
+                                <span className="side-bar-item-icon-expand"><AiOutlinePlus/></span>
+                            </div>
+                        </Item>
+                    </List>
+                </Accordion>
             </Content>
         </Container>
         </>

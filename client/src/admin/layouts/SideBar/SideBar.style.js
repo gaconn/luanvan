@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     height: 100vh;
+    min-width: 60px;
     width: fit-content;
     background: #2a3542;
     font-size: 0.8rem;
