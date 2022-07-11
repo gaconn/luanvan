@@ -15,7 +15,7 @@ const QuanLyTheLoai = () => {
         <Item>
             <div className="side-bar-item-control">
                 <IconTagToggle eventKey="10"><BiCategory /></IconTagToggle>
-                <span className="side-bar-item-label">Quản lý thể loại</span>
+                <span className="side-bar-item-label">Quản lý ngành hàng</span>
                 <ListTagToggle eventKey="10"><AiOutlinePlus/></ListTagToggle>
             </div>
             <Accordion.Collapse eventKey="10">
