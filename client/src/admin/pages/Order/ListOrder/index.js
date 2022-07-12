@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom"
 import { LinkOrderAction } from "../../../configs/define"
 import Loading from "../../../components/Loading";
 import orderAPI from "../../../services/API/orderAPI";
-import { StatusOrder } from "../../../services/utils/General";
+import { colorTextStatus, StatusOrder, toTimeString } from "../../../services/utils/General";
 const ListOrder = () => {
     const [order, setOrder] = useState([])
     const [notify, setNotify] = useState({show: false, message: "", success: false})
@@ -126,7 +126,6 @@ const ListOrder = () => {
                         {
                             order && order.map((item, index)=> {
                                 
-                                var createdDate = new Date(item.ThoiGianTao * 1000)
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
@@ -134,8 +133,8 @@ const ListOrder = () => {
                                             <span>{item.ThongTinDatHang && item.ThongTinDatHang.Email ? item.ThongTinDatHang.Email : item.TaiKhoan_Email}</span> <br/>
                                             <span>{item.ThongTinDatHang && item.ThongTinDatHang.SoDienThoai ? item.ThongTinDatHang.SoDienThoai : item.TaiKhoan_SoDienThoai}</span>
                                         </td>
-                                        <td className={"text-danger"}>{StatusOrder[item.TrangThai]}</td>
-                                        <td>{`${createdDate.getDate()} / ${createdDate.getMonth()} / ${createdDate.getFullYear()}`}</td>
+                                        <td className={`text-${colorTextStatus[item.TrangThai]}`}>{StatusOrder[item.TrangThai]}</td>
+                                        <td>{toTimeString(item.ThoiGianTao * 1000)}</td>
                                         <td>{item.TongGiaTriDonHang}</td>
                                         <td style={{color: "red"}}>{item.MaChietKhau ? item.MaChietKhau : "Không"}</td>
                                         <td className="d-flex" style={{height: "100%"}}>

@@ -47,6 +47,7 @@ class Landing extends Component {
     render() {
         return (
             <Routes>
+
                 <Route path="/*" element={<All />} >
                     <Route index element={<HomeComponent />} />
                     <Route path="Home" element={<HomeComponent />} />

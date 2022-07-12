@@ -30,6 +30,7 @@ const Authenticate = () => {
                 if(data.token) {
                     token.setToken(data.token)
                     localStorage.setItem('USER_NAME', data.HoTen)
+                    localStorage.setItem('USER_LEVEL', data.IDCapDoTaiKhoan)
                     navigate("../home")
                 }
                     

@@ -203,9 +203,6 @@ class CategoryModel {
             strWhere += ` and ${this.table}.HoatDong = ${objCondition.HoatDong}`
         }
 
-        if (objCondition.hasOwnProperty('IDTheLoaiCha') && objCondition.IDTheLoaiCha) {
-            strWhere += ` and ${this.table}.TrangThai = ${objCondition.TrangThai}`
-        }
         if (objCondition.hasOwnProperty('ThoiGianTao')) {
             strWhere += ` and ${this.table}.ThoiGianTao > ${objCondition.ThoiGianTao}`
         }

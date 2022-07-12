@@ -47,7 +47,7 @@ class OrderModel {
                 strSelect += _buildSelect(arrFieldPaymentMethodSelect, 'phuongthucthanhtoan', 'PhuongThucThanhToan_')
             }
             
-            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} order by ${this.table}.ThoiGianTao desc limit 10 offset ${offsetStart} `
 
             const response = await DBConnection.query(query)
             const countResponse  = await DBConnection.query('select COUNT(id) rowCount from donhang')
@@ -222,7 +222,7 @@ class OrderModel {
             }
 
             if(productCount === 0) {
-                throw new Error('Không có sản phẩm nào có thể thanh toán được.')
+                return ResponseUtil.response(false, "Không có sản phẩm nào có thể đặt hàng", [], arrErrors)
             }
             const objOrder = {
                 IDPhuongThucThanhToan: extraInfo.IDPhuongThucThanhToan,
@@ -449,7 +449,7 @@ class OrderModel {
         try {
             var objOrder = {
                 IDTaiKhoan: objData.IDTaiKhoan ? objData.IDTaiKhoan : undefined,
-                IDPhuongThucThanhToan: extraInfo.IDPhuongThucThanhToan ? extraInfo.IDPhuongThucThanhToan : undefined,
+                IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan ? objData.IDPhuongThucThanhToan : undefined,
                 ThoiGianCapNhat: new Date().getTime()/1000,
                 DaXoa: objData.DaXoa ? objData.DaXoa : undefined,
                 TongGiaTriDonHang: objData.TongGiaTriDonHang ? objData.TongGiaTriDonHang : undefined,

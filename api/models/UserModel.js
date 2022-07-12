@@ -2,9 +2,10 @@ const dbconnect = require("./DBConnection")
 const GeneralUtil = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
 const bcrypt = require("bcrypt")
-const { buildFieldQuery } = require("../utils/DBUtil")
+const { buildFieldQuery, _buildSelect, object_filter } = require("../utils/DBUtil")
 const jwt = require("jsonwebtoken")
 const mailConfig = require('../utils/mailConfig/mailConfig')
+const { checkIsEmptyObject } = require("../utils/GeneralUtil")
 class UserModel {
     constructor() { 
         this.table = 'taikhoan'
@@ -53,7 +54,7 @@ class UserModel {
                 SoNha: objUserInfo.SoNha,
                 ThoiGianTao: new Date().getTime() / 1000,
                 DaXoa: 0,
-                IDCapDoTaiKhoan: 1,
+                IDCapDoTaiKhoan: 4,
 
             }
 
@@ -75,7 +76,7 @@ class UserModel {
             const arrAddUserResult = await dbconnect.query(query, [arrValues])
 
             if (arrAddUserResult[0].affectedRows > 0) {
-                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa }, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
+                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa, IDCapDoTaiKhoan: objData.IDCapDoTaiKhoan }, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
                 return ResponseUtil.response(true, "Tạo tài khoản thành công", token)
             }
 
@@ -109,15 +110,21 @@ class UserModel {
 
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 10 offset ${offsetStart}`
             const result =await dbconnect.query(query)
-            const countUser = await dbconnect.query(`select COUNT(id) from ${this.table}`)
             
-            if(!result || !countUser || !result[0] || !countUser[0]) {
+            if(!result || !result[0]) {
                 throw new Error('Lỗi kết nối database')
             }
+            if(objCondition.count) {
+                const countUser = await dbconnect.query(`select COUNT(id) rowCount from ${this.table} ${strWhere}`)
 
-            return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
+                if(!countUser || !countUser[0]) {
+                    throw new Error('Lỗi kết nối database')
+                }
+                return ResponseUtil.response(true, 'Thành công', [result[0], countUser[0][0]])
+            }
+            return ResponseUtil.response(true, 'Thành công', result[0]) 
         } catch (error) {
-            console.log(error);
+            return ResponseUtil.response(false, error.message)
         }
     }
 
@@ -155,7 +162,7 @@ class UserModel {
             
             // nếu có Remember thì giữ đăng nhập 1 tháng, nếu không có thì giữ đăng nhập 1 ngày
             const token = jwt.sign(
-                { Email: objUserInfo.Email, DaXoa: objUserInfo.DaXoa },
+                { Email: objUserInfo.Email, DaXoa: objUserInfo.DaXoa , IDCapDoTaiKhoan: objUserInfo.IDCapDoTaiKhoan},
                 process.env.JSON_WEB_TOKEN_SECRET_KEY,
                 { expiresIn: objDataUser.Remember === 1 ? 60 * 60 * 24 * 30 : '1h' }
             )
@@ -263,7 +270,7 @@ class UserModel {
             const arrAddUserResult = await dbconnect.query(query, [arrValues])
 
             if (arrAddUserResult[0].affectedRows > 0) {
-                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa }, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
+                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa , IDCapDoTaiKhoan: objData.IDCapDoTaiKhoan}, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
                 return ResponseUtil.response(true, "Tạo tài khoản thành công", [{ ...objData, token }])
             }
 
@@ -350,6 +357,52 @@ class UserModel {
 
         } catch (error) {
             return ResponseUtil.response(false, "Lỗi hệ thống, Vui lòng liên hệ chăm sóc khách hàng.", [], [error.message])
+        }
+    }
+
+    update = async (objData, objCondition) => {
+        const error = []
+        if(checkIsEmptyObject(objData)) {
+            error.push('Dữ liệu cần sửa không hợp lệ')
+        }
+        if(checkIsEmptyObject(objCondition)) {
+            error.push('Thiếu điều kiện cập nhật')
+        }
+
+        if(error.length >0) {
+            return ResponseUtil.response(false, 'Dữ liệu không hợp lệ', [], error)
+        }
+
+        try {
+
+            var dataUpdate = {
+                HoTen: objData.HoTen ?  objData.HoTen : undefined,
+                Email: objData.Email ? objData.Email : undefined,
+                SoDienThoai: objData.SoDienThoai ? objData.SoDienThoai : undefined,
+                NgaySinh: objData.NgaySinh ? objData.NgaySinh : undefined,
+                TinhThanh: objData.TinhThanh ? objData.TinhThanh :undefined,
+                QuanHuyen: objData.QuanHuyen ? objData.QuanHuyen : undefined,
+                PhuongXa : objData.PhuongXa ? objData.PhuongXa :undefined,
+                SoNha : objData.SoNha ? objData.SoNha : undefined,
+                TrangThai: objData.TrangThai ? objData.TrangThai : undefined,
+                IDCapDoTaiKhoan:objData.IDCapDoTaiKhoan ? objData.IDCapDoTaiKhoan : undefined ,
+                ThoiGianCapNhat : new Date().getTime()/1000
+            }
+            
+            dataUpdate = object_filter(dataUpdate)
+            const query = `update taikhoan set ? where ?`
+
+            const arrDataResponse = await dbconnect.query(query, [dataUpdate, objCondition])
+
+            if(!arrDataResponse || !arrDataResponse[0]) {
+                return ResponseUtil.response(false, 'Truy xuất database không thành công', [], ['Có lỗi xảy ra khi truy xuất database'])
+            }
+            if(arrDataResponse[0].affectedRows === 0) {
+                return ResponseUtil.response(false, 'Thất bại')
+            }
+            return ResponseUtil.response(true, 'Sửa dữ liệu tài khoản thành công')
+        } catch (error) {
+            return ResponseUtil.response(false, error.message, [], [error])
         }
     }
 }

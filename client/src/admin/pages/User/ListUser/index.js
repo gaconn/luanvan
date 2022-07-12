@@ -1,45 +1,49 @@
+import {Container, Content } from './ListUser.style'
+
+
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from 'react-bootstrap'
+import Page from '../../../components/Page'
+import FilterContainer from '../../../components/FilterContainer'
+import { useNavigate } from 'react-router-dom'
+import userAPI from '../../../services/API/userAPI'
+import { LinkUserAction } from '../../../configs/define'
 import { BsPencil } from 'react-icons/bs'
 import { MdDelete } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
-import FilterContainer from '../../../components/FilterContainer'
-import Loading from '../../../components/Loading'
-import Page from '../../../components/Page'
-import { LinkProductAction } from '../../../configs/define'
-import productAPI from '../../../services/API/productAPI'
-import { Container, Content } from './DanhSachSanPham.style'
-const DanhSachSanPham = () => {
-    const [product, setProduct] = useState([])
+import { toTimeString } from '../../../services/utils/General'
+
+const ListUser = () => {
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
+    const [user, setUser] = useState([])
     let navigate = useNavigate()
     useEffect(()=> {
-        const fetchProduct = async() => {
+        const fetchUser = async() => {
             setLoading(true)
-            const productResponse = await productAPI.getAll(page.now)
-            setProduct(productResponse.data)
+            const userResponse = await userAPI.getList({page: page.now})
+            console.log(userResponse);
+            setUser(userResponse.data[0])
             setNotify((notify)=> {
-                if(!productResponse.success) {
-                    return {show: true, message: productResponse.message, success: productResponse.success}
+                if(!userResponse.success) {
+                    return {show: true, message: userResponse.message, success: userResponse.success}
                 }
                 return notify
             })
             setPage((page) => {
-                if(productResponse.success) {
-                    if(productResponse.data.rowCount) {
-                        let next = (page.now) * 10 < productResponse.data.rowCount ? page.now+1: null
+                if(userResponse.success) {
+                    if(userResponse.data[1] && userResponse.data[1].rowCount) {
+                        let next = (page.now) * 10 < userResponse.data[1].rowCount ? page.now+1: null
                         let prev = page.now > 1 ? page.now -1 : null
-                        return {...page,rowCount: productResponse.data.rowCount, next, prev}       
+                        return {...page,rowCount: userResponse.data[1].rowCount, next, prev}       
                     }
                 }
                 return {...page}
             })
             setLoading(false)
         }
-        fetchProduct()
+        fetchUser()
     },[page.now])
     const onClickPageHandler = (e) => {
         const pageValue = e.target.innerText *1;
@@ -51,39 +55,36 @@ const DanhSachSanPham = () => {
         setDel({...del, show: false})
     }
     const handleDeleteAccept = async() => {
-        const deleteProductResponse = await productAPI.delete(del.id)
+        const deleteUserResponse = await userAPI.delete(del.id)
         setDel({...del, show: false}) //ẩn dialog
         setNotify(() => {
-            if(!deleteProductResponse || !deleteProductResponse.success) {
+            if(!deleteUserResponse || !deleteUserResponse.success) {
                 return {...notify, show: true, message: "Có lỗi xảy ra. Vui lòng thử lại", success: false}
             }
-            return {...notify, show: true, message: deleteProductResponse.message, success: deleteProductResponse.success, errors: deleteProductResponse.errors}
+            return {...notify, show: true, message: deleteUserResponse.message, success: deleteUserResponse.success, errors: deleteUserResponse.errors}
         })
 
-        setProduct(() => {
-            if(deleteProductResponse&&deleteProductResponse.success) {
-                var tmpProduct = [...product.data]
-                tmpProduct= tmpProduct.filter((item)=> item.id !== del.id)
-                return {data: tmpProduct, rowCount: product.rowCount -1}
+        setUser(() => {
+            if(deleteUserResponse.success) {
+                var tmpUser = [...user.data]
+                tmpUser= tmpUser.filter((item)=> item.id !== del.id)
+                return {data: tmpUser, rowCount: user.rowCount -1}
                 
             }
-            return {...product}
+            return {...user}
         })
     }
     const onControlClick = (e, id, action) => {
         if(action === "update") {
-            navigate(LinkProductAction.product_update+`?id=${id}`, {replace:true})
+            navigate(LinkUserAction.user_update+`?id=${id}`)
             return
         }
 
         setDel({...del, show: true, id: id})
     }
-    if(loading) {
-        return <Loading />
-    }
-    return (
-        <Container>
-            <ToastContainer position="top-end" className="p-3 position-fixed">
+  return (
+    <Container>
+            <ToastContainer position="top-end" className="p-3">
                 <Toast bg={notify.success ? "success": "danger"} onClose={()=> setNotify({...notify, show: false})} show={notify.show} delay={3000} autohide>
                 <Toast.Header>
                     <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
@@ -93,13 +94,13 @@ const DanhSachSanPham = () => {
                 <Toast.Body>{notify.message ? notify.message : ""}</Toast.Body>
                 </Toast>
             </ToastContainer>
-            <FilterContainer>
+                <FilterContainer>
                     <Form className="filter-form">
                         <Row className="mb-3">
                             <Col>
                                 <Row>
                                     <Form.Label column="lg" lg={4} className="fs-6">
-                                        ID Sản phẩm
+                                        ID Nhà cung cấp
                                     </Form.Label>
                                     <Col>
                                         <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
@@ -109,7 +110,7 @@ const DanhSachSanPham = () => {
                             <Col>
                                 <Row>
                                     <Form.Label column="lg" lg={4} className="fs-6">
-                                        Tên sản phẩm
+                                        Tên cung cấp
                                     </Form.Label>
                                     <Col>
                                         <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
@@ -140,29 +141,30 @@ const DanhSachSanPham = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Tên</th>
-                            <th>Hình</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Ngày tạo</th>
                             <th>Trạng thái</th>
-                            <th>Số lượng sản phẩm</th>
-                            <th>Nhà cung cấp</th>
-                            <th>Thể loại</th>
+                            <th>Phân quyền</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            product && product.data && product.data.map && product.data.map((item, index)=> {
+                            user &&  user.map((item, index)=> {
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
-                                        <td>{item.Ten}</td>
-                                        <td>{item.HinhAnh && JSON.parse(item.HinhAnh) && <img key={index} width="100" height={40} alt="product_image" src={`${process.env.REACT_APP_API_HOST_URL}/public/images/${JSON.parse(item.HinhAnh)[0]}`} />}</td>
-                                        <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Ngưng hoạt động"}</td>
-                                        <td>{item.SoLuong}</td>
-                                        <td>{item.NhaCungCap_Ten}</td>
-                                        <td>{item.TheLoai_Ten}</td>
+                                        <td>{item.HoTen}</td>
+                                        <td>{item.Email}</td>
+                                        <td>{item.SoDienThoai}</td>
+                                        <td>{toTimeString(item.ThoiGianTao *1000)}</td>
+                                        <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Vô hiệu hóa"}</td>
+                                        <td>{item.CapDoTaiKhoan_Ten ? item.CapDoTaiKhoan_Ten : "User"}</td>
                                         <td className="d-flex">
-                                            <span className="product-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
-                                            <span className="product-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
+                                            <span className="user-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
+                                            <span className="user-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
                                         </td>
                                     </tr>
                                 )
@@ -192,7 +194,7 @@ const DanhSachSanPham = () => {
                 </Modal.Footer>
             </Modal>
         </Container>
-    )
+  )
 }
 
-export default DanhSachSanPham
+export default ListUser

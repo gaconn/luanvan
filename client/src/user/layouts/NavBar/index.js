@@ -15,7 +15,6 @@ const NavbarHeader = () => {
         token.deleteToken()
         navigate("/home", {replace:true})
     }
-    console.log(localStorage.getItem("UID"));
     return (
         <>
             <Navbar  bg="light" variant="light" expand="lg" sticky="top">
@@ -42,9 +41,9 @@ const NavbarHeader = () => {
                                         <div className="p-1">{localStorage.getItem("USER_NAME") ?localStorage.getItem("USER_NAME"): "Tài khoản"}</div>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu variant="dark">
-                                        <Dropdown.Item href="/InformationCustomer" active>
+                                        {localStorage.getItem("UID") && <Dropdown.Item href="/InformationCustomer" active>
                                             Thông tin khách hàng
-                                        </Dropdown.Item>
+                                        </Dropdown.Item>}
                                         {!localStorage.getItem("UID") && 
                                         <>
                                             <Dropdown.Item  href="/Login"><i className="fa fa-user" aria-hidden="true"></i>&nbsp;Đăng nhập</Dropdown.Item>
@@ -52,7 +51,7 @@ const NavbarHeader = () => {
                                         </>
                                         }
                                         <Dropdown.Divider />
-                                        <Dropdown.Item onClick={logoutHandler}><i className="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Đăng xuất</Dropdown.Item>
+                                        {localStorage.getItem("UID") &&<Dropdown.Item onClick={logoutHandler}><i className="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Đăng xuất</Dropdown.Item>}
                                     </Dropdown.Menu>
                                 </Dropdown>
                             

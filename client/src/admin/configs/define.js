@@ -4,7 +4,8 @@ export const LinkPage = {
     supplier : "/manage/supplier",
     category : "/manage/category",
     product : "/manage/product",
-    order: "/manage/order"
+    order: "/manage/order",
+    user: "/manage/user"
 }
 export const LinkSupplierAction = {
     supplier_add:LinkPage.supplier + "/add",
@@ -30,4 +31,9 @@ export const LinkProductAction = {
 export const LinkOrderAction = {
     order_list: LinkPage.order + '/list',
     order_detail: LinkPage.order + '/detail'
+}
+
+export const LinkUserAction = {
+    user_list: LinkPage.user + "/list",
+    user_update: LinkPage.user + "/update"
 }

@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const Container = styled.div`
     width: 100%;
     min-width: 500px;
+    max-width: 1400px;
     overflow: scroll;
     ::-webkit-scrollbar{
         width: 4px;

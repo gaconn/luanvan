@@ -5,6 +5,9 @@ const ProtectedPage = () => {
     if(!localStorage.getItem("USER_NAME")) {
         return <Navigate to='auth' state={{from: location}} replace />
     }
+    if(!localStorage.getItem('USER_LEVEL') || localStorage.getItem('USER_LEVEL') > 3) {
+        return <Navigate to={'permission-denied'} replace/>
+    }
     return <Outlet />
 }
 

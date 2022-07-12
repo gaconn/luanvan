@@ -3,6 +3,8 @@ import { AiOutlinePlus } from "react-icons/ai"
 import { BiUserPlus } from "react-icons/bi"
 import { FaUserAlt } from "react-icons/fa"
 import { RiFolderUserLine } from "react-icons/ri"
+import { Link } from "react-router-dom"
+import { LinkUserAction } from "../../../configs/define"
 import IconTagToggle from "../IconTagToggle"
 import ListTagToggle from "../ListTagToggle"
 import { Item, List } from "../SideBar.style"
@@ -19,10 +21,10 @@ const QuanLyNguoiDung = () => {
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={`${LinkUserAction.user_list}`} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><RiFolderUserLine /></span>
                                 <span className="side-bar-item-label">Danh sách người dùng</span>
-                            </div>
+                            </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
                             <div className="side-bar-item-control">
