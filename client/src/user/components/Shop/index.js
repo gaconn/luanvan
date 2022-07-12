@@ -5,7 +5,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Tree from './Tree'
 import categoryAPI from "../../services/API/CategoryAPI";
 import PaginationShop from "./page";
-import productAPI from "../../services/API/productAPI";
+import productAPI from "../../services/API/ProductAPI";
 import './search.css'
 import Search from "./SearchProduct";
 const ShopComponent = () => {

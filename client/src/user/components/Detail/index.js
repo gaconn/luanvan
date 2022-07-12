@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CartAPI from "../../services/API/Cart";
-import ProducAPI from "../../services/API/productAPI";
+import ProducAPI from "../../services/API/ProductAPI";
 import ImageDetail from "./image";
 import uniqid from 'uniqid';
 const DetailComponent = () => {
@@ -37,11 +37,13 @@ const DetailComponent = () => {
 
     const handleInfoCart = async (item, CartSL) => {
         let SessionID=localStorage.getItem('SessionID')
-        if (!SessionID) {
+        let UID = localStorage.getItem('UID')
+        if (!SessionID && !UID) {
             let session = uniqid()
-             SessionID = localStorage.setItem('SessionID', session)
+            localStorage.setItem('SessionID', session)
+            SessionID = localStorage.getItem('SessionID')
         }
-        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong, SessionID: SessionID }
+        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong, SessionID: SessionID, IDTaiKhoan: UID }
         const addToCart = CartAPI.AddToCart(data)
     }
 

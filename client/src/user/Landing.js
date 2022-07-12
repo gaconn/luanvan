@@ -25,7 +25,6 @@ import Checkout from "./components/Checkout"
 import Cart from "./components/Cart"
 import AllItem from './pages/AllItem'
 import ManageComponents from "./components/mange";
-
 class Landing extends Component {
     componentDidMount() {
         const wow = new WOW({
@@ -69,7 +68,6 @@ class Landing extends Component {
                     <Route path="NewPassword" element={<Authenticate />} />
                     <Route path="Register" element={<RegisterComponent />} />
                 </Route>
-                
             </Routes>
         );
     }

@@ -1,12 +1,21 @@
 export const StatusOrder = {
     0 : "Chờ kiểm duyệt",
-    1: "Đang vận chuyển",
-    2: "Đã chuyển hàng",
-    3: "Chờ đổi trả",
-    4: "Đã hoàn thành",
-    5: "Đã hủy"
+    1 : "Đã kiểm duyệt",
+    2: "Đang vận chuyển",
+    3: "Đã chuyển hàng",
+    4: "Chờ đổi trả",
+    5: "Đã hoàn thành",
+    6: "Đã hủy"
 }
-
+export const colorTextStatus = {
+    0: "danger",
+    1: "info",
+    2: "info",
+    3: "success",
+    4: "warning",
+    5: "success",
+    6: "danger",
+}
 export const toTimeString = (timestamp) => {
     const date = new Date(timestamp)
     if(!date) return ''
@@ -18,7 +27,7 @@ export const toTimeString = (timestamp) => {
         strDatetime += date.getDate()
     }
 
-    if(date.getMonth() <10) {
+    if((date.getMonth() +1) <10) {
         strDatetime += ` / 0${date.getMonth()+1}`
     } else {
         strDatetime += ' / '+(date.getMonth()+1)

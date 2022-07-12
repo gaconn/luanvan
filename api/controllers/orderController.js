@@ -150,6 +150,31 @@ class OrderController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
+
+    /**
+     * Method: put
+     * url: order/change-status
+     * params: {id, TrangThai}
+     */
+    changeStatus = async (req, res)=> {
+        const data= req.body
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hơp lệ'))
+        }
+
+        if(!data.id || !data.TrangThai) {
+            return res.json(ResponseUtil.response(false, 'Dữ liệu không hợp lệ'))
+        }
+        try {
+            const response = await OrderModel.update(data, {id: data.id})
+            if(!response) {
+                throw new Error('Không thể kết nối với database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
 }
 
 module.exports = new OrderController()

@@ -54,7 +54,7 @@ class UserModel {
                 SoNha: objUserInfo.SoNha,
                 ThoiGianTao: new Date().getTime() / 1000,
                 DaXoa: 0,
-                IDCapDoTaiKhoan: 1,
+                IDCapDoTaiKhoan: 4,
 
             }
 
@@ -76,7 +76,7 @@ class UserModel {
             const arrAddUserResult = await dbconnect.query(query, [arrValues])
 
             if (arrAddUserResult[0].affectedRows > 0) {
-                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa }, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
+                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa, IDCapDoTaiKhoan: objData.IDCapDoTaiKhoan }, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
                 return ResponseUtil.response(true, "Tạo tài khoản thành công", token)
             }
 
@@ -162,7 +162,7 @@ class UserModel {
             
             // nếu có Remember thì giữ đăng nhập 1 tháng, nếu không có thì giữ đăng nhập 1 ngày
             const token = jwt.sign(
-                { Email: objUserInfo.Email, DaXoa: objUserInfo.DaXoa },
+                { Email: objUserInfo.Email, DaXoa: objUserInfo.DaXoa , IDCapDoTaiKhoan: objUserInfo.IDCapDoTaiKhoan},
                 process.env.JSON_WEB_TOKEN_SECRET_KEY,
                 { expiresIn: objDataUser.Remember === 1 ? 60 * 60 * 24 * 30 : '1h' }
             )
@@ -270,7 +270,7 @@ class UserModel {
             const arrAddUserResult = await dbconnect.query(query, [arrValues])
 
             if (arrAddUserResult[0].affectedRows > 0) {
-                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa }, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
+                const token = jwt.sign({ Email: objData.Email, DaXoa: objData.DaXoa , IDCapDoTaiKhoan: objData.IDCapDoTaiKhoan}, process.env.JSON_WEB_TOKEN_SECRET_KEY, { expiresIn: '24h' })
                 return ResponseUtil.response(true, "Tạo tài khoản thành công", [{ ...objData, token }])
             }
 

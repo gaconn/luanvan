@@ -4,10 +4,12 @@ import Auth from "./pages/Auth"
 import ProtectedPage from "./services/utils/ProtectedPage"
 import 'bootstrap/dist/css/bootstrap.css';
 import Main from "./pages"
+import Denied from "./pages/Denied";
 const Landing = () => {
     return <>
         
         <Routes>
+            <Route path="permission-denied" element= {<Denied />} />
             <Route path="" element={<Auth />} />
             <Route path="auth" element= {<Auth />} />
             <Route element={<ProtectedPage />}>

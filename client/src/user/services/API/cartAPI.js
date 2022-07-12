@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const cartUrl = process.env.REACT_APP_API_HOST_URL + "/product"
+const cartUrl = process.env.REACT_APP_API_HOST_URL + "/cart"
 
 const cartAPI = {
     getCart: async(params) => {
