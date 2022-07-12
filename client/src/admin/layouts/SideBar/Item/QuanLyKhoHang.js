@@ -3,6 +3,8 @@ import { AiOutlinePlus } from "react-icons/ai"
 import { BiAddToQueue } from "react-icons/bi"
 import { BsHouseDoor } from "react-icons/bs"
 import { RiStackLine, RiStackOverflowFill } from "react-icons/ri"
+import { Link } from "react-router-dom"
+import { LinkWarehouseAction } from "../../../configs/define"
 import IconTagToggle from "../IconTagToggle"
 import ListTagToggle from "../ListTagToggle"
 import { Item, List } from "../SideBar.style"
@@ -19,22 +21,22 @@ const QuanLyKhoHang = () => {
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub side-1" id="side-bar-item-sub-1" key="1">
-                            <div className="side-bar-item-control" >
+                            <Link to={LinkWarehouseAction.in_warehouse} className="side-bar-item-control" >
                                 <span className="side-bar-item-icon-sub"><RiStackLine /></span>
-                                <span className="side-bar-item-label" >Danh sách sản phẩm trong kho</span>
-                            </div>
+                                <span className="side-bar-item-label" >Danh sách đơn hàng trong kho</span>
+                            </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkWarehouseAction.exported_warehouse} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><RiStackOverflowFill /></span>
-                                <span className="side-bar-item-label">Danh sách sản phẩm xuất kho</span>
-                            </div>
+                                <span className="side-bar-item-label">Danh sách đơn hàng xuất kho</span>
+                            </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkWarehouseAction.import_warehouse} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><BiAddToQueue /></span>
                                 <span className="side-bar-item-label">Lưu kho</span>
-                            </div>
+                            </Link>
                         </Item>
                     </List>
                 </div>

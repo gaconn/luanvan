@@ -5,6 +5,7 @@ import TheLoai from "./TheLoai"
 import SanPham from "./SanPham"
 import Order from "./Order"
 import User from "./User"
+import KhoHang from "./KhoHang"
 const Main = () => {
     const {manage, option} = useParams()
     var pageBody 
@@ -24,6 +25,9 @@ const Main = () => {
             break;
         case "user":
             pageBody = <User option = {option}/>
+            break
+        case "warehouse":
+            pageBody = <KhoHang option = {option}/>
             break
         default:
             break;

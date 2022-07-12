@@ -50,7 +50,7 @@ class OrderModel {
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} order by ${this.table}.ThoiGianTao desc limit 10 offset ${offsetStart} `
 
             const response = await DBConnection.query(query)
-            const countResponse  = await DBConnection.query('select COUNT(id) rowCount from donhang')
+            const countResponse  = await DBConnection.query(`select COUNT(id) rowCount from donhang ${strWhere}`)
 
             if(!response || !countResponse || !response[0] || !countResponse[0]) {
                 throw new Error('Lỗi kết nối database')
@@ -498,6 +498,10 @@ class OrderModel {
 
         if(objCondition.hasOwnProperty("TrangThai")) {
             strWhere += ` and ${table}.TrangThai = ${objCondition.TrangThai}`
+        }
+
+        if(objCondition.exported_warehouse) {
+            strWhere += ` and ${table}.TrangThai > 1`
         }
 
         if(objCondition.MaDonHang) {

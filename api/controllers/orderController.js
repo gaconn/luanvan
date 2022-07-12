@@ -9,12 +9,12 @@ class OrderController {
      */
 
     getOrder = async(req, res) => {
-        const page = req.query.page
+        const objData = req.query
         try {
             const objCondition = {
+                ...objData,
                 joinUser: true,
                 joinPaymentMethod: true,
-                page,
             }
 
             const orders =await OrderModel.get(objCondition)
