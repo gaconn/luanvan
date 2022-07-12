@@ -1,33 +1,31 @@
 import { useEffect, useState } from "react";
-import productAPI from "../../services/API/productAPI";
+
 import { Link } from "react-router-dom";
 import uniqid from 'uniqid';
 import CartAPI from "../../services/API/Cart";
-const List = () => {
-    const [product, setProduct] = useState([])
+import LoadingPage from '../Loading'
+const List = ({ Product,LoadingProduct }) => {
+  
+    if(LoadingProduct){
+        return <LoadingPage/>
+    }
     const HandleInfo = (item) => {
         localStorage.setItem('DetailID', item)
     };
-    useEffect(() => {
-        const fetchProduct = async () => {
-            const productResponse = await productAPI.getAll()
-            setProduct(productResponse.data)
-        }
-        fetchProduct()
-    }, [])
     const handleInfoCart = async (item) => {
-        let SessionID=localStorage.getItem('SessionID')
+        let SessionID = localStorage.getItem('SessionID')
         if (!SessionID) {
             let session = uniqid()
-             SessionID = localStorage.setItem('SessionID', session)
+            SessionID = localStorage.setItem('SessionID', session)
         }
         const data = { IDSanPham: item.id, SoLuong: 1, SessionID: SessionID }
         const addToCart = CartAPI.AddToCart(data)
     }
     return (
         <>
+           
             {
-                product && product.data && product.data.map && product.data.map((item, k) => (
+                Product && Product.map && Product.map((item, k) => (
                     <div className="col-lg-4 col-md-6 col-sm-6" key={k}>
                         <div className="product__item">
                             <div
@@ -58,7 +56,7 @@ const List = () => {
                                     </li>
                                     <li>
                                         <a href='#'>
-                                            <i className="fa fa-shopping-cart" onClick={() => handleInfoCart(item)}/>
+                                            <i className="fa fa-shopping-cart" onClick={() => handleInfoCart(item)} />
                                         </a>
                                     </li>
                                 </ul>
@@ -74,6 +72,7 @@ const List = () => {
 
                 ))
             }
+
         </>);
 }
 

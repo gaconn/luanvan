@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const CartComponent = () => {
     const [cart, setCart] = useState([])
     //localStorage.removeItem('SessionID')
+    const [loading, setLoading] = useState(false);
     const [choose, setChoose] = useState({})
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [cartInfo, setCartInfo] = useState({})
@@ -163,7 +164,6 @@ const CartComponent = () => {
                     </div>
                     <div className="row">
                         <div className="col-lg-12">
-                            
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__continue">

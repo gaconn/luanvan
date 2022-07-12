@@ -29,6 +29,15 @@ const categoryAPI = {
         } catch (error) {
             console.log(error)            
         }
+    },
+     getParent:async ()=>{
+        try {
+            const url = `${categoryUrl}/get-all`
+            const response = await axios.get(url,{params:{parent:true}})
+            return response.data
+        } catch (error) {
+            console.log(error)            
+        }
     }
 }
 
