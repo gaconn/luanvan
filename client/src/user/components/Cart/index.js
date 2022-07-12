@@ -142,10 +142,10 @@ const CartComponent = () => {
                                                         <input type="checkbox" name={item.IDSanPham } value={item.IDSanPham} checked={choose[item.IDSanPham ] ? true : ""} onChange= {(e)=>chooseHandler(e, item)}/>
                                                     </td>
                                                     <td className="shoping__cart__item pl-3">
+
                                                         <img src={ item.SanPhamHinhAnh ? process.env.REACT_APP_API_IMAGE + JSON.parse(item.SanPhamHinhAnh)[0] : ""} alt="" style={{ width: 50, height: 50 }} />
                                                         <h5>{item.SanPhamTen}</h5>
                                                     </td>
-
                                                     <td className="shoping__cart__price">{item.SanPhamGiaGoc ? (item.SanPhamGiaGoc*item.SoLuong).toLocaleString('en-US'): 0} VND</td>
                                                     <td className="shoping__cart__quantity">
                                                         <div className="quantity">
@@ -167,7 +167,6 @@ const CartComponent = () => {
                     </div>
                     <div className="row">
                         <div className="col-lg-12">
-
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__continue">
@@ -184,7 +183,6 @@ const CartComponent = () => {
                         </div>
                         <div className="col-lg-6">
                             <div className="shoping__checkout">
-
                                 <a href=" " className="primary-btn" onClick={checkoutClickHandler}>
                                     Mua hàng
                                 </a>

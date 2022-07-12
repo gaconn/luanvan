@@ -36,7 +36,6 @@ const DetailComponent = () => {
     }
 
     const handleInfoCart = async (item, CartSL) => {
-        //localStorage.removeItem('SessionID')
         let SessionID=localStorage.getItem('SessionID')
         let UID = localStorage.getItem('UID')
         if (!SessionID && !UID) {
@@ -66,6 +65,7 @@ const DetailComponent = () => {
                                             className="product__details__pic__item--large"
                                             src={process.env.REACT_APP_API_IMAGE + Detail.HinhAnh[0]}
                                             alt=""
+                                            style={{width:400,height:400}}
                                         />
                                     }
                                 </div>

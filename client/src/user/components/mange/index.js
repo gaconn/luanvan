@@ -1,6 +1,6 @@
 import Information from "./infomationCustomer";
 import Table from 'react-bootstrap/Table';
-const manageComponents = () => {
+const ManageComponents = () => {
     return (<>
         <Information />
         <section className="w-2/3 mx-auto">
@@ -29,4 +29,4 @@ const manageComponents = () => {
     </>);
 }
 
-export default manageComponents;
+export default ManageComponents;
