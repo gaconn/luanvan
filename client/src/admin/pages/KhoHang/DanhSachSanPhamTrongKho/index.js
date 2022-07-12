@@ -3,8 +3,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from 'react-bootstrap'
 import { AiOutlineFileSearch } from 'react-icons/ai'
-import { BsPencil } from 'react-icons/bs'
-import { MdDelete } from 'react-icons/md'
+import { FaShippingFast } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 import FilterContainer from '../../../components/FilterContainer'
 import Loading from '../../../components/Loading'
@@ -20,6 +19,7 @@ const DanhSachSanPhamTrongKho = () => {
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [loading, setLoading] = useState(false)
+    const [message, setMessage] = useState({show: false})
     let navigate = useNavigate()
     useEffect(()=> {
         const fetchOrder = async() => {
@@ -58,6 +58,14 @@ const DanhSachSanPhamTrongKho = () => {
         const prevPage = pageValue > 1 ? pageValue -1 : null
         setPage({...page, now: pageValue, prev: prevPage, next: nextPage})
     }
+
+    const handleChangeStatus = async() => {
+        
+    }
+    const handleMessageClose = () => {
+        setMessage({show: false})
+    }
+
     if(loading) {
         return <Loading />
     }
@@ -145,6 +153,7 @@ const DanhSachSanPhamTrongKho = () => {
                                         <td style={{color: "red"}}>{item.MaChietKhau ? item.MaChietKhau : "Không"}</td>
                                         <td className="d-flex" style={{height: "100%"}}>
                                             <span className="order-item-icon" onClick={()=>navigate(`${LinkOrderAction.order_detail}?id=${item.id}`)}><AiOutlineFileSearch/></span>
+                                            {item.TrangThai ===1 && <span className="order-item-icon" onClick={()=>setMessage({show: true, id: item.id, TrangThai: item.TrangThai})}><FaShippingFast/></span>}
                                         </td>
                                     </tr>
                                 )
@@ -154,6 +163,25 @@ const DanhSachSanPhamTrongKho = () => {
                 </Table>
             </Content>
             {page && <Page page={page} onClickPage={onClickPageHandler} />}
+            <Modal
+                show={message.show}
+                onHide={handleMessageClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                <Modal.Title>Thông báo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Xác nhận thay đổi trang thái đơn hàng ?
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={handleMessageClose}>
+                    Quay lại
+                </Button>
+                <Button variant="danger" onClick={handleChangeStatus}>Chấp nhận</Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     )
 }
