@@ -1,3 +1,4 @@
+const LadingModel = require("../models/LadingModel")
 const OrderDetailModel = require("../models/OrderDetailModel")
 const OrderModel = require("../models/OrderModel")
 const ResponseUtil = require("../utils/ResponseUtil")
@@ -166,6 +167,13 @@ class OrderController {
             return res.json(ResponseUtil.response(false, 'Dữ liệu không hợp lệ'))
         }
         try {
+            if(data.TrangThai *1 === 2) {
+                // kiểm tra xem đã có vận đơn cho đơn này chưa
+                const responseLading = await LadingModel.get({IDDonHang: data.id})
+                if(!responseLading ) {
+                    
+                }
+            }
             const response = await OrderModel.update(data, {id: data.id})
             if(!response) {
                 throw new Error('Không thể kết nối với database')

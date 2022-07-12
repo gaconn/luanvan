@@ -49,7 +49,7 @@ class LadingModel {
 
             }
 
-            return ResponseUtil.response(true, 'Thành công', { data: arrData[0] })
+            return ResponseUtil.response(true, 'Thành công', arrData[0])
         } catch (error) {
             return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
         }
