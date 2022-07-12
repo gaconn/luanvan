@@ -21,35 +21,35 @@ const DanhSachSanPhamTrongKho = () => {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState({show: false})
     let navigate = useNavigate()
+    const fetchOrder = async() => {
+        setLoading(true)
+        const orderResponse = await orderAPI.getAll({page: page.now, TrangThai: 1})
+        console.log(orderResponse);
+        setOrder(() => {
+            if(orderResponse && orderResponse.success && orderResponse.data && orderResponse.data[0]) {
+                return orderResponse.data[0]
+            }
+            return []
+        })
+        setNotify((notify)=> {
+            if(!orderResponse.success) {
+                return {show: true, message: orderResponse.message, success: orderResponse.success}
+            }
+            return notify
+        })
+        setPage((page) => {
+            if(orderResponse.success && orderResponse.data && orderResponse.data[1]) {
+                if(orderResponse.data[1].rowCount) {
+                    let next = (page.now) * 10 < orderResponse.data[1].rowCount ? page.now+1: null
+                    let prev = page.now > 1 ? page.now -1 : null
+                    return {...page,rowCount: orderResponse.data[1].rowCount, next, prev}       
+                }
+            }
+            return {...page}
+        })
+        setLoading(false)
+    }
     useEffect(()=> {
-        const fetchOrder = async() => {
-            setLoading(true)
-            const orderResponse = await orderAPI.getAll({page: page.now, TrangThai: 1})
-            console.log(orderResponse);
-            setOrder(() => {
-                if(orderResponse && orderResponse.success && orderResponse.data && orderResponse.data[0]) {
-                    return orderResponse.data[0]
-                }
-                return []
-            })
-            setNotify((notify)=> {
-                if(!orderResponse.success) {
-                    return {show: true, message: orderResponse.message, success: orderResponse.success}
-                }
-                return notify
-            })
-            setPage((page) => {
-                if(orderResponse.success && orderResponse.data && orderResponse.data[1]) {
-                    if(orderResponse.data[1].rowCount) {
-                        let next = (page.now) * 10 < orderResponse.data[1].rowCount ? page.now+1: null
-                        let prev = page.now > 1 ? page.now -1 : null
-                        return {...page,rowCount: orderResponse.data[1].rowCount, next, prev}       
-                    }
-                }
-                return {...page}
-            })
-            setLoading(false)
-        }
         fetchOrder()
     },[page.now])
     const onClickPageHandler = (e) => {
@@ -60,7 +60,15 @@ const DanhSachSanPhamTrongKho = () => {
     }
 
     const handleChangeStatus = async() => {
-        
+        const updateResponse = await orderAPI.changeStatus({id:message.id, TrangThai: message.TrangThai*1 +1})
+        setNotify(()=> {
+            if(!updateResponse) {
+                return {show: true, message: "kết nối server thất bại", success: false}
+            }
+            return {show: true, message: updateResponse.message, success: updateResponse.success}
+        })
+        setMessage({show:false})
+        fetchOrder()
     }
     const handleMessageClose = () => {
         setMessage({show: false})

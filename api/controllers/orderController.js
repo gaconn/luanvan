@@ -171,7 +171,27 @@ class OrderController {
                 // kiểm tra xem đã có vận đơn cho đơn này chưa
                 const responseLading = await LadingModel.get({IDDonHang: data.id})
                 if(!responseLading ) {
-                    
+                    throw new Error('')
+                }
+                if(responseLading.data.length === 0) {
+                    const responseCreateLading = await LadingModel.insert({IDDonHang: data.id})
+                    if(!responseCreateLading || !responseCreateLading.success) {
+                        return res.json(responseCreateLading)
+                    }
+                }
+            }
+
+            if(data.TrangThai*1 === 3) {
+                // vận chuyển xong thì cập nhật
+                const responseLading = await LadingModel.get({IDDonHang: data.id})
+                if(!responseLading ) {
+                    throw new Error('')
+                }
+                if(responseLading.data.length > 0) {
+                    const responseCreateLading = await LadingModel.update({TrangThai: 1},{IDDonHang: data.id})
+                    if(!responseCreateLading || !responseCreateLading.success) {
+                        return res.json(responseCreateLading)
+                    }
                 }
             }
             const response = await OrderModel.update(data, {id: data.id})

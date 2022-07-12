@@ -1,5 +1,9 @@
-const { _buildInsertField } = require("../utils/DBUtil")
-
+const DBUtil = require("../utils/DBUtil")
+const { _buildInsertField, _buildSelect, buildFieldQuery } = require("../utils/DBUtil")
+const GeneralUtil = require("../utils/GeneralUtil")
+const { checkIsEmptyObject } = require("../utils/GeneralUtil")
+const ResponseUtil = require("../utils/ResponseUtil")
+const dbconnect = require('./DBConnection')
 class LadingModel {
     constructor() {
         this.table = "vandon"
@@ -92,9 +96,9 @@ class LadingModel {
         }
     }
 
-    update = async (objDataUpdate, objCondition) => {
+    update = async (objData, objCondition) => {
         const error = []
-        if (checkIsEmptyObject(objDataUpdate)) {
+        if (checkIsEmptyObject(objData)) {
             error.push('Dữ liệu cần sửa không hợp lệ')
         }
         if (checkIsEmptyObject(objCondition)) {
