@@ -1,3 +1,4 @@
+
 const Section = () => {
     return (
         <>
@@ -7,6 +8,7 @@ const Section = () => {
                     <div className="row">
                         <div className="col-lg-3">
                             <div className="hero__categories">
+                                         
                             </div>
                         </div>
                         <div className="col-lg-9">

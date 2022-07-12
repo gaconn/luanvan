@@ -39,7 +39,6 @@ const CartComponent = () => {
             window.location.reload();
         }
     }
-
     const ChangInput = async(e, item) => {
         // setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
         const response = await CartAPI.updateSL({SoLuong: e.target.value, IDGioHang:item.IDGioHang, IDSanPham: item.IDSanPham})

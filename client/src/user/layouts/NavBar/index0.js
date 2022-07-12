@@ -6,11 +6,10 @@ import { useNavigate } from "react-router-dom";
 import token from "../../services/utils/setToken";
 import { FaUserAlt } from "react-icons/fa";
 import './icon.css'
-import iconImg from '../../assets/img/icon/icon2.png'
-import { useEffect, useState } from "react";
-import categoryAPI from "../../services/API/CategoryAPI";
+import iconImg from '../../assets/img/icon/icon.png'
+
+
 const NavbarHeader = () => {
-    const [category, setCategory] = useState([])
     const navigate = useNavigate()
     const logoutHandler = () => {
         localStorage.removeItem("UID")
@@ -19,19 +18,13 @@ const NavbarHeader = () => {
         navigate("/home", { replace: true })
     }
     console.log(localStorage.getItem("UID"));
-    useEffect(() => {
-        const fetchDataDanhMuc = async () => {
-            const response = await categoryAPI.getParent()
-            setCategory(response.data.data)
-        }
-        fetchDataDanhMuc()
-    }, [])
-    console.log(category)
     return (
         <>
-            <Navbar bg="light" variant="light" expand='sm' sticky="top">
+            <Navbar bg="light" variant="light" expand="lg" sticky="top">
                 <Container  >
-                    <Navbar.Brand href="Home"><img src={iconImg} style={{ width: 150, height: 100 }} /></Navbar.Brand>
+
+                    <Navbar.Brand href="Home"><img src={iconImg} style={{ width: 30, height: 30 }} /></Navbar.Brand>
+                    <Navbar.Brand href="Home">Linh kiện ô tô</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav
@@ -40,38 +33,34 @@ const NavbarHeader = () => {
                             navbarScroll
 
                         >
-
-                            <Nav.Link href="/"  ><i className="fa fa-home"></i></Nav.Link>
+                            <Nav.Link href="/">Trang chủ</Nav.Link>
                             <Nav.Link href="/Shop">Cửa hàng</Nav.Link>
                             <Nav.Link href="/Contact">Liên hệ</Nav.Link>
                             <Nav.Link href="/Blog">Bản tin</Nav.Link>
-                            <Nav.Link href='DanhMuc'>
+
+                             <Nav.Link href='DanhMuc'>
                                 <ul className="menu-items">
                                     <li>
                                         Danh mục
                                         <div className="mega-menu">
                                             <div className="content">
-                                                {
-                                                    category && category.map && category.map((item, k) => (
-                                                        <div className="col" key={k}>
-                                                            <section>
-                                                                <h2>{item.Ten}</h2>
-                                                                <ul className="mega-links">
-                                                                    <li>
-                                                                        items
-                                                                    </li>
+                                                <div className="col">
+                                                    <section>
+                                                        <h2>Featured 4</h2>
+                                                        <ul className="mega-links">
+                                                            <li>
+                                                                items
+                                                            </li>
 
-                                                                </ul>
-                                                            </section>
-                                                        </div>
-                                                    ))
-                                                }
+                                                        </ul>
+                                                    </section>
+                                                </div>
                                             </div>
                                         </div>
-
                                     </li>
                                 </ul>
-                            </Nav.Link>
+                            </Nav.Link> 
+                           
                         </Nav>
 
                         <Navbar.Brand href="Home">
