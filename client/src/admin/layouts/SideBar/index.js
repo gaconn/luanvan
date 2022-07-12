@@ -48,8 +48,6 @@ const SideBar = () => {
                     {   localStorage.getItem('USER_LEVEL') < 2 &&
                         <>
                             <QuanLyNguoiDung/>
-                            
-                            <QuanLyPhanQuyen/>
                         </>
                     }
 
