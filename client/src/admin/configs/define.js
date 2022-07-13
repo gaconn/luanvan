@@ -6,7 +6,8 @@ export const LinkPage = {
     product : "/manage/product",
     order: "/manage/order",
     user: "/manage/user",
-    warehouse: "/manage/warehouse"
+    warehouse: "/manage/warehouse",
+    change: "/manage/change"
 }
 export const LinkSupplierAction = {
     supplier_add:LinkPage.supplier + "/add",
@@ -43,4 +44,9 @@ export const LinkWarehouseAction = {
     in_warehouse: LinkPage.warehouse + "/in-warehouse",
     exported_warehouse: LinkPage.warehouse + "/exported-warehouse",
     import_warehouse: LinkPage.warehouse + "/import-warehouse"
+}
+
+export const LinkChangeAction = {
+    change_list: LinkPage.change + "/list",
+    change_insert: LinkPage.change + "/insert"
 }
