@@ -3,6 +3,8 @@ import { AiOutlinePlus } from "react-icons/ai"
 import { FaClipboardList } from "react-icons/fa"
 import { GiTrade } from "react-icons/gi"
 import { RiPlayListAddFill } from "react-icons/ri"
+import { Link } from "react-router-dom"
+import { LinkChangeAction } from "../../../configs/define"
 import IconTagToggle from "../IconTagToggle"
 import ListTagToggle from "../ListTagToggle"
 import { Item, List } from "../SideBar.style"
@@ -19,16 +21,16 @@ const QuanLyDoiTra = () => {
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkChangeAction.change_list} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><FaClipboardList /></span>
                                 <span className="side-bar-item-label">Danh sách đổi trả</span>
-                            </div>
+                            </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkChangeAction.change_insert} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><RiPlayListAddFill /></span>
                                 <span className="side-bar-item-label">Thêm đơn đổi trả</span>
-                            </div>
+                            </Link>
                         </Item>
                     </List>
                 </div>

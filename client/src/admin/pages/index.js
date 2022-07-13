@@ -6,6 +6,7 @@ import SanPham from "./SanPham"
 import Order from "./Order"
 import User from "./User"
 import KhoHang from "./KhoHang"
+import DoiTra from "./DoiTra"
 const Main = () => {
     const {manage, option} = useParams()
     var pageBody 
@@ -28,6 +29,9 @@ const Main = () => {
             break
         case "warehouse":
             pageBody = <KhoHang option = {option}/>
+            break
+        case "change": 
+            pageBody = <DoiTra option = {option}/>
             break
         default:
             break;

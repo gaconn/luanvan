@@ -6,6 +6,7 @@ const orderRouter = require('./order')
 const cartRouter = require('./cart')
 const cartItemRouter = require('./cartItem')
 const permissionRouter = require('./permission')
+const orderExchangeRouter = require('./orderExchange')
 function routes(app) {
     app.use("/product", productRouter)
     app.use("/user", userRouter)
@@ -15,6 +16,7 @@ function routes(app) {
     app.use("/cart", cartRouter)
     app.use("/cart-item", cartItemRouter)
     app.use("/permission", permissionRouter)
+    app.use("/order-exchange", orderExchangeRouter)
 }
 
 module.exports = routes

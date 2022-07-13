@@ -93,10 +93,11 @@ class OrderModel {
                 IDTaiKhoan: dataOrder[0] && dataOrder[0].DonHang_IDTaiKhoan ? dataOrder[0].DonHang_IDTaiKhoan : null,
                 MaChietKhau: dataOrder[0] && dataOrder[0].DonHang_MaChietKhau  ? dataOrder[0].DonHang_MaChietKhau : null,
                 MaDonHang: dataOrder[0] && dataOrder[0].DonHang_MaDonHang ? dataOrder[0].DonHang_MaDonHang : null,
-                PhuPhi: dataOrder[0] && dataOrder[0].DonHang_PhuPhi ? dataOrder[0].DonHang_PhuPhi : null,
+                PhuPhi: dataOrder[0] && dataOrder[0].DonHang_PhuPhi ? dataOrder[0].DonHang_PhuPhi : 0,
                 ThoiGianTao: dataOrder[0] && dataOrder[0].DonHang_ThoiGianTao ? dataOrder[0].DonHang_ThoiGianTao : null,
                 ThongTinDatHang:   dataOrder[0] && dataOrder[0].DonHang_ThongTinDatHang ? dataOrder[0].DonHang_ThongTinDatHang : null,
                 TongGiaTriChietKhau : dataOrder[0] && dataOrder[0].DonHang_TongGiaTriChietKhau ? dataOrder[0].DonHang_TongGiaTriChietKhau : null,
+                TongGiaTriDonHang : dataOrder[0] && dataOrder[0].DonHang_TongGiaTriDonHang ? dataOrder[0].DonHang_TongGiaTriDonHang : null,
                 TrangThai: dataOrder[0] && dataOrder[0].DonHang_TrangThai ? dataOrder[0].DonHang_TrangThai : 0,
                 List: []
             }
@@ -125,7 +126,7 @@ class OrderModel {
                 dataFormat.List.push(dataItemFormat)
             }
             dataFormat.TongPhiVanChuyen = tongPhiVanChuyen,
-            dataFormat.TongThanhTien = tongThanhTien
+            dataFormat.TongThanhTien = tongThanhTien*1 + dataFormat.PhuPhi*1
             return ResponseUtil.response(true, 'Thành công', dataFormat)
         } catch (error) {
             return ResponseUtil.response(false, error.message)
