@@ -9,8 +9,11 @@ import './icon.css'
 import iconImg from '../../assets/img/icon/icon2.png'
 import { useEffect, useState } from "react";
 import categoryAPI from "../../services/API/CategoryAPI";
+import TreeNavBar from "./TreeNavBar";
+import ListItem from "./ListItem";
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
+    const [idCategory, setIDCategory] = useState({})
     const navigate = useNavigate()
     const logoutHandler = () => {
         localStorage.removeItem("UID")
@@ -18,15 +21,25 @@ const NavbarHeader = () => {
         token.deleteToken()
         navigate("/home", { replace: true })
     }
-    console.log(localStorage.getItem("UID"));
+    // console.log(localStorage.getItem("UID"));
     useEffect(() => {
         const fetchDataDanhMuc = async () => {
-            const response = await categoryAPI.getParent()
-            setCategory(response.data.data)
+            const response = await categoryAPI.getTree()
+            setCategory(response.data)
+
         }
         fetchDataDanhMuc()
     }, [])
-    console.log(category)
+    const handleIDCategory = (id) => {
+        setIDCategory(id)
+    }
+    const ListChild = (item) => {
+        // if (item.listChild && !item.listChild.listChild) {
+        //     return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
+        // }
+         return <TreeNavBar listChild={item.listChild} />
+    }
+    console.log(idCategory)
     return (
         <>
             <Navbar bg="light" variant="light" expand='sm' sticky="top">
@@ -45,7 +58,8 @@ const NavbarHeader = () => {
                             <Nav.Link href="/Shop">Cửa hàng</Nav.Link>
                             <Nav.Link href="/Contact">Liên hệ</Nav.Link>
                             <Nav.Link href="/Blog">Bản tin</Nav.Link>
-                            <Nav.Link href='DanhMuc'>
+
+                            <Nav.Link>
                                 <ul className="menu-items">
                                     <li>
                                         Danh mục
@@ -57,10 +71,7 @@ const NavbarHeader = () => {
                                                             <section>
                                                                 <h2>{item.Ten}</h2>
                                                                 <ul className="mega-links">
-                                                                    <li>
-                                                                        items
-                                                                    </li>
-
+                                                                    {ListChild(item)}
                                                                 </ul>
                                                             </section>
                                                         </div>
