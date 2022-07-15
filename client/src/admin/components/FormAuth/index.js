@@ -28,9 +28,10 @@ const Authenticate = () => {
         if(objLoginResponse) {
             if(objLoginResponse.success && objLoginResponse.error.length ===0 ) {
                 if(data.token) {
-                    token.setToken(data.token)
                     localStorage.setItem('USER_NAME', data.HoTen)
                     localStorage.setItem('USER_LEVEL', data.IDCapDoTaiKhoan)
+                    localStorage.setItem('TOKEN', data.token)
+                    token.setToken(data.token)
                     navigate("../home")
                 }
                     

@@ -7,6 +7,7 @@ const UserModel = require("./UserModel")
 const uniqid = require('uniqid')
 const CartModel = require("./CartModel")
 const CartItemModel = require("./CartItemModel")
+const DiscountModel = require("./DiscountModel")
 
 class OrderModel {
     constructor() {
@@ -170,6 +171,7 @@ class OrderModel {
             const extraInfo = {
                 IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
                 MaDonHang,
+                MaChietKhau: objData.MaChietKhau
             }
             
             if(!objData.IDTaiKhoan) {
@@ -207,6 +209,7 @@ class OrderModel {
             var TongPhiVanChuyen = 0
             var arrErrors = [] //Trả về các sản phẩm thêm thất bại
             var productCount = 0
+            var discountFee = 0
             for (let index = 0; index < arrProduct.length; index++) {
                 var objDetailProduct = arrProduct[index]
                 if(objDetailProduct.SoLuong < objDetailProduct.SoLuongSanPham) {
@@ -224,15 +227,50 @@ class OrderModel {
             if(productCount === 0) {
                 return ResponseUtil.response(false, "Không có sản phẩm nào có thể đặt hàng", [], arrErrors)
             }
+            //kiểm tra khuyến mại
+            var isValidDiscount = true
+            if(extraInfo.MaChietKhau) {
+                const responseDiscount = await DiscountModel.get({MaChietKhau: extraInfo.MaChietKhau, DaXoa: 0, TrangThai:1, validTime: true})
+                const discount = responseDiscount.data[0]
+                if(!responseDiscount.success && responseDiscount.data.length === 0) {
+                    isValidDiscount = false
+                }else {
+                    
+                    if(discount.DieuKienGiaToiDa && TongGiaTriDonHang > discount.DieuKienGiaToiDa) {
+                        isValidDiscount = false
+                    }
+                    if(discount.DieuKienGiaToiThieu && TongGiaTriDonHang < discount.DieuKienGiaToiThieu) {
+                        isValidDiscount = false
+                    }
+                    if(discount.SoLuongSuDungToiDa) {
+                        const responseOrderDiscount = await this.get({DaXoa:0, MaChietKhau: extraInfo.MaChietKhau})
+                        if(responseOrderDiscount.success && responseOrderDiscount.data[1] && responseOrderDiscount.data[1].rowCount >= discount.SoLuongSuDungToiDa) {
+                            isValidDiscount = false
+                        }
+                    }
+
+                }
+                if(isValidDiscount) {
+                    if(discount.GiaTriChietKhau) {
+                        discountFee = discount.GiaTriChietKhau
+                    }else if(discount.PhanTramChietKhau) {
+                        discountFee = discount.PhanTramChietKhau * TongGiaTriDonHang
+                    }
+                }
+            }
+
+
             const objOrder = {
                 IDPhuongThucThanhToan: extraInfo.IDPhuongThucThanhToan,
                 ThoiGianTao: new Date().getTime()/1000,
                 DaXoa: 0,
-                TongGiaTriDonHang: TongGiaTriDonHang,
+                TongGiaTriDonHang: TongGiaTriDonHang - discountFee,
                 PhuPhi: extraInfo.PhuPhi ? extraInfo.PhuPhi : 0,
                 TrangThai: 0,
                 MaDonHang: extraInfo.MaDonHang,
-                GiaVanChuyen: TongPhiVanChuyen
+                GiaVanChuyen: TongPhiVanChuyen,
+                MaChietKhau: extraInfo.MaChietKhau,
+                TongGiaTriChietKhau: discountFee
             }
 
             if(extraInfo.IDTaiKhoan) {
@@ -370,7 +408,8 @@ class OrderModel {
             const MaDonHang = uniqid('DonHang-')
             const extraInfo = {
                 IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
-                MaDonHang
+                MaDonHang,
+                MaChietKhau: objData.MaChietKhau
             }
             if(!objData.IDTaiKhoan) {
                 const ThongTinDatHang = {
@@ -507,7 +546,9 @@ class OrderModel {
         if(objCondition.MaDonHang) {
             strWhere += ` and ${table}.MaDonHang = '${objCondition.MaDonHang}'`
         }
-
+        if(objCondition.MaChietKhau) {
+            strWhere += ` and ${table}.MaChietKhau = '${objCondition.MaChietKhau}'` 
+        }
         return strWhere
     }
 }

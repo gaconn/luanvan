@@ -7,6 +7,7 @@ import Order from "./Order"
 import User from "./User"
 import KhoHang from "./KhoHang"
 import DoiTra from "./DoiTra"
+import Discount from "./Discount"
 const Main = () => {
     const {manage, option} = useParams()
     var pageBody 
@@ -32,6 +33,9 @@ const Main = () => {
             break
         case "change": 
             pageBody = <DoiTra option = {option}/>
+            break
+        case "discount":
+            pageBody = <Discount option = {option} />
             break
         default:
             break;

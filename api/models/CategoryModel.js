@@ -160,6 +160,12 @@ class CategoryModel {
             if (arrDataCheckResponse && arrDataCheckResponse[0] && arrDataCheckResponse[0].length > 0) {
                 return ResponseUtil.response(false, 'Ngành hàng có chứa sản phẩm trong kho, không thể xóa.')
             }
+
+            //kiểm tra đã có ngành hàng con hay chưa
+            const dataCheckSubCategory = await this.get({id: objCondition.id, child:true})
+            if(dataCheckSubCategory && dataCheckSubCategory.success && dataCheckSubCategory.data.length > 0) {
+                return ResponseUtil.response(false, 'Ngành hàng có chứa ngành hàng con, không thể xóa. ')
+            }
             const query = `update theloai set DaXoa = 1 where ?`
 
             const arrDataResponse = await dbconnect.query(query, [objCondition])
@@ -168,7 +174,7 @@ class CategoryModel {
                 return ResponseUtil.response(false, 'Truy xuất database không thành công', [], ['Có lỗi xảy ra khi truy xuất database'])
             }
             if (arrDataResponse[0].affectedRows === 0) {
-                return ResponseUtil.response(false, 'Thất bại')
+                return ResponseUtil.response(false, 'Thất bại. Không thể xóa ngành hàng này !')
             }
             return ResponseUtil.response(true, 'Xóa dữ liệu ngành hàng thành công')
         } catch (error) {
