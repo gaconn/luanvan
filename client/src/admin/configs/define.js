@@ -7,7 +7,8 @@ export const LinkPage = {
     order: "/manage/order",
     user: "/manage/user",
     warehouse: "/manage/warehouse",
-    change: "/manage/change"
+    change: "/manage/change",
+    discount: "/manage/discount"
 }
 export const LinkSupplierAction = {
     supplier_add:LinkPage.supplier + "/add",
@@ -49,4 +50,10 @@ export const LinkWarehouseAction = {
 export const LinkChangeAction = {
     change_list: LinkPage.change + "/list",
     change_insert: LinkPage.change + "/insert"
+}
+
+export const LinkDiscountAction = {
+    discount_list: LinkPage.discount + "/list",
+    discount_add : LinkPage.discount + "/add",
+    discount_update : LinkPage.discount + "/update"
 }

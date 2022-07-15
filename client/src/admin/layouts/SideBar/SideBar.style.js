@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     height: 100vh;
-    min-width: 60px;
-    width: fit-content;
+    min-width: 300px;
     background: #2a3542;
     font-size: 0.8rem;
     position: sticky ;
@@ -17,6 +16,7 @@ export const Content = styled.div`
     display:flex;
     flex-direction: column;
     height: 100%;
+    width: 300px;
     justify-content: space-between;
 
     .side-bar-list-1{
@@ -44,7 +44,7 @@ export const Content = styled.div`
 export const List = styled.ul`
     list-style: none;
     padding: 0px 0;
-
+    width: 300px;
     .side-bar-item-expand-list {
         background: #35404d ;
         padding: 0px 0px;
@@ -66,7 +66,7 @@ export const Item = styled.li`
     line-height: 2rem;
     display: flex;
     color: #bbb;
-    
+    width: 100%;
     flex-direction: column;
     .side-bar-item-control{
         display: flex;
