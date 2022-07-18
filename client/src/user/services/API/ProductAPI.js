@@ -19,6 +19,15 @@ const productAPI = {
         } catch (error) {
             console.warn(error)
         }
+    },
+    getCheckoutList: async (params) => {
+        try {
+            const url = `${productUrl}/get-product-checkout-list`
+            const response = await axios.get(url, {params: params})
+            return response.data
+        } catch (error) {
+            console.warn(error)
+        }
     }
 }
 
