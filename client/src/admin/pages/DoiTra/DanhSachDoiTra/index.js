@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from 'react-bootstrap'
 import { AiOutlineFileSearch } from 'react-icons/ai'
 import { FaShippingFast } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import FilterContainer from '../../../components/FilterContainer'
 import Loading from '../../../components/Loading'
 import Page from '../../../components/Page'
@@ -19,11 +19,12 @@ const DanhSachDoiTra = () => {
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState({show: false})
+    const [filter,setFilter] = useState({})
+    const [searchParams, setSearchParams] = useSearchParams()
     let navigate = useNavigate()
-    const fetchOrder = async() => {
+    const fetchOrder = async(objCondition) => {
         setLoading(true)
-        const orderResponse = await orderExchangeAPI.getList({page: page.now, joinOrder:true})
-        console.log(orderResponse);
+        const orderResponse = await orderExchangeAPI.getList(objCondition)
         setOrder(() => {
             if(orderResponse && orderResponse.success && orderResponse.data && orderResponse.data) {
                 return orderResponse.data
@@ -49,8 +50,29 @@ const DanhSachDoiTra = () => {
         setLoading(false)
     }
     useEffect(()=> {
-        fetchOrder()
-    },[page.now])
+        const objCondition = {page: page.now, joinOrder:true}
+        const id = searchParams.get("id")
+        const IDDonHang = searchParams.get('IDDonHang')
+        const startDate = searchParams.get("startDate")
+        const endDate = searchParams.get("endDate")
+        const status = searchParams.get("TrangThai")
+        if(id) {
+            objCondition.id = id
+        }
+        if(IDDonHang) {
+            objCondition.IDDonHang= IDDonHang
+        }
+        if(startDate) {
+            objCondition.startDate = startDate
+        }
+        if(endDate) {
+            objCondition.endDate = endDate
+        }
+        if(status) {
+            objCondition.TrangThai = status
+        }
+        fetchOrder(objCondition)
+    },[page.now, searchParams])
     const onClickPageHandler = (e) => {
         const pageValue = e.target.innerText *1;
         const nextPage= pageValue *10 <page.rowCount ? pageValue + 1 : null
@@ -72,9 +94,28 @@ const DanhSachDoiTra = () => {
     const handleMessageClose = () => {
         setMessage({show: false})
     }
+    // filter
+    const searchHandler = () => {
+        const dataFilter = {...filter}
+        if(dataFilter.startDate) {
+            dataFilter.startDate = new Date(dataFilter.startDate).getTime()/1000
+        }
+        if(dataFilter.endDate) {
+            dataFilter.endDate = new Date(dataFilter.endDate).getTime()/1000
+        }
+        const condition = new URLSearchParams(dataFilter).toString()
+        setSearchParams(condition)
+    }
 
-    if(loading) {
-        return <Loading />
+    const unsearchHandler = () => {
+        setSearchParams("")
+        setFilter({})
+    }
+
+    const changeFilterHandler = (e) => {
+        setFilter((filter)=> {
+            return {...filter, [e.target.name] : e.target.value}
+        })
     }
     return (
         <Container>
@@ -88,48 +129,83 @@ const DanhSachDoiTra = () => {
                 <Toast.Body>{notify.message ? notify.message : ""}</Toast.Body>
                 </Toast>
             </ToastContainer>
-                <FilterContainer>
-                    <Form className="filter-form">
-                        <Row className="mb-3">
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        ID Nhà cung cấp
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        Tên cung cấp
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Select aria-label="Default select example">
-                                            <option>Chọn trạng thái</option>
-                                            <option value="0">Hoạt động</option>
-                                            <option value="1">Ngưng hoạt động</option>
-                                        </Form.Select>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Form>
-                </FilterContainer>
+            <FilterContainer handleSearch={searchHandler} handleUnsearch={unsearchHandler}>
+                <Form className="filter-form p-4">
+                    <Row className="mb-3">
+                        <Col className='col-6'>
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    ID đơn đổi trả
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="ID đơn đổi trả" className="fs-6" name='id' value={filter.id ? filter.id : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="mb-3">
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    ID đơn hàng
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="ID đơn hàng" className="fs-6" name='IDDonHang' value={filter.IDDonHang ? filter.IDDonHang : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Row>
+                                <Col>
+                                    <h4>Thời gian đặt hàng</h4>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col className="col-3">
+                                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                                        <Form.Label column="lg" lg={4} className="fs-6">
+                                            Từ ngày
+                                        </Form.Label>
+                                            <Form.Control size="lg" type="date" placeholder="Large text" className="fs-6" name='startDate' value={filter.startDate ? filter.startDate : ""} onChange={changeFilterHandler}/>
+                                    </Form.Group>
+                                </Col>
+                                <Col className="col-3">
+                                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                                        <Form.Label column="lg" lg={4} className="fs-6">
+                                            Đến ngày
+                                        </Form.Label>
+                                            <Form.Control size="lg" type="date" placeholder="Large text" className="fs-6" name='endDate' value={filter.endDate ? filter.endDate : ""} onChange={changeFilterHandler}/>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    Trạng thái
+                                </Form.Label>
+                                <Col>
+                                    <Form.Select aria-label="Default select example" defaultValue="" name="TrangThai" value={filter.TrangThai ? filter.TrangThai : ""} onChange={changeFilterHandler}>
+                                        <option value="">Chọn trạng thái</option>
+                                        <option value="0">{StatusOrder[0]}</option>
+                                        <option value="1">{StatusOrder[1]}</option>
+                                        <option value="2">{StatusOrder[2]}</option>
+                                        <option value="3">{StatusOrder[3]}</option>
+                                        <option value="4">{StatusOrder[4]}</option>
+                                        <option value="5">{StatusOrder[5]}</option>
+                                        <option value="6">{StatusOrder[6]}</option>
+                                    </Form.Select>
+                                    
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Form>
+            </FilterContainer>
             <Content>
                 <Table striped bordered hover className="text-center">
                     <thead>

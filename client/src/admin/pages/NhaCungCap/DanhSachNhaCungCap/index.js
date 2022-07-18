@@ -15,32 +15,47 @@ const DanhSachNhaCungCap = () => {
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
+    const [supplierFilter, setSupplierFilter] = useState({})
+    const [searchParams, setSearchParams] = useSearchParams()
     let navigate = useNavigate()
+    const fetchSupplier = async(objCondition) => {
+        setLoading(true)
+        const supplierResponse = await supplierAPI.getAll(objCondition)
+        setSupplier(supplierResponse.data)
+        setNotify((notify)=> {
+            if(!supplierResponse.success) {
+                return {show: true, message: supplierResponse.message, success: supplierResponse.success}
+            }
+            return notify
+        })
+        setPage((page) => {
+            if(supplierResponse.success) {
+                if(supplierResponse.data.rowCount) {
+                    let next = (page.now) * 10 < supplierResponse.data.rowCount ? page.now+1: null
+                    let prev = page.now > 1 ? page.now -1 : null
+                    return {...page,rowCount: supplierResponse.data.rowCount, next, prev}       
+                }
+            }
+            return {...page}
+        })
+        setLoading(false)
+    }
     useEffect(()=> {
-        const fetchSupplier = async() => {
-            setLoading(true)
-            const supplierResponse = await supplierAPI.getAll(page.now)
-            setSupplier(supplierResponse.data)
-            setNotify((notify)=> {
-                if(!supplierResponse.success) {
-                    return {show: true, message: supplierResponse.message, success: supplierResponse.success}
-                }
-                return notify
-            })
-            setPage((page) => {
-                if(supplierResponse.success) {
-                    if(supplierResponse.data.rowCount) {
-                        let next = (page.now) * 10 < supplierResponse.data.rowCount ? page.now+1: null
-                        let prev = page.now > 1 ? page.now -1 : null
-                        return {...page,rowCount: supplierResponse.data.rowCount, next, prev}       
-                    }
-                }
-                return {...page}
-            })
-            setLoading(false)
+        const objCondition = {page: page.now}
+        const id = searchParams.get('id')
+        const name = searchParams.get('name')
+        const status = searchParams.get('status')
+        if(id) {
+            objCondition.id = id
         }
-        fetchSupplier()
-    },[page.now])
+        if(name) {
+            objCondition.Ten = name
+        }
+        if(status) {
+            objCondition.TrangThai = status
+        }
+        fetchSupplier(objCondition)
+    },[page.now, searchParams])
     const onClickPageHandler = (e) => {
         const pageValue = e.target.innerText *1;
         const nextPage= pageValue *10 <page.rowCount ? pageValue + 1 : null
@@ -78,8 +93,23 @@ const DanhSachNhaCungCap = () => {
 
         setDel({...del, show: true, id: id})
     }
-    if(loading) {
-        return <Loading />
+
+    // filter
+    const searchHandler = () => {
+        const dataFilter = {...supplierFilter}
+        const condition = new URLSearchParams(dataFilter).toString()
+        setSearchParams(condition)
+    }
+
+    const unsearchHandler = () => {
+        setSearchParams("")
+        setSupplierFilter({})
+    }
+    
+    const changeFilterHandler = (e) => {
+        setSupplierFilter((supplierFilter)=> {
+            return {...supplierFilter, [e.target.name] : e.target.value}
+        })
     }
     return (
         <Container>
@@ -93,48 +123,51 @@ const DanhSachNhaCungCap = () => {
                 <Toast.Body>{notify.message ? notify.message : ""}</Toast.Body>
                 </Toast>
             </ToastContainer>
-                <FilterContainer>
-                    <Form className="filter-form">
-                        <Row className="mb-3">
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        ID Nhà cung cấp
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        Tên cung cấp
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        Trạng thái
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Select aria-label="Default select example">
-                                            <option>Chọn trạng thái</option>
-                                            <option value="0">Hoạt động</option>
-                                            <option value="1">Ngưng hoạt động</option>
-                                        </Form.Select>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Form>
-                </FilterContainer>
+            <FilterContainer handleSearch={searchHandler} handleUnsearch={unsearchHandler}>
+                <Form className="filter-form p-4">
+                    <Row className="mb-3">
+                        <Col className='col-6'>
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    ID nhà cung cấp
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="ID nhà cung cấp" className="fs-6" name='id' value={supplierFilter.id ? supplierFilter.id : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="mb-3">
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    Tên nhà cung cấp
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="Tên nhà cung cấp" className="fs-6" name='id' value={supplierFilter.Ten ? supplierFilter.Ten : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    Trạng thái
+                                </Form.Label>
+                                <Col>
+                                    <Form.Select aria-label="Default select example" defaultValue="" name="status" value={supplierFilter.status ? supplierFilter.status : ""} onChange={changeFilterHandler}>
+                                        <option value="">Chọn trạng thái</option>
+                                        <option value="0">Không hoạt động</option>
+                                        <option value="1">Hoạt động</option>
+                                    </Form.Select>
+                                    
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Form>
+            </FilterContainer>
             <Content>
                 <Table striped bordered hover className="text-center">
                     <thead>

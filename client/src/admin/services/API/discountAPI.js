@@ -2,10 +2,10 @@ import axios from "axios"
 
 var discountUrl = process.env.REACT_APP_API_HOST_URL+"/discount"
 const discountAPI = {
-    getList: async(page) => {
+    getList: async(objCondition) => {
         try {
             const url = discountUrl+"/get-list"
-            const response = await axios.get(url, {params: {page}})
+            const response = await axios.get(url, {params: objCondition})
             return response.data
         } catch (error) {
             console.log(error);

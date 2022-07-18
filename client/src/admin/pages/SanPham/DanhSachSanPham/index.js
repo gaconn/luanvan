@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from 'react-bootstrap'
 import { BsPencil } from 'react-icons/bs'
 import { MdDelete } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import FilterContainer from '../../../components/FilterContainer'
 import Loading from '../../../components/Loading'
 import Page from '../../../components/Page'
@@ -15,32 +15,56 @@ const DanhSachSanPham = () => {
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
     const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [filter, setFilter] = useState({})
     let navigate = useNavigate()
+    const fetchProduct = async(objCondition) => {
+        setLoading(true)
+        const productResponse = await productAPI.getAll(objCondition)
+        setProduct(productResponse.data)
+        setNotify((notify)=> {
+            if(!productResponse.success) {
+                return {show: true, message: productResponse.message, success: productResponse.success}
+            }
+            return notify
+        })
+        setPage((page) => {
+            if(productResponse.success) {
+                if(productResponse.data.rowCount) {
+                    let next = (page.now) * 10 < productResponse.data.rowCount ? page.now+1: null
+                    let prev = page.now > 1 ? page.now -1 : null
+                    return {...page,rowCount: productResponse.data.rowCount, next, prev}       
+                }
+            }
+            return {...page}
+        })
+        setLoading(false)
+    }
     useEffect(()=> {
-        const fetchProduct = async() => {
-            setLoading(true)
-            const productResponse = await productAPI.getAll(page.now)
-            setProduct(productResponse.data)
-            setNotify((notify)=> {
-                if(!productResponse.success) {
-                    return {show: true, message: productResponse.message, success: productResponse.success}
-                }
-                return notify
-            })
-            setPage((page) => {
-                if(productResponse.success) {
-                    if(productResponse.data.rowCount) {
-                        let next = (page.now) * 10 < productResponse.data.rowCount ? page.now+1: null
-                        let prev = page.now > 1 ? page.now -1 : null
-                        return {...page,rowCount: productResponse.data.rowCount, next, prev}       
-                    }
-                }
-                return {...page}
-            })
-            setLoading(false)
+        const objCondition = {page: page.now}
+        const id = searchParams.get('id')
+        const name = searchParams.get('name')
+        const status = searchParams.get('status')
+        const supplier = searchParams.get('supplier')
+        const category = searchParams.get('category')
+
+        if(id) {
+            objCondition.id = id
         }
-        fetchProduct()
-    },[page.now])
+        if(name) {
+            objCondition.Ten = name
+        }
+        if(status) {
+            objCondition.TrangThai = status
+        }
+        if(supplier) {
+            objCondition.IDNhaCungCap = supplier
+        }
+        if(category) {
+            objCondition.IDTheLoai = category
+        }
+        fetchProduct(objCondition)
+    },[page.now, searchParams])
     const onClickPageHandler = (e) => {
         const pageValue = e.target.innerText *1;
         const nextPage= pageValue *10 <page.rowCount ? pageValue + 1 : null
@@ -78,8 +102,23 @@ const DanhSachSanPham = () => {
 
         setDel({...del, show: true, id: id})
     }
-    if(loading) {
-        return <Loading />
+
+    // filter
+    const searchHandler = () => {
+        const dataFilter = {...filter}
+        const condition = new URLSearchParams(dataFilter).toString()
+        setSearchParams(condition)
+    }
+
+    const unsearchHandler = () => {
+        setSearchParams("")
+        setFilter({})
+    }
+    
+    const changeFilterHandler = (e) => {
+        setFilter((filter)=> {
+            return {...filter, [e.target.name] : e.target.value}
+        })
     }
     return (
         <Container>
@@ -93,48 +132,73 @@ const DanhSachSanPham = () => {
                 <Toast.Body>{notify.message ? notify.message : ""}</Toast.Body>
                 </Toast>
             </ToastContainer>
-            <FilterContainer>
-                    <Form className="filter-form">
-                        <Row className="mb-3">
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        ID Sản phẩm
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        Tên sản phẩm
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Control size="lg" type="text" placeholder="Large text" className="fs-6" />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Row>
-                                    <Form.Label column="lg" lg={4} className="fs-6">
-                                        Trạng thái
-                                    </Form.Label>
-                                    <Col>
-                                        <Form.Select aria-label="Default select example">
-                                            <option>Chọn trạng thái</option>
-                                            <option value="0">Hoạt động</option>
-                                            <option value="1">Ngưng hoạt động</option>
-                                        </Form.Select>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Form>
-                </FilterContainer>
+            <FilterContainer handleSearch={searchHandler} handleUnsearch={unsearchHandler}>
+                <Form className="filter-form p-4">
+                    <Row className="mb-3">
+                        <Col className='col-6'>
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    ID sản phẩm
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="ID sản phẩm" className="fs-6" name='id' value={filter.id ? filter.id : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="mb-3">
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    Tên sản phẩm
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="Tên sản phẩm" className="fs-6" name='name' value={filter.name ? filter.name : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="mb-3">
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    Trạng thái
+                                </Form.Label>
+                                <Col>
+                                    <Form.Select aria-label="Default select example" defaultValue="" name="status" value={filter.status ? filter.status : ""} onChange={changeFilterHandler}>
+                                        <option value="">Chọn trạng thái</option>
+                                        <option value="0">Không hoạt động</option>
+                                        <option value="1">Hoạt động</option>
+                                    </Form.Select>
+                                    
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="mb-3">
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    ID nhà cung cấp
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="ID nhà cung cấp" className="fs-6" name='supplier' value={filter.supplier ? filter.supplier : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={3} className="fs-6">
+                                    ID ngành hàng
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="ID ngành hàng" className="fs-6" name='category' value={filter.category ? filter.category : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                </Form>
+            </FilterContainer>
             <Content>
                 <Table striped bordered hover className="text-center">
                     <thead>
