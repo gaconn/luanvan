@@ -182,7 +182,7 @@ class UserModel {
         }
 
         if(objCondition.Email) {
-            strWhere += ` and ${this.table}.Email = ${objCondition.Email}` 
+            strWhere += ` and ${this.table}.Email = '${objCondition.Email}'` 
         }
 
         if(objCondition.SoDienThoai) {
@@ -195,6 +195,9 @@ class UserModel {
 
         if(objCondition.hasOwnProperty("DaXoa")) {
             strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
+        }
+        if(objCondition.hasOwnProperty('TrangThai')) {
+            strWhere += ` and ${this.table}.TrangThai = ${objCondition.TrangThai}`
         }
         return strWhere
     }
