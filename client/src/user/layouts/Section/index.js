@@ -1,5 +1,13 @@
+import { useSearchParams } from "react-router-dom";
 
 const Section = () => {
+    const [searchParams, setSearchParams] = useSearchParams()
+
+    const searchHandler = (e) => {
+        console.log(e.target.value);
+        const params = new URLSearchParams({keyword: e.target.value})
+        setSearchParams(params)
+    }
     return (
         <>
             {/* Hero Section Begin */}
@@ -15,9 +23,8 @@ const Section = () => {
                             <div className="hero__search">
                                 <div className="hero__search__form">
                                     <form action="#">
-                                       
-                                        <input type="text" placeholder="What do yo u need?" />
-                                        <button type="submit" className="site-btn">
+                                        <input type="text" placeholder="What do yo u need?" name="keyword" onChange={searchHandler} />
+                                        <button type="submit" className="site-btn" >
                                             Tìm Kiếm
                                         </button>
                                     </form>

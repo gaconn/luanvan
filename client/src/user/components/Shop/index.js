@@ -8,10 +8,12 @@ import PaginationShop from "./page";
 import productAPI from "../../services/API/ProductAPI";
 import './search.css'
 import Search from "./SearchProduct";
+import { useSearchParams } from "react-router-dom";
 const ShopComponent = () => {
     const [categories, setCategories] = useState([])
     const [Loading, setLoading] = useState(false)
     const [product, setProduct] = useState([])
+    const [searchParams, setSearchParams] = useSearchParams()
     const[query,setQuery]=useState("")
     //Phân Trang
     const [currentPage, setCurrentPage] = useState(1)
@@ -23,19 +25,19 @@ const ShopComponent = () => {
         };
         fetchCategory();
     }, [])
+    const fetchProduct = async (objCondition) => {
+        setLoading(true)
+        const productResponse = await productAPI.getAll(objCondition)
+        console.log(productResponse);
+        setProduct(productResponse.data.data)
+        setLoading(false)
+    }
     useEffect(() => {
-        const fetchProduct = async () => {
-            setLoading(true)
-            const productResponse = await productAPI.getAll()
-            setProduct(productResponse.data.data)
-            if (!Loading) {
-                setTimeout(() => {
-                    setLoading(false)
-                }, 1000)
-            }
-        }
-        fetchProduct()
-    }, [])
+        const objCondition = {}
+        const keyword = searchParams.get('keyword')
+        objCondition.Ten = keyword
+        fetchProduct(objCondition)
+    }, [searchParams])
     const indexOfLastNews = currentPage * newPerPage
     const indexOfFirstNews = indexOfLastNews - newPerPage
     const currentListProduct = product.slice(indexOfFirstNews, indexOfLastNews)
