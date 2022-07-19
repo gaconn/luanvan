@@ -201,6 +201,18 @@ class ExchangeModel {
         if (objCondition.IDDonHang) {
             strWhere += ` and ${this.table}.IDDonHang = ${objCondition.IDDonHang}`
         }
+        if(objCondition.startDate) {
+            strWhere += ` and ( ${table}.ThoiGianTao BETWEEN ${objCondition.startDate}`
+            if(objCondition.endDate) {
+                strWhere +=  ` and ${objCondition.endDate} )`
+            }else {
+                strWhere += ` and ${new Date().getTime()/1000}`
+            }
+        }
+
+        if(!objCondition.startDate && objCondition.endDate) {
+            strWhere += ` and ( ${table}.MaChietKhau BETWEEN 0 AND ${objCondition.endDate})`
+        } 
         return strWhere
     }
 }

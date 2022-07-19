@@ -328,7 +328,7 @@ class ProductModel {
         }
 
         if(objCondition.hasOwnProperty('Ten') && objCondition.Ten) {
-            strWhere += ` and ${this.table}.Ten = ${objCondition.Ten}`
+            strWhere += ` and ${this.table}.Ten LIKE '%${objCondition.Ten}%'`
         }
 
         if(objCondition.hasOwnProperty('DaXoa')) {
@@ -343,6 +343,12 @@ class ProductModel {
         }
         if(objCondition.isStoking) {
             strWhere += ` and ${this.table}.SoLuong > 0`
+        }
+        if(objCondition.IDNhaCungCap) {
+            strWhere += ` and ${this.table}.IDNhaCungCap = ${objCondition.IDNhaCungCap}`
+        }
+        if(objCondition.IDTheLoai) {
+            strWhere += ` and ${this.table}.IDTheLoai = ${objCondition.IDTheLoai}`
         }
         return strWhere
     }

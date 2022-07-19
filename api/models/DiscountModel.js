@@ -222,11 +222,26 @@ class DiscountModel {
         if (objCondition.hasOwnProperty('MaChietKhau')) {
             strWhere += ` and ${this.table}.MaChietKhau = '${objCondition.MaChietKhau}'`
         }
-
+        if (objCondition.hasOwnProperty('TenChuongTrinh')) {
+            strWhere += ` and ${this.table}.TenChuongTrinh LIKE '${objCondition.TenChuongTrinh}'`
+        }
         if(objCondition.validTime) {
             const now = new Date().getTime()/1000
             strWhere += ` and ${this.table}.ThoiGianBatDau <= ${now} and ${this.table}.ThoiGianKetThuc >= ${now}`
         }
+
+        if(objCondition.startDate) {
+            strWhere += ` and ( ${table}.ThoiGianTao BETWEEN ${objCondition.startDate}`
+            if(objCondition.endDate) {
+                strWhere +=  ` and ${objCondition.endDate} )`
+            }else {
+                strWhere += ` and ${new Date().getTime()/1000}`
+            }
+        }
+
+        if(!objCondition.startDate && objCondition.endDate) {
+            strWhere += ` and ( ${table}.MaChietKhau BETWEEN 0 AND ${objCondition.endDate})`
+        } 
         return strWhere
     }
 }
