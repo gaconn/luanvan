@@ -6,9 +6,9 @@ import CartAPI from "../../services/API/Cart";
 import LoadingPage from '../Loading'
 const List = ({ Product,LoadingProduct }) => {
   
-    if(LoadingProduct){
-        return <LoadingPage/>
-    }
+    // if(LoadingProduct){
+    //     return <LoadingPage/>
+    // }
     const HandleInfo = (item) => {
         localStorage.setItem('DetailID', item)
     };

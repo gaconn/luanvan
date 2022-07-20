@@ -1,68 +1,84 @@
-
 import List from "./ListProduct";
-import { useState, useEffect } from 'react';
-import Accordion from 'react-bootstrap/Accordion';
-import Tree from './Tree'
+import { useState, useEffect } from "react";
+import Accordion from "react-bootstrap/Accordion";
+import Tree from "./Tree";
 import categoryAPI from "../../services/API/CategoryAPI";
-import PaginationShop from "./page";
 import productAPI from "../../services/API/ProductAPI";
-import './search.css'
-import Search from "./SearchProduct";
+import "./search.css";
 import { useSearchParams } from "react-router-dom";
+import Spinner from "react-bootstrap/Spinner";
 const ShopComponent = () => {
-    const [categories, setCategories] = useState([])
-    const [Loading, setLoading] = useState(false)
-    const [product, setProduct] = useState([])
-    const [searchParams, setSearchParams] = useSearchParams()
-    const[query,setQuery]=useState("")
-    //Phân Trang
-    const [currentPage, setCurrentPage] = useState(1)
-    const [newPerPage] = useState(3)
+    const [categories, setCategories] = useState([]);
+    const [Loading, setLoading] = useState(false);
+    const [product, setProduct] = useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [page, setPage] = useState(0);
+    const [finish, setFinish] = useState(false);
+    const [keyword, setKeyword] = useState();
     useEffect(() => {
         const fetchCategory = async () => {
             const response = await categoryAPI.getTree();
-            setCategories(response.data)
+            setCategories(response.data);
         };
         fetchCategory();
-    }, [])
+    }, []);
     const fetchProduct = async (objCondition) => {
-        setLoading(true)
-        const productResponse = await productAPI.getAll(objCondition)
-        console.log(productResponse);
-        setProduct(productResponse.data.data)
-        setLoading(false)
-    }
+        let tmpPage = 1;
+        objCondition.page = page + 1;
+        // khi search thì set lại page = 1
+        let isSearch = keyword !== objCondition.Ten;
+        if (isSearch) {
+            objCondition.page = tmpPage;
+        }
+        const productResponse = await productAPI.getAll(objCondition);
+        setProduct((product) => {
+            // nếu đang search thì trả về danh sách mới
+            if (isSearch) {
+                return productResponse.data.data;
+            }
+            // còn không thì nối thêm vào danh sách cũ
+            return [...product, ...productResponse.data.data];
+        });
+        setPage((page) => {
+            if (isSearch) {
+                return 1;
+            }
+            if (productResponse.success && productResponse.data.data.length > 0) {
+                return page + 1;
+            }
+            return page;
+        });
+        setFinish((finish) => {
+            if (productResponse.success && productResponse.data.data.length === 0) {
+                return true;
+            }
+            return false;
+        });
+        setKeyword(() => {
+            return objCondition.Ten;
+        });
+    };
     useEffect(() => {
-        const objCondition = {}
-        const keyword = searchParams.get('keyword')
-        objCondition.Ten = keyword
-        fetchProduct(objCondition)
-    }, [searchParams])
-    const indexOfLastNews = currentPage * newPerPage
-    const indexOfFirstNews = indexOfLastNews - newPerPage
-    const currentListProduct = product.slice(indexOfFirstNews, indexOfLastNews)
-    const paginate = (numberPage) => setCurrentPage(numberPage)
-    const [pageNumberLimit, setPageNumberLimit] = useState(3)
-    const [MaxPageNumberLimit, setMaxPageNumberLimit] = useState(3)
-    const [MinPageNumberLimit, setMinPageNumberLimit] = useState(0)
-    const handelNextPage = () => {
-        setCurrentPage(currentPage + 1)
-        if (currentPage + 1 > MaxPageNumberLimit) {
-            setMaxPageNumberLimit(MaxPageNumberLimit + pageNumberLimit)
-            setMinPageNumberLimit(MinPageNumberLimit + pageNumberLimit)
-        }
-    }
-    const handelPrevPage = () => {
-        setCurrentPage(currentPage - 1)
-        if ((currentPage - 1) % pageNumberLimit === 0) {
-            setMaxPageNumberLimit(MaxPageNumberLimit - pageNumberLimit)
-            setMinPageNumberLimit(MinPageNumberLimit - pageNumberLimit)
-        }
-    }
-    //search
-    const search=(data)=>{
-        return data.filter(item => item.Ten.toLocaleLowerCase().includes(query))
-    }
+        const Ten = searchParams.get("keyword");
+
+        if (!Loading && Ten === keyword) return;
+        const objCondition = {};
+        objCondition.Ten = Ten;
+        fetchProduct(objCondition);
+        setLoading(() => {
+            return false;
+        });
+    }, [searchParams, Loading]);
+
+    // infinite loading
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || Loading) return;
+        setLoading(true);
+    };
     return (
         <>
             <section className="product spad">
@@ -79,9 +95,7 @@ const ShopComponent = () => {
                                             </Accordion.Body>
                                         </Accordion.Item>
                                     </Accordion>
-
                                 </div>
-
                             </div>
                         </div>
                         <div className="col-lg-9 col-md-7">
@@ -97,24 +111,7 @@ const ShopComponent = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="col-lg-4 col-md-4">
-                                        <div className="app">
-                                          
-                                                <input type="text" placeholder="Tìm kiếm sản phẩm ..." name="search" className="search" onChange={(e) => setQuery(e.target.value)} />
 
-                                                {/* <ul className="list">
-                                                    {
-                                                        product.filter(item => item.Ten.includes(query)).map((item, k) => {
-                                                            return <li className="listItem" key={k}>{item.Ten}</li>
-                                                        })
-                                                    }
-                                                </ul> */}
-                                                {/* <button type="submit">
-                                                         <i className="fa fa-search" />
-                                                          </button> */}
-                                            
-                                        </div>
-                                    </div>
                                     <div className="col-lg-4 col-md-3">
                                         <div className="filter__option">
                                             <span className="icon_grid-2x2" />
@@ -125,23 +122,18 @@ const ShopComponent = () => {
                             </div>
                             <div className="row">
                                 {/* List product */}
-                            {
-                                query ? ( <Search ProductSearch={search(product)} LoadingProduct={Loading} />):( <List Product={currentListProduct} LoadingProduct={Loading} />)
-                            }
-                               
-
+                                {<List Product={product} LoadingProduct={Loading} />}
                             </div>
-                            <PaginationShop current={currentPage} totalPage={product.length} NewPerPage={newPerPage} paginate={paginate} pageLimit={pageNumberLimit} Max={MaxPageNumberLimit} Min={MinPageNumberLimit} handelNext={handelNextPage} handelPrev={handelPrevPage} />
+                            <div className="d-flex justify-content-center" style={{ height: "60px" }}>
+                                {Loading && <Spinner animation="border" />}
+                                {finish && "Hết hàng"}
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-
-
         </>
-
-
     );
-}
+};
 
 export default ShopComponent;
