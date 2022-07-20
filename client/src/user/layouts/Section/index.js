@@ -1,5 +1,17 @@
+import { useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const Section = () => {
+    const [searchParams, setSearchParams] = useSearchParams()
+    const location = useLocation()
+    const navigate = useNavigate()
+    const searchHandler = async(e) => {
+        const params = new URLSearchParams({keyword: e.target.value}).toString()
+        if(location.pathname !== "/Shop") {
+            navigate("/Shop?"+params)
+        }else 
+        setSearchParams(params)
+    }
     return (
         <>
             {/* Hero Section Begin */}
@@ -15,9 +27,15 @@ const Section = () => {
                             <div className="hero__search">
                                 <div className="hero__search__form">
                                     <form action="#">
-                                       
-                                        <input type="text" placeholder="What do yo u need?" />
-                                        <button type="submit" className="site-btn">
+                                        <input type="text" placeholder="Nhập tên sản phẩm" defaultValue={searchParams.get('keyword')} name="keyword" 
+                                        onChange={
+                                            (e)=> {
+                                                setTimeout(()=> searchHandler(e), 1000)
+                                            }
+                                        } 
+                                        autoFocus
+                                        />
+                                        <button type="submit" className="site-btn" >
                                             Tìm Kiếm
                                         </button>
                                     </form>
