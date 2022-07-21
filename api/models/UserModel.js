@@ -15,10 +15,6 @@ class UserModel {
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
-         if (!objUserInfo.HoTen) {
-             arrError.push("Họ tên không được để trống")
-        }
-
         if (!objUserInfo.SoDienThoai) {
             arrError.push("Số điện thoại không được để trống")
         }
