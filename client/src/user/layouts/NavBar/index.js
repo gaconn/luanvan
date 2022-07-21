@@ -19,7 +19,7 @@ const NavbarHeader = () => {
         localStorage.removeItem("UID")
         localStorage.removeItem("USER_NAME")
         token.deleteToken()
-        navigate("/home", { replace: true })
+        navigate("/Home", { replace: true })
     }
     // console.log(localStorage.getItem("UID"));
     useEffect(() => {
@@ -39,12 +39,17 @@ const NavbarHeader = () => {
         // }
          return <TreeNavBar listChild={item.listChild} />
     }
-    console.log(idCategory)
+    // console.log(idCategory)
+    const checkInformation=()=>{
+        if(localStorage.getItem("UID")){
+            navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)
+        }
+    }
     return (
         <>
             <Navbar bg="light" variant="light" expand='sm' sticky="top">
                 <Container  >
-                    <Navbar.Brand href="Home"><img src={iconImg} style={{ width: 150, height: 100 }} /></Navbar.Brand>
+                    <Navbar.Brand href="/"><img src={iconImg} style={{ width: 150, height: 100 }} /></Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav
@@ -54,7 +59,6 @@ const NavbarHeader = () => {
 
                         >
 
-                            <Nav.Link href="/"  ><i className="fa fa-home"></i></Nav.Link>
                             <Nav.Link href="/Shop">Cửa hàng</Nav.Link>
                             <Nav.Link href="/Contact">Liên hệ</Nav.Link>
                             <Nav.Link href="/Blog">Bản tin</Nav.Link>
@@ -97,7 +101,7 @@ const NavbarHeader = () => {
                                 <div className="p-1">{localStorage.getItem("USER_NAME") ? localStorage.getItem("USER_NAME") : "Tài khoản"}</div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu variant="dark">
-                                <Dropdown.Item href="/InformationCustomer" active>
+                                <Dropdown.Item onClick={checkInformation} active>
                                     Thông tin khách hàng
                                 </Dropdown.Item>
                                 {!localStorage.getItem("UID") &&

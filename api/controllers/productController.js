@@ -8,7 +8,6 @@ class ProductController {
         var objCondition = {...objQuery,joinCategory: true, joinSupplier: true, DaXoa: 0, getRowCount: true}
         try {
             const data =await ProductModel.get(objCondition)
-
             if(!data) {
                 return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], ['không thể lấy dữ liệu từ database']))
             }
@@ -163,6 +162,24 @@ class ProductController {
                 throw new Error("Không thể kết nối database")
             }
             return res.json(data)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
+    //get-all new
+    featuredProduct=async(req,res)=>{
+        const objQuery = req.query
+        var objCondition = {...objQuery,joinCategory: true, joinSupplier: true,ThoiGianTao:new Date().getTime() / 1000, DaXoa: 0, getRowCount: true}
+        if(!objQuery) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+        try {
+            const data =await ProductModel.featuredProduct(objCondition)
+            if(!data) {
+                return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], ['không thể lấy dữ liệu từ database']))
+            }
+            return res.json(data)
+            
         } catch (error) {
             return res.json(ResponseUtil.response(false, error.message))
         }

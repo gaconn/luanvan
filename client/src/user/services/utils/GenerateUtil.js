@@ -22,7 +22,6 @@ export const toTimeString = (timestamp) => {
 
 export const formatDateForInput = (timestamp) => {
     const date = new Date(timestamp)
-
     var strDatetime = ""
     strDatetime += date.getFullYear()
     strDatetime += '-' + (date.getMonth()+1 >10 ? date.getMonth()+1 : `0${date.getMonth()+1}`)
