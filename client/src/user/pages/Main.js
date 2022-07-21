@@ -3,21 +3,21 @@ import DetailComponent from "../components/Detail"
 import ManageComponents from "../components/mange"
 
 const Main = () => {
-    const { option} = useParams()
-    var pageBody 
+    const { option } = useParams()
+    var pageBody
     switch (option) {
-        case "ProductDetail": 
-            pageBody = < DetailComponent/>
+        case "ProductDetail":
+            pageBody = < DetailComponent />
             break;
-        case "InformationCustomer": 
-            pageBody = <ManageComponents/>
+        case "InformationCustomer":
+            pageBody = <ManageComponents />
             break;
         default:
             break;
     }
     return (
         <div>
-              {pageBody}
+            {pageBody}
         </div>
     )
 }

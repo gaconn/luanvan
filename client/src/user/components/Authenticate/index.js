@@ -75,7 +75,7 @@ const Auth = () => {
     };
 
     return (
-        <div className="py-40">
+        <div className="py-20">
             <div className="block p-6 rounded-lg shadow-lg bg-white max-w-sm  mx-auto ">
                 <form>
                     <div className="form-group mb-6">

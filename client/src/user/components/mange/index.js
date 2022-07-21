@@ -1,32 +1,24 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Information from "./infomationCustomer";
-import Table from 'react-bootstrap/Table';
+import ManageOrder from "./ManageOrder";
+import ValidateCheckout from "./UpdateCustomer";
 const ManageComponents = () => {
-    return (<>
-        <Information />
-        <section className="w-2/3 mx-auto">
-            <header class="px-5 py-4 border-b border-gray-100">
-                <div class="font-semibold text-gray-800">Manage Carts</div>
-            </header>
-            <Table striped bordered responsive hover>
-                <thead>
-                    <tr>
-                        <th>Mã</th>
-                        <th>Ngày đặt</th>
-                        <th>Sản Phẩm</th>
-                        <th>Tất Cả</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                </tbody>
-            </Table>
-        </section>
-    </>);
+  const [searchParams, setSearchParams] = useSearchParams()
+  const id = searchParams.get('id')
+  const updateid = searchParams.get('updateID')
+  
+  const ShowInfomation = (id, updateID) => {
+    if (id) {
+      return <Information />
+    }
+    if (updateID) {
+      return <ValidateCheckout />
+    }
+  }
+  return (<>
+    {ShowInfomation(id, updateid)}
+  </>);
 }
 
 export default ManageComponents;
