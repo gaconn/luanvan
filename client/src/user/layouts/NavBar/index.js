@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import categoryAPI from "../../services/API/CategoryAPI";
 import TreeNavBar from "./TreeNavBar";
 import ListItem from "./ListItem";
+import Section from "../Section";
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
     const [idCategory, setIDCategory] = useState({})
@@ -39,7 +40,6 @@ const NavbarHeader = () => {
         // }
          return <TreeNavBar listChild={item.listChild} />
     }
-    // console.log(idCategory)
     const checkInformation=()=>{
         if(localStorage.getItem("UID")){
             navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)

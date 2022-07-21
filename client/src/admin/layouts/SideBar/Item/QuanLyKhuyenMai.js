@@ -3,6 +3,8 @@ import { AiOutlinePlus } from "react-icons/ai"
 import { FaRegListAlt } from "react-icons/fa"
 import { GiLetterBomb } from "react-icons/gi"
 import { RiPlayListAddFill } from "react-icons/ri"
+import { Link } from "react-router-dom"
+import { LinkDiscountAction } from "../../../configs/define"
 import IconTagToggle from "../IconTagToggle"
 import ListTagToggle from "../ListTagToggle"
 import { Item, List } from "../SideBar.style"
@@ -19,16 +21,16 @@ const QuanLyKhuyenMai = () => {
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkDiscountAction.discount_list} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><FaRegListAlt /></span>
                                 <span className="side-bar-item-label">Danh sách chương trình</span>
-                            </div>
+                            </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
-                            <div className="side-bar-item-control">
+                            <Link to={LinkDiscountAction.discount_add} className="side-bar-item-control">
                                 <span className="side-bar-item-icon-sub"><RiPlayListAddFill /></span>
                                 <span className="side-bar-item-label">Thêm chương trình khuyến mại</span>
-                            </div>
+                            </Link>
                         </Item>
                     </List>
                 </div>

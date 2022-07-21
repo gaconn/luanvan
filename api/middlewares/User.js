@@ -23,7 +23,7 @@ const User = {
 
             next()
         } catch (error) {
-            return res.json(ResponseUtil.response(false, 'Có lỗi xảy ra, vui lòng thử lại'))
+            return res.json(ResponseUtil.response(false, 'Vui lòng đăng nhập lại để thực hiện thao tác'))
         }
     }
 }

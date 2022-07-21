@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 
 
-const FilterContainer = ({children}) => {
+const FilterContainer = ({children, handleSearch, handleUnsearch}) => {
     const [status, setStatus] = useState(0)
     return (
         <Container>
@@ -21,10 +21,10 @@ const FilterContainer = ({children}) => {
                         children
                     }
                     </Accordion.Collapse>
-                    <Button className="filter-search" variant="success">
+                    <Button className="filter-search" variant="success" onClick={handleSearch}>
                         Tìm kiếm
                     </Button>
-                    <Button className="filter-unsearch" variant="warning">
+                    <Button className="filter-unsearch" variant="warning" onClick={handleUnsearch}>
                         Bỏ tìm kiếm
                     </Button>
                     <AccordionToggler eventKey="filter-1">

@@ -1,4 +1,5 @@
 const upload = require("../middlewares/Files")
+const DiscountModel = require("../models/DiscountModel")
 const ProductModel = require("../models/ProductModel")
 const ResponseUtil = require("../utils/ResponseUtil")
 class ProductController {
@@ -60,10 +61,44 @@ class ProductController {
                     list.push(dataProduct[index])
                 }
             }
+
+            //discount
+            var discountFee = 0
+            var isValidDiscount = true
+            if(condition.MaChietKhau) {
+                const responseDiscount = await DiscountModel.get({MaChietKhau: condition.MaChietKhau, DaXoa: 0, TrangThai:1, validTime: true})
+                const discount = responseDiscount.data[0]
+                if(!responseDiscount.success && responseDiscount.data.length === 0) {
+                    isValidDiscount = false
+                }else {
+                    
+                    if(discount.DieuKienGiaToiDa && TongGiaTriDonHang > discount.DieuKienGiaToiDa) {
+                        isValidDiscount = false
+                    }
+                    if(discount.DieuKienGiaToiThieu && TongGiaTriDonHang < discount.DieuKienGiaToiThieu) {
+                        isValidDiscount = false
+                    }
+                    if(discount.SoLuongSuDungToiDa) {
+                        const responseOrderDiscount = await this.get({DaXoa:0, MaChietKhau: condition.MaChietKhau})
+                        if(responseOrderDiscount.success && responseOrderDiscount.data[1] && responseOrderDiscount.data[1].rowCount >= discount.SoLuongSuDungToiDa) {
+                            isValidDiscount = false
+                        }
+                    }
+
+                }
+                if(isValidDiscount) {
+                    if(discount.GiaTriChietKhau) {
+                        discountFee = discount.GiaTriChietKhau
+                    }else if(discount.PhanTramChietKhau) {
+                        discountFee = discount.PhanTramChietKhau * TongGiaTriDonHang
+                    }
+                }
+            }
             const dataResponse = {
                 PhiVanChuyen,
-                TongGiaTriDonHang,
+                TongGiaTriDonHang:  TongGiaTriDonHang - discountFee,
                 PhuPhi,
+                KhuyenMai: discountFee,
                 list
             }
             

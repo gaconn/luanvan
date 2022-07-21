@@ -2,10 +2,10 @@ import axios from "axios"
 
 var supplierUrl = process.env.REACT_APP_API_HOST_URL+"/supplier"
 const supplierAPI = {
-    getAll: async(page) => {
+    getAll: async(objCondition) => {
         try {
             const url = supplierUrl+"/get-all"
-            const response = await axios.get(url, {params: {page}})
+            const response = await axios.get(url, {params: objCondition})
             return response.data
         } catch (error) {
             console.log(error);

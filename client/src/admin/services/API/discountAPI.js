@@ -1,10 +1,10 @@
 import axios from "axios"
 
-var productUrl = process.env.REACT_APP_API_HOST_URL+"/product"
-const productAPI = {
-    getAll: async(objCondition) => {
+var discountUrl = process.env.REACT_APP_API_HOST_URL+"/discount"
+const discountAPI = {
+    getList: async(objCondition) => {
         try {
-            const url = productUrl+"/get-all"
+            const url = discountUrl+"/get-list"
             const response = await axios.get(url, {params: objCondition})
             return response.data
         } catch (error) {
@@ -13,7 +13,7 @@ const productAPI = {
     },
     insert: async(data) => {
         try {
-            const url = productUrl+"/insert"
+            const url = discountUrl+"/insert"
             const response = await axios.post(url,data)
             return response.data
         } catch (error) {
@@ -22,7 +22,7 @@ const productAPI = {
     },
     update: async(data) => {
         try {
-            const url = productUrl + "/update"
+            const url = discountUrl + "/update"
             const response = await axios.put(url, data)
             return response.data
         } catch (error) {
@@ -31,22 +31,13 @@ const productAPI = {
     },
     delete: async(id) => {
         try {
-            const url = `${productUrl}/delete`
-            const response = await axios.delete(url,{params: {id}})
+            const url = `${discountUrl}/delete`
+            const response = await axios.delete(url, {params: {id}})
             return response.data
         } catch (error) {
-            console.log(error);            
-        }
-    },
-    detail: async (id) => {
-        try {
-            const url = `${productUrl}/get-detail`
-            const response = await axios.get(url, {params: {id}})
-            return response.data
-        } catch (error) {
-            console.warn(error)
+            return {success: false, message: error.message}          
         }
     }
 }
 
-export default productAPI
+export default discountAPI

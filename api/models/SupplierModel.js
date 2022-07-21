@@ -148,15 +148,15 @@ class SupplierModel {
             strWhere += `and Ten = ${objCondition.Ten}`
         }
 
-        if(objCondition.hasOwnProperty('DaXoa') && objCondition.DaXoa) {
+        if(objCondition.hasOwnProperty('DaXoa')) {
             strWhere += ` and DaXoa = ${objCondition.DaXoa}`
         }
 
-        if(objCondition.hasOwnProperty('HoatDong') && objCondition.HoatDong) {
+        if(objCondition.hasOwnProperty('HoatDong') ) {
             strWhere += ` and HoatDong = ${objCondition.HoatDong}`
         }
 
-        if(objCondition.hasOwnProperty('TrangThai') && objCondition.TrangThai) {
+        if(objCondition.hasOwnProperty('TrangThai') ) {
             strWhere += ` and TrangThai = ${objCondition.TrangThai}`
         }
         if(objCondition.hasOwnProperty('ThoiGianTao')) {
