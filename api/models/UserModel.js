@@ -15,27 +15,14 @@ class UserModel {
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
         }
         let arrError = []
-         if (!objUserInfo.HoTen) {
-             arrError.push("Họ tên không được để trống")
-        }
-
+        // if (!objUserInfo.HoTen) {
+        //     arrError.push("Họ tên không được để trống")
+        // }
         if (!objUserInfo.SoDienThoai) {
             arrError.push("Số điện thoại không được để trống")
         }
         if (!objUserInfo.Email) {
             arrError.push("Email không được bỏ trống")
-        }
-        if(!objUserInfo.NgaySinh){
-            arrError.push("Ngày sinh không được bỏ trống")
-        }
-        if(!objUserInfo.TinhThanh){
-            arrError.push("Tĩnh Thành không được bỏ trống")
-        }
-        if(!objUserInfo.QuanHuyen){
-            arrError.push("Quận Huyện không được bỏ trống")
-        }
-        if(!objUserInfo.PhuongXa){
-            arrError.push("Phường Xã không được bỏ trống")
         }
 
         if (!GeneralUtil.checkValidEmail(objUserInfo.Email)) {
@@ -49,7 +36,7 @@ class UserModel {
             return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], arrError)
         }
         try {
-            const arrGetAccountResult = await dbconnect.query("select * from taikhoan where  Email = ? and IDCapDoTaiKhoan=4 Limit 1", [objUserInfo.Email])
+            const arrGetAccountResult = await dbconnect.query("select * from taikhoan where  Email = ? Limit 1", [objUserInfo.Email])
             if (arrGetAccountResult.length === 0) return ResponseUtil.response(false, "Lỗi hệ thống")
             if (arrGetAccountResult[0].length > 0) return ResponseUtil.response(false, "Email đã tồn tại")
 
@@ -154,7 +141,7 @@ class UserModel {
             return ResponseUtil.response(false, 'Mật khẩu không hợp lệ')
         }
         try {
-            const query = "select * from taikhoan where Email = ? and IDCapDoTaiKhoan=4 and DaXoa = 0 limit 1 "
+            const query = "select * from taikhoan where Email = ?  and DaXoa = 0 limit 1 "
             const result = await dbconnect.query(query, objDataUser.Email)
             if (!result[0] || result[0].length === 0) {
                 return ResponseUtil.response(true, 'Đăng nhập không thành công', [], ['Email hoặc mật khẩu không chính xác'])
@@ -170,6 +157,8 @@ class UserModel {
             if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
                 return ResponseUtil.response(true, 'Đăng nhập không thành công', [], ['Email hoặc mật khẩu không chính xác'])
             }
+
+
             
             // nếu có Remember thì giữ đăng nhập 1 tháng, nếu không có thì giữ đăng nhập 1 ngày
             const token = jwt.sign(

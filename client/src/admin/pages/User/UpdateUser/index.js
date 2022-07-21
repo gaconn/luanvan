@@ -26,6 +26,7 @@ const UpdateUser = () => {
             const user_id = searchParams.get('id')
             console.log(user_id);
             if(!user_id) return
+
             const response = await userAPI.getDetail({id : user_id}) 
             setUser((user)=> {
                 if(response && (!response.success || response.data.length === 0)) {
@@ -134,6 +135,8 @@ const UpdateUser = () => {
     }
     useEffect(()=> {
         const fetchDistrict = async () => {
+            
+        
             var response 
             if(address.city !== '') {
                 let arrData = address.city.split("-")

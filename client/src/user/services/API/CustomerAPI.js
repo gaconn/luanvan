@@ -28,24 +28,6 @@ const CustommerAPI = {
         } catch (error) {
          console.log(error)
         }
-    },
-    getCustomerDetail: async(params)=>{
-        try {
-            const url=BASE_URL+"/get-detail"
-            const response=await axios.get(url,{params:params})
-            return response.data
-        } catch (error) {
-            console.log(error)
-        }
-    },
-    updateInformation: async(params)=>{
-        try {
-            const url = BASE_URL + "/update"
-            const response = await axios.put(url, params)
-            return response.data
-        } catch (error) {
-            console.log(error)
-        }
     }
 }
 export default CustommerAPI
