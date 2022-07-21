@@ -401,7 +401,7 @@ class ProductModel {
         if (objCondition.id) {
             var id = (objCondition.id + '').split(',')
             if (id.length > 1) {
-                strWhere += ` and (1=1 `
+                strWhere += ` and (1=0 `
                 for (let index = 0; index < id.length; index++) {
                     strWhere += ` or ${this.table}.id = ${id[index]}`
                 }

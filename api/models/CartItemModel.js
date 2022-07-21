@@ -148,11 +148,11 @@ class CartItemModel {
     _buildWhereQuery = (objData) => {
         var strWhere = ' where 1=1 '
         if(objData.id) {
-            var arrIDSanPham = objData.IDSanPham.split(',')
-            if(arrIDSanPham.length >0) {
-                strWhere += ` and (1=1 `
-                for (let index = 0; index < arrIDSanPham.length; index++) {        
-                    strWhere += ` or ${this.table}.id = ${arrIDSanPham[index]}`
+            var arrIDItem = objData.id.split(',')
+            if(arrIDItem.length >0) {
+                strWhere += ` and (1=0 `
+                for (let index = 0; index < arrIDItem.length; index++) {        
+                    strWhere += ` or ${this.table}.id = ${arrIDItem[index]}`
                 }
                 strWhere += ` )`
             }
@@ -161,7 +161,14 @@ class CartItemModel {
             strWhere += ` and ${this.table}.IDGioHang = ${objData.IDGioHang}`
         }
         if(objData.IDSanPham) {
-            strWhere += ` and ${this.table}.IDSanPham = ${objData.IDSanPham}`
+            var arrIDSanPham = (objData.IDSanPham+"").split(',')
+            if(arrIDSanPham.length >0) {
+                strWhere += ` and (1=0 `
+                for (let index = 0; index < arrIDSanPham.length; index++) {        
+                    strWhere += ` or ${this.table}.IDSanPham = ${arrIDSanPham[index]}`
+                }
+                strWhere += ` )`
+            }
         }
         return strWhere
     }
