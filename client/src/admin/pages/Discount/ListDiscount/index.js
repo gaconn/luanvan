@@ -1,48 +1,40 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from 'react-bootstrap'
-import { AiOutlineFileSearch } from 'react-icons/ai'
-import { FaShippingFast } from 'react-icons/fa'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import FilterContainer from '../../../components/FilterContainer'
-import Loading from '../../../components/Loading'
-import Page from '../../../components/Page'
-import { LinkOrderAction } from '../../../configs/define'
-import orderExchangeAPI from '../../../services/API/orderExchangeAPI'
-import { colorTextStatus, StatusOrder, toTimeString } from '../../../services/utils/General'
-import {Container, Content } from './DanhSachDoiTra.style'
-
-const DanhSachDoiTra = () => {
-    const [order, setOrder] = useState([])
+import { useEffect, useState } from "react";
+import { Button, Col, Form, Modal, Row, Table, Toast, ToastContainer } from "react-bootstrap";
+import FilterContainer from "../../../components/FilterContainer";
+import discountAPI from "../../../services/API/discountAPI";
+import { Container, Content } from "./ListDiscount.style";
+import Page from "../../../components/Page";
+import {BsPencil} from 'react-icons/bs'
+import {MdDelete} from 'react-icons/md'
+import {useNavigate, useSearchParams} from "react-router-dom"
+import { LinkDiscountAction } from "../../../configs/define"
+import Loading from "../../../components/Loading";
+import { targetDiscount, toTimeString } from "../../../services/utils/General";
+const ListDiscount = () => {
+    const [discount, setDiscount] = useState([])
     const [notify, setNotify] = useState({show: false, message: "", success: false})
     const [page, setPage] = useState({rowCount: 0, now: 1, next: null, prev: null})
+    const [del, setDel] = useState({show: false, id: null})
     const [loading, setLoading] = useState(false)
-    const [message, setMessage] = useState({show: false})
-    const [filter,setFilter] = useState({})
+    const [filter, setFilter] = useState({})
     const [searchParams, setSearchParams] = useSearchParams()
     let navigate = useNavigate()
-    const fetchOrder = async(objCondition) => {
+    const fetchDiscount = async(objCondition) => {
         setLoading(true)
-        const orderResponse = await orderExchangeAPI.getList(objCondition)
-        setOrder(() => {
-            if(orderResponse && orderResponse.success && orderResponse.data && orderResponse.data) {
-                return orderResponse.data
-            }
-            return []
-        })
+        const discountResponse = await discountAPI.getList(objCondition)
+        setDiscount(discountResponse.data)
         setNotify((notify)=> {
-            if(!orderResponse.success) {
-                return {show: true, message: orderResponse.message, success: orderResponse.success}
+            if(!discountResponse.success) {
+                return {show: true, message: discountResponse.message, success: discountResponse.success}
             }
             return notify
         })
         setPage((page) => {
-            if(orderResponse.success && orderResponse.data && orderResponse.data[1]) {
-                if(orderResponse.data[1].rowCount) {
-                    let next = (page.now) * 10 < orderResponse.data[1].rowCount ? page.now+1: null
+            if(discountResponse.success) {
+                if(discountResponse.data.rowCount) {
+                    let next = (page.now) * 10 < discountResponse.data.rowCount ? page.now+1: null
                     let prev = page.now > 1 ? page.now -1 : null
-                    return {...page,rowCount: orderResponse.data[1].rowCount, next, prev}       
+                    return {...page,rowCount: discountResponse.data.rowCount, next, prev}       
                 }
             }
             return {...page}
@@ -50,17 +42,22 @@ const DanhSachDoiTra = () => {
         setLoading(false)
     }
     useEffect(()=> {
-        const objCondition = {page: page.now, joinOrder:true}
-        const id = searchParams.get("id")
-        const IDDonHang = searchParams.get('IDDonHang')
-        const startDate = searchParams.get("startDate")
-        const endDate = searchParams.get("endDate")
-        const status = searchParams.get("TrangThai")
+        const objCondition = {page: page.now}
+        const id = searchParams.get('id')
+        const TenChuongTrinh = searchParams.get('TenChuongTrinh')
+        const MaGiamGia = searchParams.get('MaGiamGia')
+        const startDate = searchParams.get('startDate')
+        const endDate = searchParams.get('endDate')
+        const TrangThai = searchParams.get('TrangThai')
+
         if(id) {
             objCondition.id = id
         }
-        if(IDDonHang) {
-            objCondition.IDDonHang= IDDonHang
+        if(TenChuongTrinh) {
+            objCondition.TenChuongTrinh = TenChuongTrinh
+        }
+        if(MaGiamGia) {
+            objCondition.MaGiamGia = MaGiamGia
         }
         if(startDate) {
             objCondition.startDate = startDate
@@ -68,10 +65,10 @@ const DanhSachDoiTra = () => {
         if(endDate) {
             objCondition.endDate = endDate
         }
-        if(status) {
-            objCondition.TrangThai = status
+        if(TrangThai) {
+            objCondition.TrangThai = TrangThai
         }
-        fetchOrder(objCondition)
+        fetchDiscount(objCondition)
     },[page.now, searchParams])
     const onClickPageHandler = (e) => {
         const pageValue = e.target.innerText *1;
@@ -79,23 +76,32 @@ const DanhSachDoiTra = () => {
         const prevPage = pageValue > 1 ? pageValue -1 : null
         setPage({...page, now: pageValue, prev: prevPage, next: nextPage})
     }
-
-    const handleChangeStatus = async() => {
-        const updateResponse = await orderExchangeAPI.changeStatus({id:message.id, TrangThai: message.TrangThai*1 +1})
-        setNotify(()=> {
-            if(!updateResponse) {
-                return {show: true, message: "kết nối server thất bại", success: false}
+    const handleDeleteAlertClose = () => {
+        setDel({...del, show: false})
+    }
+    const handleDeleteAccept = async() => {
+        const deleteDiscountResponse = await discountAPI.delete(del.id)
+        setDel({...del, show: false}) //ẩn dialog
+        setNotify(() => {
+            if(!deleteDiscountResponse) {
+                return {...notify, show: true, message: "Có lỗi xảy ra. Vui lòng thử lại", success: false}
             }
-            return {show: true, message: updateResponse.message, success: updateResponse.success}
+            return {...notify, show: true, message: deleteDiscountResponse.message, success: deleteDiscountResponse.success, errors: deleteDiscountResponse.errors}
         })
-        setMessage({show:false})
-        fetchOrder()
+        fetchDiscount()
+
     }
-    const handleMessageClose = () => {
-        setMessage({show: false})
+    const onControlClick = (e, id, action) => {
+        if(action === "update") {
+            navigate(LinkDiscountAction.discount_update+`?id=${id}`, {replace:true})
+            return
+        }
+
+        setDel({...del, show: true, id: id})
     }
-    // filter
-    const searchHandler = () => {
+
+     // filter
+     const searchHandler = () => {
         const dataFilter = {...filter}
         if(dataFilter.startDate) {
             dataFilter.startDate = new Date(dataFilter.startDate).getTime()/1000
@@ -135,10 +141,10 @@ const DanhSachDoiTra = () => {
                         <Col className='col-6'>
                             <Row>
                                 <Form.Label column="lg" lg={4} className="fs-6">
-                                    ID đơn đổi trả
+                                    ID khuyến mại
                                 </Form.Label>
                                 <Col>
-                                    <Form.Control size="lg" type="text" placeholder="ID đơn đổi trả" className="fs-6" name='id' value={filter.id ? filter.id : ""} onChange={changeFilterHandler}/>
+                                    <Form.Control size="lg" type="text" placeholder="ID khuyến mại" className="fs-6" name='id' value={filter.id ? filter.id : ""} onChange={changeFilterHandler}/>
                                 </Col>
                             </Row>
                         </Col>
@@ -147,10 +153,22 @@ const DanhSachDoiTra = () => {
                         <Col className="col-6">
                             <Row>
                                 <Form.Label column="lg" lg={4} className="fs-6">
-                                    ID đơn hàng
+                                    Tên chương trình
                                 </Form.Label>
                                 <Col>
-                                    <Form.Control size="lg" type="text" placeholder="ID đơn hàng" className="fs-6" name='IDDonHang' value={filter.IDDonHang ? filter.IDDonHang : ""} onChange={changeFilterHandler}/>
+                                    <Form.Control size="lg" type="text" placeholder="Tên chương trình" className="fs-6" name='TenChuongTrinh' value={filter.TenChuongTrinh ? filter.TenChuongTrinh : ""} onChange={changeFilterHandler}/>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row className="mb-3">
+                        <Col className="col-6">
+                            <Row>
+                                <Form.Label column="lg" lg={4} className="fs-6">
+                                    Mã giảm giá
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control size="lg" type="text" placeholder="Mã giảm giá" className="fs-6" name='MaGiamGia' value={filter.MaGiamGia ? filter.MaGiamGia : ""} onChange={changeFilterHandler}/>
                                 </Col>
                             </Row>
                         </Col>
@@ -159,7 +177,7 @@ const DanhSachDoiTra = () => {
                         <Col>
                             <Row>
                                 <Col>
-                                    <h4>Thời gian đặt hàng</h4>
+                                    <h4>Thời gian diễn ra</h4>
                                 </Col>
                             </Row>
                             <Row>
@@ -191,13 +209,8 @@ const DanhSachDoiTra = () => {
                                 <Col>
                                     <Form.Select aria-label="Default select example" defaultValue="" name="TrangThai" value={filter.TrangThai ? filter.TrangThai : ""} onChange={changeFilterHandler}>
                                         <option value="">Chọn trạng thái</option>
-                                        <option value="0">{StatusOrder[0]}</option>
-                                        <option value="1">{StatusOrder[1]}</option>
-                                        <option value="2">{StatusOrder[2]}</option>
-                                        <option value="3">{StatusOrder[3]}</option>
-                                        <option value="4">{StatusOrder[4]}</option>
-                                        <option value="5">{StatusOrder[5]}</option>
-                                        <option value="6">{StatusOrder[6]}</option>
+                                        <option value="0">Vô hiệu hóa</option>
+                                        <option value="1">Hoạt động</option>
                                     </Form.Select>
                                     
                                 </Col>
@@ -210,30 +223,31 @@ const DanhSachDoiTra = () => {
                 <Table striped bordered hover className="text-center">
                     <thead>
                         <tr>
-                            <th>ID đơn đổi trả</th>
-                            <th>ID đơn hàng</th>
+                            <th>ID</th>
+                            <th>Tên chương trình</th>
+                            <th>Bắt đầu</th>
+                            <th>Kết thúc</th>
+                            <th>Đối tượng</th>
                             <th>Trạng thái</th>
-                            <th>Thời gian tạo đơn</th>
-                            <th>Giá trị đơn hàng</th>
-                            <th>Phụ phí</th>
+                            <th>Mã giảm giá</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            order && order.map((item, index)=> {
-                                
+                            discount && discount.map((item, index)=> {
                                 return (
                                     <tr key={index}>
                                         <td>{item.id}</td>
-                                        <td>{item.IDDonHang}</td>
-                                        <td className={`text-${colorTextStatus[item.DonHang_TrangThai]}`}>{StatusOrder[item.DonHang_TrangThai]}</td>
-                                        <td>{toTimeString(item.ThoiGianTao * 1000)}</td>
-                                        <td>{item.DonHang_TongGiaTriDonHang.toLocaleString('en-US')} VND</td>
-                                        <td style={{color: "red"}}>{item.DonHang_PhuPhi ? item.DonHang_PhuPhi : "Không"}</td>
-                                        <td className="d-flex" style={{height: "100%"}}>
-                                            <span className="order-item-icon" onClick={()=>navigate(`${LinkOrderAction.order_detail}?id=${item.id}`)}><AiOutlineFileSearch/></span>
-                                            {item.DonHang_TrangThai ===1 && <span className="order-item-icon" onClick={()=>setMessage({show: true, id: item.id, DonHang_TrangThai: item.DonHang_TrangThai})}><FaShippingFast/></span>}
+                                        <td>{item.TenChuongTrinh}</td>
+                                        <td style={{minWidth: "150px"}}>{toTimeString(item.ThoiGianBatDau*1000)}</td>
+                                        <td style={{minWidth: "150px"}}>{toTimeString(item.ThoiGianKetThuc * 1000)}</td>
+                                        <td style={{minWidth: "200px"}}>{targetDiscount(item)}</td>
+                                        <td className={item.TrangThai === 1 ? "text-primary": "text-danger"}>{item.TrangThai === 1 ? "Hoạt động" : "Vô hiệu hóa"}</td>
+                                        <td>{item.MaChietKhau}</td>
+                                        <td className="d-flex" style={{maxWidth: "60px"}}>
+                                            <span className="discount-item-icon" onClick={(e)=> onControlClick(e,item.id, "update")}><BsPencil/></span>
+                                            <span className="discount-item-icon" onClick={(e)=> onControlClick(e,item.id, "delete")}><MdDelete/></span>
                                         </td>
                                     </tr>
                                 )
@@ -244,26 +258,26 @@ const DanhSachDoiTra = () => {
             </Content>
             {page && <Page page={page} onClickPage={onClickPageHandler} />}
             <Modal
-                show={message.show}
-                onHide={handleMessageClose}
+                show={del.show}
+                onHide={handleDeleteAlertClose}
                 backdrop="static"
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                <Modal.Title>Thông báo</Modal.Title>
+                <Modal.Title>Cảnh báo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Xác nhận thay đổi trang thái đơn hàng ?
+                        Bạn có chắc chắn muốn xóa ?
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleMessageClose}>
+                <Button variant="secondary" onClick={handleDeleteAlertClose}>
                     Quay lại
                 </Button>
-                <Button variant="danger" onClick={handleChangeStatus}>Chấp nhận</Button>
+                <Button variant="danger" onClick={handleDeleteAccept}>Xóa</Button>
                 </Modal.Footer>
             </Modal>
         </Container>
     )
-}
 
-export default DanhSachDoiTra
+}
+export default ListDiscount

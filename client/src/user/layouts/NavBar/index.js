@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import categoryAPI from "../../services/API/CategoryAPI";
 import TreeNavBar from "./TreeNavBar";
 import ListItem from "./ListItem";
+import Section from "../Section";
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
     const [idCategory, setIDCategory] = useState({})
@@ -50,6 +51,7 @@ const NavbarHeader = () => {
             <Navbar bg="light" variant="light" expand='sm' sticky="top">
                 <Container  >
                     <Navbar.Brand href="/"><img src={iconImg} style={{ width: 150, height: 100 }} /></Navbar.Brand>
+
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                         <Nav

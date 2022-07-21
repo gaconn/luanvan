@@ -32,7 +32,9 @@
 
 html,
 body {
-	height: 100%;
+	/*
+	 Tắt cái này đi để không sai infinite loading
+	height: 100%; */
 	font-family: "Cairo", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	font-smoothing: antialiased;
