@@ -396,8 +396,8 @@ class OrderModel {
             // lặp qua tất cả sản phẩm để gắn thêm tham số cần thiết cho tính toán
             for (let index = 0; index < arrProduct.length; index++) {
                 for (let indexCartItem = 0; indexCartItem < arrCartItem.length; indexCartItem++) {
-                    if(arrProduct[index].id === arrCartItem[index].IDSanPham) {
-                        arrProduct[index].SoLuongSanPham = arrCartItem[index].SoLuong
+                    if(arrProduct[index].id === arrCartItem[indexCartItem].IDSanPham) {
+                        arrProduct[index].SoLuongSanPham = arrCartItem[indexCartItem].SoLuong
                         arrProduct[index].PhiVanChuyen = 40000 
                     }
                     
