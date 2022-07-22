@@ -80,7 +80,23 @@ class DiscountModel {
         }
 
         try {
+            //Nếu là khuyến mãi cho sản phẩm thì phải kiểm tra xem sản phẩm đó đã có khuyến mãi hay chưa, nếu có rồi thì không cho tạo
+            if(objData.IDSanPham) {
+                const existDiscountCondition = {
+                    IDSanPham : objData.IDSanPham,
+                    startDate : objData.ThoiGianBatDau,
+                    endDate : objData.ThoiGianKetThuc,
+                    DaXoa: 0,
 
+                }
+                const existDiscount = await this.get(existDiscountCondition)
+                if(!existDiscount.success) {
+                    throw new Error(existDiscount.error)
+                }
+                if(existDiscount.data.length > 0) {
+                    return  ResponseUtil.response(false, 'Sản phẩm này đã có chương trình giảm giá. Không thể tạo mới.')
+                }
+            }
             const MaChietKhau = uniqid('discount-')
             var objField = {
                 ThoiGianTao: new Date().getTime() / 1000,
@@ -231,7 +247,7 @@ class DiscountModel {
         }
 
         if(objCondition.startDate) {
-            strWhere += ` and ( ${table}.ThoiGianTao BETWEEN ${objCondition.startDate}`
+            strWhere += ` and ( ${this.table}.ThoiGianTao BETWEEN ${objCondition.startDate}`
             if(objCondition.endDate) {
                 strWhere +=  ` and ${objCondition.endDate} )`
             }else {
@@ -240,7 +256,7 @@ class DiscountModel {
         }
 
         if(!objCondition.startDate && objCondition.endDate) {
-            strWhere += ` and ( ${table}.MaChietKhau BETWEEN 0 AND ${objCondition.endDate})`
+            strWhere += ` and ( ${this.table}.MaChietKhau BETWEEN 0 AND ${objCondition.endDate})`
         } 
         return strWhere
     }

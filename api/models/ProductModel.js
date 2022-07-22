@@ -20,6 +20,7 @@ class ProductModel {
             var strWhere = this._buildWhereQuery(objCondition)
             var strSelect = 'select 1'
             var strJoin = ""
+            var strOrder = ""
             strSelect += _buildSelect(['*'], this.table)
             if (objCondition.joinCategory) {
                 strJoin += ` left join theloai on ${this.table}.IDTheLoai = theloai.id`
@@ -65,7 +66,39 @@ class ProductModel {
                 }
             }
 
-            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 20 offset ${start}`
+            // lấy những sản phẩm có khuyến mãi thì thêm params joinDiscount = true
+            if(objCondition.joinDiscount) {
+                strJoin += ` join chietkhau on ${this.table}.id = chietkhau.IDSanPham`
+                const arrFieldDiscountSelect = [
+                    'id',
+                    'TrangThai',
+                    'TenChuongTrinh',
+                    'GiaChietKhauToiDa',
+                    'DieuKienGiaToiThieu',
+                    'DieuKienGiaToiDa',
+                    'SoLuongSuDungToiDa',
+                    'ThoiGianBatDau',
+                    'ThoiGianKetThuc',
+                    'IDPhuongThucThanhToan',
+                    'ThoiGianTao',
+                    'DaXoa',
+                    'GiaTriChietKhau',
+                    'PhanTramChietKhau',
+                    'MaChietKhau'
+                ]
+                strSelect += _buildSelect(arrFieldDiscountSelect, 'chietkhau', 'ChietKhau_')
+
+                // chỉ lấy 1 mã khuyến mãi hợp lệ cho 1 sản phẩm thôi, ra 2 sản phẩm giống nhau là sai nghiệp vụ
+                strWhere += ` and chietkhau.DaXoa = 0`
+                strWhere += ` and chietkhau.TrangThai = 1`
+                strWhere += ` and chietkhau.ThoiGianBatDau <= ${new Date().getTime()/1000}`
+                strWhere += ` and chietkhau.ThoiGianKetThuc >= ${new Date().getTime()/1000}`
+            }
+
+            if(objCondition.new) {
+                strOrder = ` ORDER BY ${this.table}.id DESC`
+            }
+            const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} ${strOrder} limit 20 offset ${start}`
             const arrData = await dbconnect.query(query)
 
             if (!arrData) {
@@ -76,7 +109,7 @@ class ProductModel {
             }
 
             if (objCondition.getRowCount) {
-                const queryCount = `select COUNT(sanpham.id) as rowCount from sanpham ${strWhere}`
+                const queryCount = `select COUNT(sanpham.id) as rowCount from ${this.table} ${strJoin} ${strWhere}`
                 const arrCount = await dbconnect.query(queryCount)
 
                 if (!arrCount) {
