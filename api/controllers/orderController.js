@@ -2,7 +2,6 @@ const LadingModel = require("../models/LadingModel")
 const OrderDetailModel = require("../models/OrderDetailModel")
 const OrderModel = require("../models/OrderModel")
 const ResponseUtil = require("../utils/ResponseUtil")
-
 class OrderController {
     /**
      * Method: GET

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        h3{
+            color: red;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        span {
+            color: blue;
+            min-width: fit-content;
+        }
+
+        li{
+            color: #666;
+            font-weight: bold;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body style="background: #ccc; width: 100%;">
+    <div>
+        <h2 style="text-align: center; color: #333;">Đặt hàng thành công</h2>
+    </div>
+    <div style="padding: 10px;">
+        <div className="order-info order-section">
+            <div>
+                <h3>Thông tin đặt hàng</h3>
+                <div><span>Họ tên: </span></div>
+                <div><span>Email: </span></div>
+                <div><span>Số điện thoại: </span> </div>
+                <div><span>Địa chỉ giao hàng: </span> </div>
+            </div>
+            <div>
+                <h3>Thông tin đơn hàng</h3>
+                <div><span>Mã đơn hàng: </span> </div>
+                <div><span>Ngày đặt hàng: </span> </div>
+                <div><span>Trạng thái: </span> </div>
+                <div><span>Hình thức thanh toán: </span> </div>
+            </div>
+        </div>
+
+        <div className="order-section" style="margin-top: 20px;">
+            <table style="width: 100%;">
+                <tr className="order-item-list-title" style="border-bottom: 2px solid #aaa;
+                padding: 20px 0;
+                font-weight: bold;">
+                    <th>STT</th>
+                    <th>Mã sản phẩm</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá gốc</th>
+                    <th>Phí vận chuyển</th>
+                    <th>Phụ phí</th>
+                    <th>Tổng cộng</th>
+                </tr>
+                <tr key={index} className="order-item-value" style="border-bottom: 1px solid #bbb; margin: 20px 10px; text-align: center;">
+                    <td>1</td>
+                    <td>10</td>
+                    <td><img src="{item.SanPham_HinhAnh&& JSON.parse(item.SanPham_HinhAnh) && `${process.env.REACT_APP_API_HOST_URL}/public/images/${JSON.parse(item.SanPham_HinhAnh)[0]}`}" alt="hình ảnh"/></td>
+                    <td>bánh xe</td>
+                    <td>1</td>
+                    <td>100 VND</td>
+                    <td>40000 VND</td>
+                    <td>0</td>
+                    <td>1000     VND
+                    
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div className="order-section order-bill-list" style="width: 300px;
+        margin: 0 auto;
+        border: none;
+        box-shadow: none;">
+            <div>
+                <h3>Chi phí đơn hàng</h3>
+                <div className="order-bill" style="display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #aaa;
+                font-weight: bold;">
+                    <span>Số  sản phẩm</span>
+                    <span>100</span>
+                </div>
+                <div className="order-bill" style="display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #aaa;
+                font-weight: bold;">
+                    <span>Tổng phí vận chuyển</span>
+                    <span>+ 100000 VND</span>
+                </div>
+                <div className="order-bill" style="display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #aaa;
+                font-weight: bold;">
+                    <span>Phụ phí</span>
+                    <span>+ 100000 VND</span>
+                </div>
+                <div className="order-bill" style="display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #aaa;
+                font-weight: bold;">
+                    <span>Tổng giá trị chiết khấu</span>
+                    <span>- 1000000 VND</span>
+                </div>
+                
+                <div className="order-bill order-total">
+                    <span>Tổng thành tiền</span>
+                    <span>100000 VND</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

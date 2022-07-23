@@ -8,6 +8,7 @@ const uniqid = require('uniqid')
 const CartModel = require("./CartModel")
 const CartItemModel = require("./CartItemModel")
 const DiscountModel = require("./DiscountModel")
+const { sendMail, orderFormat } = require("../utils/mailerUtil")
 
 class OrderModel {
     constructor() {
@@ -122,7 +123,7 @@ class OrderModel {
                 MaDonHang
             }
 
-            const resultCheckout = this._checkout({arrProduct:[productDetail], extraInfo})
+            const resultCheckout = this._checkout({arrProduct:[productDetail], extraInfo}, )
 
             return resultCheckout
         } catch (error) {
@@ -167,7 +168,7 @@ class OrderModel {
             productDetail.SoLuongSanPham = objData.SoLuong
             productDetail.PhiVanChuyen = 40000
             const MaDonHang = uniqid('DonHang-')
-
+            var mailReceiver = ""
             const extraInfo = {
                 IDPhuongThucThanhToan: objData.IDPhuongThucThanhToan,
                 MaDonHang,
@@ -183,13 +184,21 @@ class OrderModel {
                     PhuongXa: objData.PhuongXa,
                     SoNha: objData.SoNha
                 }
+                mailReceiver = objData.Email
                 const encryptInfo = JSON.stringify(ThongTinDatHang)
                 extraInfo.ThongTinDatHang= encryptInfo
             } else {
+                // kiểm tra tài khoản có tồn tại không
+                const userResponse = await UserModel.get({id: objData.IDTaiKhoan})
+                if(!userResponse || !userResponse.success || userResponse.data.length === 0) {
+                    return ResponseUtil.response(false, 'Tài khoản không tồn tại')
+                }
+                mailReceiver = userResponse.data[0].Email
                 extraInfo.IDTaiKhoan = objData.IDTaiKhoan
+
             }
             
-            const resultCheckout = this._checkout({arrProduct:[productDetail], extraInfo})
+            const resultCheckout = this._checkout({arrProduct:[productDetail], extraInfo}, mailReceiver)
 
             return resultCheckout
         } catch (error) {
@@ -202,7 +211,7 @@ class OrderModel {
      * arrProduct = [{SoLuongSanPham: 1, PhiVanChuyen: 10000, GiaGoc}]
      * extraInfo = {IDTaiKhoan, IDPhuongThucThanhToan, PhuPhi, MaDonHang}
      */
-    _checkout = async(objOrderData) => {
+    _checkout = async(objOrderData, mailReceiver = '') => {
         var {arrProduct, extraInfo} = objOrderData
         try {
             var TongGiaTriDonHang = 0
@@ -340,6 +349,21 @@ class OrderModel {
                 }
             }
 
+
+            // thành công thì gửi mail cho khách
+            if(mailReceiver) {
+                //
+                const dataOrderDetail = await  OrderDetailModel.get({
+                    IDDonHang: objOrderInfo.id,
+                    joinOrder: true,
+                    joinProduct: true,
+                })
+                const html = orderFormat(dataOrderDetail.data)
+                if(html) {
+                    const resultMailing = await sendMail(mailReceiver, ` Thông tin đơn hàng ${objOrder.MaDonHang}`, html)
+                }
+            } 
+
             return ResponseUtil.response(true, 'Thành công', [], arrErrors)
         } catch (error) {
             return ResponseUtil.response(false, error.message)
@@ -411,6 +435,7 @@ class OrderModel {
                 MaDonHang,
                 MaChietKhau: objData.MaChietKhau
             }
+            var mailReceiver = ''
             if(!objData.IDTaiKhoan) {
                 const ThongTinDatHang = {
                     Email: objData.Email,
@@ -422,12 +447,19 @@ class OrderModel {
                 }
                 const encryptInfo = JSON.stringify(ThongTinDatHang)
                 extraInfo.ThongTinDatHang = encryptInfo
+                mailReceiver = objData.Email
             } else {
+                // kiểm tra tài khoản có tồn tại không
+                const userResponse = await UserModel.get({id: objData.IDTaiKhoan})
+                if(!userResponse || !userResponse.success || userResponse.data.length === 0) {
+                    return ResponseUtil.response(false, 'Tài khoản không tồn tại')
+                }
+                mailReceiver = userResponse.data[0].Email
                 extraInfo.IDTaiKhoan = objData.IDTaiKhoan
             }
             
 
-            const resultCheckout =await this._checkout({arrProduct: arrProduct, extraInfo})
+            const resultCheckout =await this._checkout({arrProduct: arrProduct, extraInfo}, mailReceiver)
 
             //thêm thành công thì xóa những sản phẩm vừa đặt hàng thành công, giữ lại những sản phẩm thất bại
 
