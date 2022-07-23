@@ -9,7 +9,8 @@ const CartModel = require("./CartModel")
 const CartItemModel = require("./CartItemModel")
 const DiscountModel = require("./DiscountModel")
 const { sendMail, orderFormat } = require("../utils/mailerUtil")
-
+const TelegramModel = require("./TelegramModel")
+require('dotenv').config()
 class OrderModel {
     constructor() {
         this.table = "donhang"
@@ -364,6 +365,9 @@ class OrderModel {
                 }
             } 
 
+            // thành công thì bot telegram gửi mail
+            const messageTelegram = `Đơn hàng mới. \n Thời gian: ${new Date()}. \n Link quản lý: ${process.env.APP_URL}/manage/order/detail?id=${objOrderInfo.id}`
+            const telegramResponse = await TelegramModel.sendMessage(messageTelegram)
             return ResponseUtil.response(true, 'Thành công', [], arrErrors)
         } catch (error) {
             return ResponseUtil.response(false, error.message)

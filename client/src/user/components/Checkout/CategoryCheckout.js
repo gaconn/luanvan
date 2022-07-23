@@ -1,4 +1,5 @@
-const Category = ({data, SoLuong}) => {
+import Spinner from 'react-bootstrap/Spinner'
+const Category = ({data,loading, SoLuong}) => {
     console.log(data);
     return (
         <>
@@ -27,8 +28,8 @@ const Category = ({data, SoLuong}) => {
             <div className="checkout__order__total">
                 Tổng thành tiền <span>{data && data.TongGiaTriDonHang.toLocaleString('en-US')} VND</span>
             </div>
-            <button type="submit" className="site-btn">
-                Xác nhận đặt hàng
+            <button type="submit" className="site-btn" disabled={loading ? true : ""}>
+                {loading ? <Spinner animation="border"/> : 'Xác nhận đặt hàng'}
             </button>
         </div>}
         </>

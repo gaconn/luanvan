@@ -14,6 +14,7 @@ const ChechOutComponent = () => {
     const [notify, setNotify] = useState({show: false, message:""})
     const [validated, setValidated] = useState(false)
     const [order, setOrder] = useState({IDPhuongThucThanhToan: 1})
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     useEffect(()=> {
         const fetchProductDetail= async ()=> {
@@ -54,6 +55,7 @@ const ChechOutComponent = () => {
     },[searchParams])
 
     const checkoutButtonClickHandler = async(event) => {
+        setLoading(true)
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
@@ -69,7 +71,7 @@ const ChechOutComponent = () => {
             }
             return noti
         })
-
+        setLoading(false)
         if(response.success) {
             navigate("../checkout-success")
         }
@@ -178,7 +180,7 @@ const ChechOutComponent = () => {
                                 </div>
                                 }
                                 <div className="col-lg-4 col-md-6">
-                                    <Category data={product} SoLuong={searchParams.get('soluong')}/>
+                                    <Category data={product} loading= {loading} SoLuong={searchParams.get('soluong')}/>
                                 </div>
                             </div>
                         </Form>
