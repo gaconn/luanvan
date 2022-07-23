@@ -51,7 +51,7 @@ const DanhSachTheLoai = () => {
                 return {
                     ...notify,
                     show: true,
-                    message: "Có lỗi xảy ra. Vui lòng thử lại",
+                    message: deleteCategoryResponse.message,
                     success: false,
                 };
             }

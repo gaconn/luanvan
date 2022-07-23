@@ -113,8 +113,8 @@ class CategoryController {
     //GET /category/get-tree?id=?
     getTree = async (req, res) => {
         try {
-            const resParent = await CategoryModel.get({ parent: true, DaXoa: 0 , joinChild: true})
-            const resAll = await CategoryModel.get({ DaXoa: 0, joinChild: true})
+            const resParent = await CategoryModel.get({ parent: true, DaXoa: 0})
+            const resAll = await CategoryModel.get({ DaXoa: 0})
 
             if (!resParent || !resParent.success || !resAll || !resAll.success) {
                 throw new Error('Không thể truy xuất database')

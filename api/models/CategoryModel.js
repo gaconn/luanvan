@@ -163,7 +163,7 @@ class CategoryModel {
 
             //kiểm tra đã có ngành hàng con hay chưa
             const dataCheckSubCategory = await this.get({id: objCondition.id, child:true})
-            if(dataCheckSubCategory && dataCheckSubCategory.success && dataCheckSubCategory.data.length > 0) {
+            if(dataCheckSubCategory && dataCheckSubCategory.success && dataCheckSubCategory.data.data.length > 0) {
                 return ResponseUtil.response(false, 'Ngành hàng có chứa ngành hàng con, không thể xóa. ')
             }
             const query = `update theloai set DaXoa = 1 where ?`
