@@ -65,7 +65,7 @@ const ChechOutComponent = () => {
         
         setNotify((noti) => {
             if(!response || !response.success) {
-                return {show: true, message: "Đặt hàng không thành công. Không đủ sản phẩm trong kho", success: response.success}
+                return {show: true, message: response.message, success: response.success}
             }
             return noti
         })
