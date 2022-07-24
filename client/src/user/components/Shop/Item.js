@@ -1,18 +1,22 @@
-import ListGroup from 'react-bootstrap/ListGroup';
+import Accordion from 'react-bootstrap/Accordion';
+import Tree from './Tree';
+const Item = ({ categoryParent }) => {
+    const Parent = categoryParent.map((item,k)=>(
+        <Accordion defaultActiveKey="0" key={k}>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>{item.Ten}</Accordion.Header>
+                    <Accordion.Body>
+                        <Tree categoryParent={item.listChild}/>
+                    </Accordion.Body>
+                </Accordion.Item>
+        </Accordion>
+    ))
 
-
-const ItemCate = ({ categoryParent = [],handleInfo }) => {
     return (
         <>
-            {
-                categoryParent.map((categories, index) => (
-                    <ListGroup key={index}>
-                        <ListGroup.Item action onClick={()=>handleInfo(categories)} href=''>{categories.Ten}</ListGroup.Item>
-                    </ListGroup>
-                ))
-            }
-
-        </>);
+            {Parent}
+        </>
+    );
 }
 
-export default ItemCate;
+export default Item;
