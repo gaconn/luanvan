@@ -4,6 +4,7 @@ import CartAPI from "../../services/API/Cart";
 import ProducAPI from "../../services/API/ProductAPI";
 import ImageDetail from "./image";
 import uniqid from 'uniqid';
+import { generateCartSessionID } from "../../services/utils/GenerateUtil";
 const DetailComponent = () => {
     const [Detail, setDetail] = useState([])
     const navigate = useNavigate()
@@ -39,11 +40,14 @@ const DetailComponent = () => {
         let SessionID=localStorage.getItem('SessionID')
         let UID = localStorage.getItem('UID')
         if (!SessionID && !UID) {
-            let session = uniqid()
-            localStorage.setItem('SessionID', session)
-            SessionID = localStorage.getItem('SessionID')
+            SessionID = generateCartSessionID()
         }
-        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong, SessionID: SessionID, IDTaiKhoan: UID }
+        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong }
+        if(UID) {
+            data.IDTaiKhoan = UID
+        } else {
+            data.SessionID = SessionID
+        }
         const addToCart = CartAPI.AddToCart(data)
     }
 
@@ -99,7 +103,10 @@ const DetailComponent = () => {
                                     </div>
 
                                 </div>
-                                <a href='/Cart' className="primary-btn" onClick={() => handleInfoCart(Detail, cart)}>
+                                <a href='/Cart' className="primary-btn" onClick={(e) => {
+                                    e.preventDefault()
+                                    handleInfoCart(Detail, cart)
+                                }}>
                                     Thêm Vào Giỏ Hàng
                                 </a>
                                 <a href="#" className="heart-icon">

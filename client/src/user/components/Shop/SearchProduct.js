@@ -2,19 +2,18 @@ import LoadingPage from "../Loading";
 import { Link } from "react-router-dom";
 import uniqid from 'uniqid';
 import CartAPI from "../../services/API/Cart";
+import {generateCartSessionID} from '../../services/utils/GenerateUtil'
 const Search = ( {ProductSearch,LoadingProduct} ) => {
     if(LoadingProduct){
         return <LoadingPage/>
     }
-    console.log(ProductSearch)
     const HandleInfo = (item) => {
         localStorage.setItem('DetailID', item)
     };
     const handleInfoCart = async (item) => {
         let SessionID = localStorage.getItem('SessionID')
         if (!SessionID) {
-            let session = uniqid()
-            SessionID = localStorage.setItem('SessionID', session)
+            SessionID = generateCartSessionID()
         }
         const data = { IDSanPham: item.id, SoLuong: 1, SessionID: SessionID }
         const addToCart = CartAPI.AddToCart(data)

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import uniqid from 'uniqid';
 import CartAPI from "../../services/API/Cart";
 import LoadingPage from '../Loading'
 const List = ({ Product,LoadingProduct }) => {
+    const [searchParams, setSearchParams] = useSearchParams()
   
     // if(LoadingProduct){
     //     return <LoadingPage/>
@@ -14,12 +15,20 @@ const List = ({ Product,LoadingProduct }) => {
     };
     const handleInfoCart = async (item) => {
         let SessionID = localStorage.getItem('SessionID')
-        if (!SessionID) {
+        let UID = localStorage.getItem('UID')
+        if (!SessionID && !UID) {
             let session = uniqid()
             SessionID = localStorage.setItem('SessionID', session)
         }
-        const data = { IDSanPham: item.id, SoLuong: 1, SessionID: SessionID }
-        const addToCart = CartAPI.AddToCart(data)
+        const data = { IDSanPham: item.id, SoLuong: 1 }
+        if(UID) {
+            data.IDTaiKhoan = UID
+        } else {
+            data.SessionID = SessionID
+        }
+        const addToCart = await  CartAPI.AddToCart(data)
+        const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
+        setSearchParams(params)
     }
     return (
         <>
@@ -55,8 +64,11 @@ const List = ({ Product,LoadingProduct }) => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <a href='#'>
-                                            <i className="fa fa-shopping-cart" onClick={() => handleInfoCart(item)} />
+                                        <a href='b' onClick={(e) => { 
+                                                e.preventDefault()
+                                                handleInfoCart(item)}
+                                                } >
+                                            <i className="fa fa-shopping-cart" />
                                         </a>
                                     </li>
                                 </ul>

@@ -375,7 +375,7 @@ class OrderModel {
     }
 
     /**
-     * checkout qua giỏ hàng khi chưa đăng nhập
+     * checkout qua giỏ hàng 
      * @param {Ojbect} objData 
      * 
      */
@@ -480,6 +480,8 @@ class OrderModel {
                         for (let indexFail = 0; indexFail < arrListIDSanPhamFail.length; indexFail++) {
                             if(arrListIDSanPham[index]/1 === arrListIDSanPhamFail[index]/1) {
                                 arrListIDSanPham.splice(index, 1)
+                                index --
+                                break
                             }
                         }
                     }

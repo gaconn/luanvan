@@ -1,3 +1,4 @@
+import uniqid from 'uniqid'
 export const toTimeString = (timestamp) => {
     const date = new Date(timestamp)
     if(!date) return ''
@@ -27,4 +28,10 @@ export const formatDateForInput = (timestamp) => {
     strDatetime += '-' + (date.getMonth()+1 >10 ? date.getMonth()+1 : `0${date.getMonth()+1}`)
     strDatetime += '-' + (date.getDate() > 10 ? date.getDate() : `0${date.getDate()}`)
     return strDatetime
+}
+
+export const generateCartSessionID = () => {
+    let session = uniqid()
+    localStorage.setItem('SessionID', session)
+    return session
 }

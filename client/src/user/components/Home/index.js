@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ProductAPI from "../../services/API/ProductAPI";
 import { useSearchParams } from "react-router-dom";
+import List from "../Shop/ListProduct";
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -57,51 +58,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="row featured__filter">
-                        {products &&
-                            products.map((product, index) => {
-                              
-                                return (
-                                    <div key={index} className="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
-                                        <div className="featured__item">
-                                            <div
-                                                className="featured__item__pic set-bg"
-                                            >
-                                                {product.HinhAnh && (
-                                                    <img
-                                                        className="d-block w-100"
-                                                        src={JSON.parse(product.HinhAnh) ? process.env.REACT_APP_API_IMAGE + JSON.parse(product.HinhAnh)[0] : ""}
-                                                        style={{ height: 300 }}
-                                                        alt="First slide"
-                                                    />
-                                                )}
-                                                <ul className="featured__item__pic__hover">
-                                                    <li>
-                                                        <a href="#">
-                                                            <i className="fa fa-heart" />
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">
-                                                            <i className="fa fa-retweet" />
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">
-                                                            <i className="fa fa-shopping-cart" />
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div className="featured__item__text">
-                                                <h6>
-                                                    <a href="#">{product.Ten}</a>
-                                                </h6>
-                                                <h5>10000VND</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                    {<List Product={products} />}
                     </div>
                 </div>
             </section>

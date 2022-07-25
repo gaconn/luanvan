@@ -94,7 +94,7 @@ class CartModel {
                 const resultUpdateCartItem = await CartItemModel.update({IDSanPham: objData.IDSanPham, SoLuong: sl, id: dataCartItem.data[0].id})
                 //thành công thì update giỏ hàng
                 if(resultUpdateCartItem && resultUpdateCartItem.success) {
-                    var slsp = 1
+                    var slsp = objData.SoLuong/1
                     if(!isNew) {
                         slsp += cartDataExist.data[0].SoLuongSanPham
                     } 

@@ -2,5 +2,7 @@ import token from "./token"
 
 export const logout = () => {
     token.deleteToken()
-    localStorage.clear()
+    localStorage.removeItem('USER_NAME')
+    localStorage.removeItem('USER_LEVEL')
+    localStorage.removeItem('TOKEN')
 }
