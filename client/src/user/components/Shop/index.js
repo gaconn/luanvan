@@ -5,8 +5,11 @@ import Tree from "./Tree";
 import categoryAPI from "../../services/API/CategoryAPI";
 import productAPI from "../../services/API/ProductAPI";
 import "./search.css";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
+import Item from "./Item";
+
+
 const ShopComponent = () => {
     const [categories, setCategories] = useState([]);
     const [Loading, setLoading] = useState(false);
@@ -15,13 +18,102 @@ const ShopComponent = () => {
     const [page, setPage] = useState(0);
     const [finish, setFinish] = useState(false);
     const [keyword, setKeyword] = useState();
+    const [IDTLProduct, setIDTLProduct] = useState();
+    const navigate=useNavigate()
+    //Hiển category theo danh mục
+    const id = searchParams.get("IDTheLoai");
     useEffect(() => {
-        const fetchCategory = async () => {
-            const response = await categoryAPI.getTree();
-            setCategories(response.data);
-        };
-        fetchCategory();
+        const objConditionTheLoai = {};
+        objConditionTheLoai.id = id;
+        objConditionTheLoai.child = true;
+        if (!id) {
+            fetchParentTree()
+        } else {
+            fetchCategory(objConditionTheLoai);
+            const objConditionProduct = {};
+            objConditionProduct.IDTheLoai=id
+            fetchCategoryProduct(objConditionProduct)
+        }
+        setLoading(() => {
+            return false;
+        });
+    }, [searchParams, Loading]);
+    //Lấy Category con để hiển thị từ danh mục
+    const fetchCategory = async (objConditionTheLoai) => {
+        const categoryResponse = await categoryAPI.getChild(objConditionTheLoai);
+        setCategories(categoryResponse.data.data)
+        setLoading(() => {
+            return false;
+        });
+    }
+    //Lấy Category cha để hiển thị từ danh mục
+    const fetchParentTree = async () => {
+        const categoryResponse = await categoryAPI.getTree();
+        setCategories(categoryResponse.data)
+        setLoading(() => {
+            return false;
+        });
+    }
+  
+    //Lấy Sản Phẩm Theo Danh Mục
+    const fetchCategoryProduct=async(objConditionProduct)=>{
+        let tmpPage = 1;
+        objConditionProduct.page = page + 1;
+        // khi id thì set lại page = 1
+        let isSearch = IDTLProduct !== objConditionProduct.IDTheLoai;
+        if (isSearch) {
+            objConditionProduct.page = tmpPage;
+        }
+        const productResponseTL = await productAPI.getAll(objConditionProduct);
+        setProduct((product) => {
+            // nếu đang search thì trả về danh sách mới
+            if (isSearch) {
+                return productResponseTL.data.data;
+            }
+            // còn không thì nối thêm vào danh sách cũ
+            return [...product, ...productResponseTL.data.data];
+        });
+        setPage((page) => {
+            if (isSearch) {
+                return 1;
+            }
+            if (productResponseTL.success && productResponseTL.data.data.length > 0) {
+                return page + 1;
+            }
+            return page;
+        });
+        setFinish((finish) => {
+            if (productResponseTL.success && productResponseTL.data.data.length === 0) {
+                return true;
+            }
+            return false;
+        });
+        setIDTLProduct(() => {
+            return objConditionProduct.id;
+        });
+    }
+    //Hiển thị sản phẩm theo search
+    useEffect(() => {
+        const Ten = searchParams.get("keyword");
+        if (!Loading && Ten === keyword) return;
+        const objCondition = {};
+        objCondition.Ten = Ten;
+        fetchProduct(objCondition);
+        setLoading(() => {
+            return false;
+        });
+    }, [searchParams, Loading]);
+
+    // infinite loading
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+    const handleScroll = () => {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || Loading) return;
+        setLoading(true);
+    };
+    //lấy theo search
     const fetchProduct = async (objCondition) => {
         let tmpPage = 1;
         objCondition.page = page + 1;
@@ -31,6 +123,7 @@ const ShopComponent = () => {
             objCondition.page = tmpPage;
         }
         const productResponse = await productAPI.getAll(objCondition);
+       
         setProduct((product) => {
             // nếu đang search thì trả về danh sách mới
             if (isSearch) {
@@ -58,27 +151,18 @@ const ShopComponent = () => {
             return objCondition.Ten;
         });
     };
-    useEffect(() => {
-        const Ten = searchParams.get("keyword");
-
-        if (!Loading && Ten === keyword) return;
-        const objCondition = {};
-        objCondition.Ten = Ten;
-        fetchProduct(objCondition);
-        setLoading(() => {
-            return false;
-        });
-    }, [searchParams, Loading]);
-
-    // infinite loading
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-    const handleScroll = () => {
-        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || Loading) return;
-        setLoading(true);
-    };
+    const ListCategory = (categories,id) => {
+        if(id){
+            if( Array.isArray(categories) && !categories.length){
+                fetchParentTree()
+                return <Tree categoryParent={categories} />
+            }
+            return <Tree categoryParent={categories} />
+        }
+       
+        return <Item categoryParent={categories}/>
+       
+    }
     return (
         <>
             <section className="product spad">
@@ -91,7 +175,7 @@ const ShopComponent = () => {
                                         <Accordion.Item eventKey="0">
                                             <Accordion.Header>Thể loại</Accordion.Header>
                                             <Accordion.Body>
-                                                <Tree categoryParent={categories} />
+                                                {ListCategory(categories,id)}
                                             </Accordion.Body>
                                         </Accordion.Item>
                                     </Accordion>
