@@ -52,7 +52,7 @@ const ThemSanPham = () => {
 
         if(!isValid) return
         var isValidFile = true;
-        for (let i = 0; i < product.file.length; i++) {
+        for (let i = 0; i < product.file?.length; i++) {
             const type = product.file[i].type.split("/")[0]
 
             if(type !== "image") {
@@ -98,7 +98,6 @@ const ThemSanPham = () => {
         })
     }
 
-    console.log(product);
     return(
         <Container>
             <ToastContainer position="top-end" className="p-3">

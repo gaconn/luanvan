@@ -465,7 +465,20 @@ class ProductModel {
             strWhere += ` and ${this.table}.IDNhaCungCap = ${objCondition.IDNhaCungCap}`
         }
         if(objCondition.IDTheLoai) {
-            strWhere += ` and ${this.table}.IDTheLoai = ${objCondition.IDTheLoai}`
+            if(objCondition.getAllProduct) {
+                strWhere += ` and FIND_IN_SET(IDTheLoai, 
+                            (select  @pv list
+                            from    (select * from theloai t
+                                    order by t.IDTheLoaiCha, t.id) theloai,
+                                    (select @pv := '1') initialisation
+                            where   find_in_set(IDTheLoaiCha, @pv) > 0 and theloai.DaXoa = 0
+                            and     @pv := concat(@pv, ',', theloai.id)
+                            order by id desc
+                            limit 1)
+                            )  > 0`
+            } else {
+                strWhere += ` and ${this.table}.IDTheLoai = ${objCondition.IDTheLoai}`
+            }
         }
         return strWhere
     }
