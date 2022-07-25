@@ -271,10 +271,10 @@ class CategoryModel {
 
                 // return ResponseUtil.response(true, 'Thành công', {data: dataParent[0]})
 
-            } catch (error) {
-                return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
-            }
+        } catch (error) {
+            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
+    }
 
 }
 
