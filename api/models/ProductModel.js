@@ -470,12 +470,12 @@ class ProductModel {
                             (select  @pv list
                             from    (select * from theloai t
                                     order by t.IDTheLoaiCha, t.id) theloai,
-                                    (select @pv := '1') initialisation
+                                    (select @pv := '${objCondition.IDTheLoai}') initialisation
                             where   find_in_set(IDTheLoaiCha, @pv) > 0 and theloai.DaXoa = 0
                             and     @pv := concat(@pv, ',', theloai.id)
                             order by id desc
                             limit 1)
-                            )  > 0`
+                            )  > 0 or ${this.table}.IDTheLoai = ${objCondition.IDTheLoai}`
             } else {
                 strWhere += ` and ${this.table}.IDTheLoai = ${objCondition.IDTheLoai}`
             }
