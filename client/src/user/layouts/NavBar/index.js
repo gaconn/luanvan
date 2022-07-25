@@ -2,7 +2,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 import Dropdown from 'react-bootstrap/Dropdown'
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import token from "../../services/utils/setToken";
 import { FaUserAlt } from "react-icons/fa";
 import './icon.css'
@@ -14,8 +14,9 @@ import ListItem from "./ListItem";
 import Section from "../Section";
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
-    const [idCategory, setIDCategory] = useState({})
     const navigate = useNavigate()
+    const location=useLocation()
+    const [searchParams,setSearchParams]=useSearchParams()
     const logoutHandler = () => {
         localStorage.removeItem("UID")
         localStorage.removeItem("USER_NAME")
@@ -27,18 +28,21 @@ const NavbarHeader = () => {
         const fetchDataDanhMuc = async () => {
             const response = await categoryAPI.getTree()
             setCategory(response.data)
-
         }
         fetchDataDanhMuc()
     }, [])
     const handleIDCategory = (id) => {
-        setIDCategory(id)
+        const params = new URLSearchParams({IDTheLoai: id}).toString()
+        if(location.pathname!=="Shop"){
+            navigate("Shop?"+params)
+        }else
+        setSearchParams(params)
     }
     const ListChild = (item) => {
         // if (item.listChild && !item.listChild.listChild) {
         //     return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
         // }
-         return <TreeNavBar listChild={item.listChild} />
+         return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
     }
     // console.log(idCategory)
     const checkInformation=()=>{

@@ -3,10 +3,10 @@ import axios from "axios"
 const categoryUrl = process.env.REACT_APP_API_HOST_URL + "/category"
 
 const categoryAPI = {
-    getAll: async(params) => {
+    getAll: async (params) => {
         try {
-            const url = categoryUrl+"/get-all"
-            const response = await axios.get(url, {params: params})
+            const url = categoryUrl + "/get-all"
+            const response = await axios.get(url, { params: params })
             return response.data
         } catch (error) {
             console.log(error);
@@ -15,7 +15,7 @@ const categoryAPI = {
     detail: async (id) => {
         try {
             const url = `${categoryUrl}/get-detail`
-            const response = await axios.get(url, {params: {id}})
+            const response = await axios.get(url, { params: { id } })
             return response.data
         } catch (error) {
             console.warn(error)
@@ -27,16 +27,25 @@ const categoryAPI = {
             const response = await axios.get(url)
             return response.data
         } catch (error) {
-            console.log(error)            
+            console.log(error)
         }
     },
-     getParent:async ()=>{
+    getParent: async () => {
         try {
             const url = `${categoryUrl}/get-all`
-            const response = await axios.get(url,{params:{parent:true}})
+            const response = await axios.get(url, { params: { parent: true } })
             return response.data
         } catch (error) {
-            console.log(error)            
+            console.log(error)
+        }
+    },
+    getChild: async (objConditionTheLoai) => {
+        try {
+            const url = `${categoryUrl}/get-all`
+            const response = await axios.get(url,{params:objConditionTheLoai})
+            return response.data
+        } catch (error) {
+            console.log(error)
         }
     }
 }
