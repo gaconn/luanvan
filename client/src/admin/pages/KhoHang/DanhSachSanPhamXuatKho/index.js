@@ -86,7 +86,9 @@ const DanhSachSanPhamXuatKho = () => {
             return {show: true, message: updateResponse.message, success: updateResponse.success}
         })
         setMessage({show:false})
-        fetchOrder()
+        const objCondition = {page: page.now,exported_warehouse:true} 
+         
+        fetchOrder(objCondition)
     }
     const handleMessageClose = () => {
         setMessage({show: false})
