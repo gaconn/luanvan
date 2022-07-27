@@ -27,20 +27,21 @@ exports.orderFormat = (objOrderDetail={}) => {
         return ''
     }
     var strListItem
-    if(objOrderDetail.list) {
-        strListItem = objOrderDetail.list.map((item, index)=> {
-            return `<tr className="order-item-value" style="border-bottom: 1px solid #bbb; margin: 20px 10px; text-align: center;">
-                        <td>${index}</td>
-                        <td>${item.id}</td>
-                        <td><img src=${item.SanPham_HinhAnh&& JSON.parse(item.SanPham_HinhAnh) && `${process.env.REACT_APP_API_HOST_URL}/public/images/${JSON.parse(item.SanPham_HinhAnh)[0]}`}/></td>
-                        <td>${item.SanPham_Ten}</td>
-                        <td>${item.SoLuong}</td>
-                        <td>${item.SanPham_GiaGoc && item.SanPham_GiaGoc.toLocaleString('en-US')} VND</td>
-                        <td>${item.PhiVanChuyen && item.PhiVanChuyen.toLocaleString('en-US')} VND</td>
-                        <td>0</td>
-                        <td>${item.ThanhTien && item.ThanhTien.toLocaleString('en-US')} VND</td>
-                    </tr>`
-        })
+    if(objOrderDetail.List) {
+        
+        for (let index = 0; index < objOrderDetail.List.length; index++) {
+            strListItem +=  `<tr className="order-item-value" style="border-bottom: 1px solid #bbb; margin: 20px 10px; text-align: center;">
+                            <td>${index}</td>
+                            <td>${objOrderDetail.List[index].id}</td>
+                            <td><img src=${objOrderDetail.List[index].SanPham_HinhAnh&& JSON.parse(objOrderDetail.List[index].SanPham_HinhAnh) && `${process.env.REACT_APP_API_HOST_URL}/public/images/${JSON.parse(objOrderDetail.List[index].SanPham_HinhAnh)[0]}`}/></td>
+                            <td>${objOrderDetail.List[index].SanPham_Ten}</td>
+                            <td>${objOrderDetail.List[index].SoLuong}</td>
+                            <td>${objOrderDetail.List[index].SanPham_GiaGoc && objOrderDetail.List[index].SanPham_GiaGoc.toLocaleString('en-US')} VND</td>
+                            <td>${objOrderDetail.List[index].PhiVanChuyen && objOrderDetail.List[index].PhiVanChuyen.toLocaleString('en-US')} VND</td>
+                            <td>0</td>
+                            <td>${objOrderDetail.List[index].ThanhTien && objOrderDetail.List[index].ThanhTien.toLocaleString('en-US')} VND</td>
+                        </tr>`
+        }
     }
     return `<!DOCTYPE html>
     <html lang="en">
@@ -77,10 +78,11 @@ exports.orderFormat = (objOrderDetail={}) => {
             <div className="order-info order-section" style="display: flex; justify-content: space-around;">
                 <div>
                     <h3>Thông tin đặt hàng</h3>
-                    <div><span>Họ tên:  </span> ${objOrderDetail.HoTen}</div>
-                    <div><span>Email: </span>${objOrderDetail.Email}</div>
-                    <div><span>Số điện thoại: </span> ${objOrderDetail.SoDienThoai} </div>
-                    <div><span>Địa chỉ giao hàng: </span> ${objOrderDetail.ThongTinDatHang.SoNha}, ${objOrderDetail.ThongTinDatHang.PhuongXa}, ${objOrderDetail.ThongTinDatHang.QuanHuyen}, ${objOrderDetail.ThongTinDatHang.TinhThanh} </div>
+                    <div><span>Họ tên:  </span> ${objOrderDetail.HoTen?objOrderDetail.HoTen : (objOrderDetail.ThongTinDatHang && objOrderDetail.ThongTinDatHang.HoTen)}</div>
+                    <div><span>Email: </span>${objOrderDetail.Email?objOrderDetail.Email : (objOrderDetail.ThongTinDatHang && objOrderDetail.ThongTinDatHang.Email)}</div>
+                    <div><span>Số điện thoại: </span> ${objOrderDetail.SoDienThoai?objOrderDetail.SoDienThoai : (objOrderDetail.ThongTinDatHang && objOrderDetail.ThongTinDatHang.SoDienThoai)} </div>
+                    <div><span>Địa chỉ giao hàng: </span> ${objOrderDetail.TinhThanh ? `${objOrderDetail.SoNha}, ${objOrderDetail.PhuongXa}, ${objOrderDetail.QuanHuyen}, ${objOrderDetail.TinhThanh}`:
+                    (objOrderDetail.ThongTinDatHang  && `${objOrderDetail.ThongTinDatHang.SoNha}, ${objOrderDetail.ThongTinDatHang.PhuongXa}, ${objOrderDetail.ThongTinDatHang.QuanHuyen}, ${objOrderDetail.ThongTinDatHang.TinhThanh}`)} </div>
                 </div>
                 <div>
                     <h3>Thông tin đơn hàng</h3>

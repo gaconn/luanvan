@@ -338,7 +338,7 @@ class ProductModel {
             }
             return ResponseUtil.response(true, 'Thành công')
         } catch (error) {
-            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error])
+            return ResponseUtil.response(false, error.message, [], [error])
         }
     }
 

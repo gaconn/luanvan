@@ -123,7 +123,7 @@ class CategoryModel {
             var dataUpdate = {
                 HoatDong: objDataUpdate.HoatDong ? objDataUpdate.HoatDong : undefined,
                 MoTa: objDataUpdate.MoTa ? objDataUpdate.MoTa : undefined,
-                Ten: objDataUpdate.Ten ? objDataUpdate : undefined,
+                Ten: objDataUpdate.Ten ? objDataUpdate.Ten : undefined,
                 ThoiGianCapNhat: new Date().getTime() / 1000,
                 DaXoa: objDataUpdate.DaXoa ? objDataUpdate.DaXoa : undefined
             }

@@ -78,7 +78,7 @@ class UserModel {
             }
 
         } catch (error) {
-            return ResponseUtil.response(false, "Lỗi hệ thống, Vui lòng liên hệ chăm sóc khách hàng.")
+            return ResponseUtil.response(false, error.message)
         }
 
     }
@@ -159,7 +159,7 @@ class UserModel {
             const token = jwt.sign(
                 { Email: objUserInfo.Email, DaXoa: objUserInfo.DaXoa , IDCapDoTaiKhoan: objUserInfo.IDCapDoTaiKhoan},
                 process.env.JSON_WEB_TOKEN_SECRET_KEY,
-                { expiresIn: objDataUser.Remember === 1 ? 60 * 60 * 24 * 30 : '1h' }
+                { expiresIn: 60 * 60 * 24 * 30}
             )
             delete objUserInfo.MatKhau
             return ResponseUtil.response(true, 'Đăng nhập thành công', [{ ...objUserInfo, token }])

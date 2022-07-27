@@ -189,12 +189,14 @@ class CartModel {
         }
         try {
             var objValues = {
-                SoLuongDanhMuc: objData.SoLuongDanhMuc ? objData.SoLuongDanhMuc : undefined,
-                SoLuongSanPham: objData.SoLuongSanPham ? objData.SoLuongSanPham : undefined,
                 ThoiGianCapNhat: new Date().getTime()/1000
             }
-
-            objValues = object_filter(objValues)
+            if(objData.hasOwnProperty('SoLuongDanhMuc')) {
+                objValues.SoLuongDanhMuc = objData.SoLuongDanhMuc
+            }
+            if(objData.hasOwnProperty('SoLuongSanPham')) {
+                objValues.SoLuongSanPham = objData.SoLuongSanPham
+            }
             const query = `update ${this.table} set ? where ?`
 
             const result = await DBConnection.query(query, [objValues, {id: objData.id}])
