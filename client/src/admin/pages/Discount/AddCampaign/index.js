@@ -13,15 +13,28 @@ const AddCampaign = () => {
         event.stopPropagation();
         const form = event.currentTarget;
         var isValid = true
+        const data = {...discount}
+        data.ThoiGianBatDau = new Date(data.ThoiGianBatDau).getTime()/1000
+        data.ThoiGianKetThuc = new Date(data.ThoiGianKetThuc).getTime()/1000
+
+        const isValidTime = data.ThoiGianBatDau > data.ThoiGianKetThuc
         if (form.checkValidity() === false) {
             isValid =false
         }
         setValidated(true);
 
         if(!isValid) return
-        const data = {...discount}
-        data.ThoiGianBatDau = new Date(data.ThoiGianBatDau).getTime()/1000
-        data.ThoiGianKetThuc = new Date(data.ThoiGianKetThuc).getTime()/1000
+        
+        setInsertNotify(() =>{ 
+            if(isValidTime) {
+                return {...insertNotify, show: true, message: "Thời gian không hợp lệ", success: false}
+            }
+            return {}
+        })
+        console.log(isValidTime);
+        if(isValidTime) {
+            return
+        }
         const response = await discountAPI.insert(data)
         console.log(response);
         setInsertNotify(() =>{ 
