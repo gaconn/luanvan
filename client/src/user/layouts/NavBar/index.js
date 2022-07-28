@@ -18,15 +18,14 @@ import uniqid from 'uniqid'
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
     const navigate = useNavigate()
-    const location=useLocation()
-    const [searchParams,setSearchParams]=useSearchParams()
+    const location = useLocation()
+    const [searchParams, setSearchParams] = useSearchParams()
     const [cart, setCart] = useState({})
     const logoutHandler = () => {
         logout()
         token.deleteToken()
         navigate("/Home", { replace: true })
     }
-    // console.log(localStorage.getItem("UID"));
     useEffect(() => {
         const fetchDataDanhMuc = async () => {
             const response = await categoryAPI.getTree()
@@ -35,21 +34,20 @@ const NavbarHeader = () => {
         fetchDataDanhMuc()
     }, [])
     const handleIDCategory = (id) => {
-        const params = new URLSearchParams({IDTheLoai: id}).toString()
-        if(location.pathname!=="Shop"){
-            navigate("Shop?"+params)
-        }else
-        setSearchParams(params)
+        const params = new URLSearchParams({ IDTheLoai: id }).toString()
+        if (location.pathname !== "Shop") {
+            navigate("Shop?" + params)
+        } else
+            setSearchParams(params)
     }
     const ListChild = (item) => {
         // if (item.listChild && !item.listChild.listChild) {
         //     return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
         // }
-         return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
+        return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
     }
-    // console.log(idCategory)
-    const checkInformation=()=>{
-        if(localStorage.getItem("UID")){
+    const checkInformation = () => {
+        if (localStorage.getItem("UID")) {
             navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)
         }
     }
@@ -93,8 +91,6 @@ const NavbarHeader = () => {
 
                             <Nav.Link href="/Shop">Cửa hàng</Nav.Link>
                             <Nav.Link href="/Contact">Liên hệ</Nav.Link>
-                            <Nav.Link href="/Blog">Bản tin</Nav.Link>
-
                             <Nav.Link>
                                 <ul className="menu-items">
                                     <li>
@@ -119,6 +115,7 @@ const NavbarHeader = () => {
                                     </li>
                                 </ul>
                             </Nav.Link>
+                            <Nav.Link href="/Blog">Bản tin</Nav.Link>
                         </Nav>
 
                         <Navbar.Brand href="Cart">
@@ -133,17 +130,24 @@ const NavbarHeader = () => {
                                 <div className="p-1">{localStorage.getItem("USER_NAME") && localStorage.getItem("UID") ? localStorage.getItem("USER_NAME") : "Tài khoản"}</div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu variant="dark">
-                                <Dropdown.Item onClick={checkInformation} active>
-                                    Thông tin khách hàng
-                                </Dropdown.Item>
-                                {!localStorage.getItem("UID") &&
+
+                                {!localStorage.getItem("UID") ? (
                                     <>
                                         <Dropdown.Item href="/Login"><i className="fa fa-user" aria-hidden="true"></i>&nbsp;Đăng nhập</Dropdown.Item>
                                         <Dropdown.Item href="/Register"><i className="fa fa-user-plus" aria-hidden="true"></i>&nbsp; Đăng ký</Dropdown.Item>
-                                    </>
+                                    </>) :
+                                    (
+                                        <>
+                                            <Dropdown.Item onClick={checkInformation} active>
+                                                Thông tin khách hàng
+                                            </Dropdown.Item>
+                                            <Dropdown.Divider />
+                                            <Dropdown.Item onClick={logoutHandler}><i className="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Đăng xuất</Dropdown.Item>
+
+                                        </>
+                                    )
                                 }
-                                <Dropdown.Divider />
-                                <Dropdown.Item onClick={logoutHandler}><i className="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Đăng xuất</Dropdown.Item>
+
                             </Dropdown.Menu>
                         </Dropdown>
 

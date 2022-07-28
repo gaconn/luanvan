@@ -4,9 +4,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import uniqid from 'uniqid';
 import CartAPI from "../../services/API/Cart";
 import LoadingPage from '../Loading'
-const List = ({ Product,LoadingProduct }) => {
-    const [searchParams, setSearchParams] = useSearchParams()
-  
+
+const List = ({ Product, LoadingProduct }) => {
     // if(LoadingProduct){
     //     return <LoadingPage/>
     // }
@@ -16,23 +15,24 @@ const List = ({ Product,LoadingProduct }) => {
     const handleInfoCart = async (item) => {
         let SessionID = localStorage.getItem('SessionID')
         let UID = localStorage.getItem('UID')
-        if (!SessionID && !UID) {
-            let session = uniqid()
-            SessionID = localStorage.setItem('SessionID', session)
+        if (!UID) {
+            if (!SessionID) {
+                let session = uniqid()
+                SessionID = localStorage.setItem('SessionID', session)
+
+            }
+           
+            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, SessionID: SessionID })
         }
-        const data = { IDSanPham: item.id, SoLuong: 1 }
-        if(UID) {
-            data.IDTaiKhoan = UID
-        } else {
-            data.SessionID = SessionID
+        else {
+            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, IDTaiKhoan:UID })
         }
-        const addToCart = await  CartAPI.AddToCart(data)
         const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
         setSearchParams(params)
     }
     return (
         <>
-           
+
             {
                 Product && Product.map && Product.map((item, k) => (
                     <div className="col-lg-4 col-md-6 col-sm-6" key={k}>
