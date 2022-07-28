@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Tree from "./Tree";
 import categoryAPI from "../../services/API/CategoryAPI";
-import productAPI from "../../services/API/ProductAPI";
+import productAPI from "../../services/API/productAPI";
 import "./search.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";

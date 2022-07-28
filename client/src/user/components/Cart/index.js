@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CartAPI from "../../services/API/Cart";
 import { Toast, ToastContainer } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import productAPI from "../../services/API/productAPI";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -13,6 +13,7 @@ const CartComponent = () => {
     const [notify, setNotify] = useState({ show: false, message: "", success: false })
     const [cartInfo, setCartInfo] = useState({})
     const [product, setProduct] = useState([])
+    const [searchParams,setSearchParams]=useSearchParams()
     const navigate = useNavigate()
     let Session = localStorage.getItem('SessionID')
     let UID = localStorage.getItem('UID')
@@ -39,9 +40,10 @@ const CartComponent = () => {
     }
     const RemoveProduct = async (idGH, idSP) => {
         const removeCart = await CartAPI.getRemoveCart(idGH, idSP)
-        if (removeCart) {
-            window.location.reload();
-        }
+        const cartResponse = await CartAPI.getItemCart(idGH)
+        const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
+        setSearchParams(params)
+        setCart(cartResponse.data)
     }
     const ChangInput = async (e, item) => {
         // setUpdateCart((updateCart) => ({ ...updateCart, IDGioHang: item.IDGioHang, IDSanPham: item.IDSanPham, SoLuong: e.target.value }))
