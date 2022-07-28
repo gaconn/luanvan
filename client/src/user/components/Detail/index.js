@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CartAPI from "../../services/API/Cart";
 import ProducAPI from "../../services/API/ProductAPI";
 import ImageDetail from "./image";
 import uniqid from 'uniqid';
+import { generateCartSessionID } from "../../services/utils/GenerateUtil";
 const DetailComponent = () => {
     const [Detail, setDetail] = useState([])
     const navigate = useNavigate()
     let id = localStorage.getItem('DetailID')
     const [cart, setCart] = useState({ SoLuong: 1 })
+    const [searchParams, setSearchParams] = useSearchParams()
     const changeInput = (event) => {
         setCart({ ...cart, [event.target.name]: event.target.value })
     }
@@ -39,12 +41,17 @@ const DetailComponent = () => {
         let SessionID=localStorage.getItem('SessionID')
         let UID = localStorage.getItem('UID')
         if (!SessionID && !UID) {
-            let session = uniqid()
-            localStorage.setItem('SessionID', session)
-            SessionID = localStorage.getItem('SessionID')
+            SessionID = generateCartSessionID()
         }
-        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong, SessionID: SessionID, IDTaiKhoan: UID }
-        const addToCart = CartAPI.AddToCart(data)
+        const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong }
+        if(UID) {
+            data.IDTaiKhoan = UID
+        } else {
+            data.SessionID = SessionID
+        }
+        const addToCart = await CartAPI.AddToCart(data)
+        const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
+        setSearchParams(params)
     }
 
 
@@ -99,7 +106,10 @@ const DetailComponent = () => {
                                     </div>
 
                                 </div>
-                                <a href='/Cart' className="primary-btn" onClick={() => handleInfoCart(Detail, cart)}>
+                                <a href='/Cart' className="primary-btn" onClick={(e) => {
+                                    e.preventDefault()
+                                    handleInfoCart(Detail, cart)
+                                }}>
                                     Thêm Vào Giỏ Hàng
                                 </a>
                                 <a href="#" className="heart-icon">

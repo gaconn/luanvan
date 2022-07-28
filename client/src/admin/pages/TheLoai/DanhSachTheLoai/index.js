@@ -207,9 +207,10 @@ const DanhSachTheLoai = () => {
                                     <Form.Control
                                         as="textarea"
                                         placeholder="Hãy nhập thông tin mô tả về thể loại này."
-                                        style={{ height: "100px" }}
                                         name="MoTa"
+                                        style={{minHeight: "200px"}}
                                         value={currentCate.MoTa}
+                                        rows="20"
                                         onChange={updateCateChangeHandler}
                                     />
                                 </Form.Group>{" "}

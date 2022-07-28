@@ -123,7 +123,7 @@ class CategoryModel {
             var dataUpdate = {
                 HoatDong: objDataUpdate.HoatDong ? objDataUpdate.HoatDong : undefined,
                 MoTa: objDataUpdate.MoTa ? objDataUpdate.MoTa : undefined,
-                Ten: objDataUpdate.Ten ? objDataUpdate : undefined,
+                Ten: objDataUpdate.Ten ? objDataUpdate.Ten : undefined,
                 ThoiGianCapNhat: new Date().getTime() / 1000,
                 DaXoa: objDataUpdate.DaXoa ? objDataUpdate.DaXoa : undefined
             }
@@ -271,10 +271,10 @@ class CategoryModel {
 
                 // return ResponseUtil.response(true, 'Thành công', {data: dataParent[0]})
 
-            } catch (error) {
-                return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
-            }
+        } catch (error) {
+            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
         }
+    }
 
 }
 

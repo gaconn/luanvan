@@ -148,7 +148,7 @@ class CartItemModel {
     _buildWhereQuery = (objData) => {
         var strWhere = ' where 1=1 '
         if(objData.id) {
-            var arrIDItem = objData.id.split(',')
+            var arrIDItem = (objData.id+'').split(',')
             if(arrIDItem.length >0) {
                 strWhere += ` and (1=0 `
                 for (let index = 0; index < arrIDItem.length; index++) {        

@@ -94,7 +94,7 @@ class CartModel {
                 const resultUpdateCartItem = await CartItemModel.update({IDSanPham: objData.IDSanPham, SoLuong: sl, id: dataCartItem.data[0].id})
                 //thành công thì update giỏ hàng
                 if(resultUpdateCartItem && resultUpdateCartItem.success) {
-                    var slsp = 1
+                    var slsp = objData.SoLuong/1
                     if(!isNew) {
                         slsp += cartDataExist.data[0].SoLuongSanPham
                     } 
@@ -189,12 +189,14 @@ class CartModel {
         }
         try {
             var objValues = {
-                SoLuongDanhMuc: objData.SoLuongDanhMuc ? objData.SoLuongDanhMuc : undefined,
-                SoLuongSanPham: objData.SoLuongSanPham ? objData.SoLuongSanPham : undefined,
                 ThoiGianCapNhat: new Date().getTime()/1000
             }
-
-            objValues = object_filter(objValues)
+            if(objData.hasOwnProperty('SoLuongDanhMuc')) {
+                objValues.SoLuongDanhMuc = objData.SoLuongDanhMuc
+            }
+            if(objData.hasOwnProperty('SoLuongSanPham')) {
+                objValues.SoLuongSanPham = objData.SoLuongSanPham
+            }
             const query = `update ${this.table} set ? where ?`
 
             const result = await DBConnection.query(query, [objValues, {id: objData.id}])

@@ -12,14 +12,17 @@ import categoryAPI from "../../services/API/CategoryAPI";
 import TreeNavBar from "./TreeNavBar";
 import ListItem from "./ListItem";
 import Section from "../Section";
+import CartAPI from "../../services/API/Cart";
+import {logout} from "../../services/utils/auth"
+import uniqid from 'uniqid'
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
     const navigate = useNavigate()
     const location = useLocation()
     const [searchParams, setSearchParams] = useSearchParams()
+    const [cart, setCart] = useState({})
     const logoutHandler = () => {
-        localStorage.removeItem("UID")
-        localStorage.removeItem("USER_NAME")
+        logout()
         token.deleteToken()
         navigate("/Home", { replace: true })
     }
@@ -48,6 +51,29 @@ const NavbarHeader = () => {
             navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)
         }
     }
+
+    //cart
+    const fetchCart = async () => {
+        var response 
+        if(localStorage.getItem('UID')) {
+            response = await CartAPI.GetCart({IDTaiKhoan: localStorage.getItem('UID')})
+        } else if(localStorage.getItem('SessionID')) {
+            response = await CartAPI.GetCart({SessionID: localStorage.getItem('SessionID')})
+        } else {
+            let session = uniqid()
+            const SessionID = localStorage.setItem('SessionID', session)
+            response = await CartAPI.GetCart({SessionID: SessionID})
+        }
+        setCart(()=> {
+            if(!response || response.success === false || response.data.length === 0 ) {
+                return {}
+            }
+            return response.data[0]
+        })
+    }
+    useEffect(()=> {
+        fetchCart()
+    },[searchParams])
     return (
         <>
             <Navbar bg="light" variant="light" expand='sm' sticky="top">
@@ -92,16 +118,16 @@ const NavbarHeader = () => {
                             <Nav.Link href="/Blog">Bản tin</Nav.Link>
                         </Nav>
 
-                        <Navbar.Brand href="Home">
+                        <Navbar.Brand href="Cart">
                             <button type="button" className="icon-button">
                                 <i className="fa fa-shopping-cart" aria-hidden="true"></i>
-                                <span className="icon-button__badge">2</span>
+                                <span className="icon-button__badge">{cart.SoLuongDanhMuc}</span>
                             </button>
                         </Navbar.Brand>
                         <Dropdown >
                             <Dropdown.Toggle variant='' id="dropdown-button-dark-example1" className="d-flex align-items-center" >
                                 <FaUserAlt />
-                                <div className="p-1">{localStorage.getItem("USER_NAME") ? localStorage.getItem("USER_NAME") : "Tài khoản"}</div>
+                                <div className="p-1">{localStorage.getItem("USER_NAME") && localStorage.getItem("UID") ? localStorage.getItem("USER_NAME") : "Tài khoản"}</div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu variant="dark">
 

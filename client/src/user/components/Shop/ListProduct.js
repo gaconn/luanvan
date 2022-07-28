@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import uniqid from 'uniqid';
 import CartAPI from "../../services/API/Cart";
 import LoadingPage from '../Loading'
-const List = ({ Product, LoadingProduct }) => {
 
+const List = ({ Product, LoadingProduct }) => {
     // if(LoadingProduct){
     //     return <LoadingPage/>
     // }
@@ -25,9 +25,10 @@ const List = ({ Product, LoadingProduct }) => {
             const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, SessionID: SessionID })
         }
         else {
-            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, UID:UID })
+            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, IDTaiKhoan:UID })
         }
-        
+        const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
+        setSearchParams(params)
     }
     return (
         <>
@@ -63,8 +64,11 @@ const List = ({ Product, LoadingProduct }) => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <a href='#'>
-                                            <i className="fa fa-shopping-cart" onClick={() => handleInfoCart(item)} />
+                                        <a href='b' onClick={(e) => { 
+                                                e.preventDefault()
+                                                handleInfoCart(item)}
+                                                } >
+                                            <i className="fa fa-shopping-cart" />
                                         </a>
                                     </li>
                                 </ul>

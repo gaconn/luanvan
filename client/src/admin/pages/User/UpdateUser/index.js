@@ -84,26 +84,28 @@ const UpdateUser = () => {
             isValid =false
         }
         setValidated(true);
-
+        let userProcess = {...user}
         if(!isValid) return
 
         if(address.city) {
             const arrCity = address.city.split('-')
             const strCity = arrCity && arrCity[1] ? arrCity[1] : ""
-            user.TinhThanh = strCity
+            userProcess.TinhThanh = strCity
         }
         if(address.district) {
             const arrDistrict = address.district.split('-')
             const strDistrict = arrDistrict && arrDistrict[1] ? arrDistrict[1] : ""
-            user.QuanHuyen = strDistrict
+            userProcess.QuanHuyen = strDistrict
         }
         if(address.ward) {
             const arrWard = address.ward.split('-')
             const strWard = arrWard && arrWard[1] ? arrWard[1] : ""
-            user.PhuongXa = strWard
+            userProcess.PhuongXa = strWard
         }
-
-        const response = await userAPI.update(user)
+        
+        userProcess.IDCapDoTaiKhoan = userProcess.permission
+        
+        const response = await userAPI.update(userProcess)
         
         setNotify(() =>{ 
             if(!response) {
