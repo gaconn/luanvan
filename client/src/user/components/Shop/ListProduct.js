@@ -6,6 +6,7 @@ import CartAPI from "../../services/API/Cart";
 import LoadingPage from '../Loading'
 
 const List = ({ Product, LoadingProduct }) => {
+    const [searchParams, setSearchParams] = useSearchParams()
     // if(LoadingProduct){
     //     return <LoadingPage/>
     // }
