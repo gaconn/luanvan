@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import Spinner from 'react-bootstrap/Spinner'
+import CustomerAPI from '../../services/API/CustomerAPI'
 const Category = ({data,loading, SoLuong}) => {
-    console.log(data);
     return (
         <>
         {data && Object.keys(data).length >0 &&  <div className="checkout__order">

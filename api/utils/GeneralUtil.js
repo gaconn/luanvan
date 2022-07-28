@@ -67,6 +67,12 @@ class GeneralUtil {
             throw error
         }
     }
+    //Tìm kiếm mail
+    upsert=(array, item) =>{
+        const i = array.findIndex((_item) => _item.Email === item.Email);
+        if (i > -1) array[i] = item;
+        else array.push(item);
+      }
 }
 
 module.exports = new GeneralUtil()

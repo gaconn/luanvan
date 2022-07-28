@@ -36,7 +36,41 @@ class UserController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
-
+    findByEmail=async(req,res)=>{
+        const data = req.query
+        if(!data) {
+            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        }
+        try {
+            const condition = {
+                ...data,
+                DaXoa: 0,
+                joinPermission: true
+            }
+            const response = await UserModel.findbyEmail(condition)
+            if(!response) {
+                throw new Error('Không thể kết nối database')
+            }
+            return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
+    loginGoogle=async(req,res)=>{
+        const data = req.body
+        if (!data) {
+            return res.json(ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ', [], ['Dữ liệu không hợp lệ']))
+        }
+        try {
+            const objResult = await UserModel.loginGoogle(data)
+            if (GeneralUtil.checkIsEmptyObject(objResult)) {
+                return res.json(ResponseUtil.response(false, 'Không thêm dữ liệu', [], ['Có lỗi xảy ra khi thêm dữ liệu']))
+            }
+            return res.json(objResult)
+        } catch (error) {
+            console.log(error)
+        }
+    }
     login = async(req, res) => {
         const data = req.body
 
@@ -86,9 +120,7 @@ class UserController {
                 return res.json(UPDATEMK)
     }
     
-    // ChangePassword=async(req,res)=>{
-    //    //ThayDoiPass
-    // }
+    
 
     /**
      * Method: get
@@ -97,7 +129,6 @@ class UserController {
 
     getList = async(req, res) => {
         const query  = req.query
-
         try {
             const condition = {
                 ...query, 
