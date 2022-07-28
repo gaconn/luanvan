@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import uniqid from 'uniqid';
 import CartAPI from "../../services/API/Cart";
 import LoadingPage from '../Loading'
-const List = ({ Product,LoadingProduct }) => {
-  
+const List = ({ Product, LoadingProduct }) => {
+
     // if(LoadingProduct){
     //     return <LoadingPage/>
     // }
@@ -14,16 +14,24 @@ const List = ({ Product,LoadingProduct }) => {
     };
     const handleInfoCart = async (item) => {
         let SessionID = localStorage.getItem('SessionID')
-        if (!SessionID) {
-            let session = uniqid()
-            SessionID = localStorage.setItem('SessionID', session)
+        let UID = localStorage.getItem('UID')
+        if (!UID) {
+            if (!SessionID) {
+                let session = uniqid()
+                SessionID = localStorage.setItem('SessionID', session)
+
+            }
+           
+            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, SessionID: SessionID })
         }
-        const data = { IDSanPham: item.id, SoLuong: 1, SessionID: SessionID }
-        const addToCart = CartAPI.AddToCart(data)
+        else {
+            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, UID:UID })
+        }
+        
     }
     return (
         <>
-           
+
             {
                 Product && Product.map && Product.map((item, k) => (
                     <div className="col-lg-4 col-md-6 col-sm-6" key={k}>
