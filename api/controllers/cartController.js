@@ -62,9 +62,7 @@ class CartController {
         }
     }
 
-    updateCart = async (req, res) => {
-        
-    }
+ 
     /**
      * method: PUT
      * url: /cart/update-cart-item

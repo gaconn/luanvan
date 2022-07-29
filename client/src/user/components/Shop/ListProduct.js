@@ -77,7 +77,7 @@ const List = ({ Product, LoadingProduct }) => {
                                 <h6>
                                     <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}>{item.Ten}</Link>
                                 </h6>
-                                <h5>${item.GiaGoc * 2}</h5>
+                                <h5>{item.GiaGoc * 2}</h5>
                             </div>
                         </div>
                     </div>
