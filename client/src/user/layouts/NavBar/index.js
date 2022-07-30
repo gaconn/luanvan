@@ -74,7 +74,6 @@ const NavbarHeader = () => {
     useEffect(()=> {
         fetchCart()
     },[searchParams])
-    console.log(cart)
     return (
         <>
             <Navbar bg="light" variant="light" expand='sm' sticky="top">
