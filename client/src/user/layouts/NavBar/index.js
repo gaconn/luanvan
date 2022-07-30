@@ -122,7 +122,7 @@ const NavbarHeader = () => {
                         <Navbar.Brand href="Cart">
                             <button type="button" className="icon-button">
                                 <i className="fa fa-shopping-cart" aria-hidden="true"></i>
-                                <span className="icon-button__badge">{cart.SoLuongSanPham}</span>
+                                <span className="icon-button__badge">{cart.SoLuongDanhMuc}</span>
                             </button>
                         </Navbar.Brand>
                         <Dropdown >
