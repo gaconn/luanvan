@@ -57,7 +57,7 @@ const NavbarHeader = () => {
         var response 
         if(localStorage.getItem('UID')) {
             response = await CartAPI.GetCart({IDTaiKhoan: localStorage.getItem('UID')})
-        } else if(localStorage.getItem('SessionID')) {
+        } else if(localStorage.getItem('SessionID')) {            
             response = await CartAPI.GetCart({SessionID: localStorage.getItem('SessionID')})
         } else {
             let session = uniqid()

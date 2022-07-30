@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ProductAPI from "../../services/API/ProductAPI";
+import ProductAPI from "../../services/API/productAPI";
 import { useSearchParams } from "react-router-dom";
 import List from "../Shop/ListProduct";
 const Home = () => {
