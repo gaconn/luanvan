@@ -2,7 +2,7 @@ import Category from "./CategoryCheckout";
 import {FaHandHoldingUsd} from "react-icons/fa"
 import {MdOutlinePayments} from "react-icons/md"
 import { useEffect, useState } from "react";
-import productAPI from "../../services/API/ProductAPI";
+import productAPI from "../../services/API/productAPI";
 import {useNavigate, useSearchParams} from 'react-router-dom'
 import {Form, Toast, ToastContainer} from "react-bootstrap"
 import orderAPI from "../../services/API/orderAPI";

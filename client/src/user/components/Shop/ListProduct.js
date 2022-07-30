@@ -13,7 +13,8 @@ const List = ({ Product, LoadingProduct }) => {
     const HandleInfo = (item) => {
         localStorage.setItem('DetailID', item)
     };
-    const handleInfoCart = async (item) => {
+    const handleInfoCart = async (e,item) => {
+        e.preventDefault()
         let SessionID = localStorage.getItem('SessionID')
         let UID = localStorage.getItem('UID')
         if (!UID) {
@@ -22,11 +23,10 @@ const List = ({ Product, LoadingProduct }) => {
                 SessionID = localStorage.setItem('SessionID', session)
 
             }
-           
-            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, SessionID: SessionID })
+            const addToCart = await CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, SessionID: SessionID })
         }
         else {
-            const addToCart = CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, IDTaiKhoan:UID })
+            const addToCart = await CartAPI.AddToCart({ IDSanPham: item.id, SoLuong: 1, IDTaiKhoan:UID })
         }
         const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
         setSearchParams(params)
@@ -65,12 +65,11 @@ const List = ({ Product, LoadingProduct }) => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <a href='b' onClick={(e) => { 
-                                                e.preventDefault()
-                                                handleInfoCart(item)}
+                                        <Link to='/Shop' onClick={(e) => { 
+                                                handleInfoCart(e,item)}
                                                 } >
                                             <i className="fa fa-shopping-cart" />
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -78,7 +77,7 @@ const List = ({ Product, LoadingProduct }) => {
                                 <h6>
                                     <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}>{item.Ten}</Link>
                                 </h6>
-                                <h5>${item.GiaGoc * 2}</h5>
+                                <h5>{item.GiaGoc * 2}</h5>
                             </div>
                         </div>
                     </div>
