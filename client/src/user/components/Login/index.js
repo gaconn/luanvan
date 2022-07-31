@@ -40,9 +40,6 @@ const Logincomponents = () => {
         event.preventDefault()
         let UID=localStorage.getItem('UID')
         let SessionID=localStorage.getItem('SessionID')
-        if(UID || SessionID){
-            localStorage.clear()
-        }else{
             const response = await CustommerAPI.login(account)
             setNotify(() => {
                 if (response) {
@@ -72,7 +69,7 @@ const Logincomponents = () => {
     
                 }
             }
-        }
+        
     }
     const validatedAll = () => {
         const nsg = {}
