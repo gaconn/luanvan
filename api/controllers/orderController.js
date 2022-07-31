@@ -12,6 +12,11 @@ class OrderController {
 
     getOrder = async(req, res) => {
         const objData = req.query
+
+        if(!req.Permission || req.Permission >3) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
+
         try {
             const objCondition = {
                 ...objData,
@@ -34,6 +39,10 @@ class OrderController {
 
     getOrderDetail = async (req, res) => {
         const data =req.query
+
+        if(!req.Permission || req.Permission >3) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         try {
             const condition = {
                 ...data,
@@ -160,6 +169,11 @@ class OrderController {
      */
     changeStatus = async (req, res)=> {
         const data= req.body
+
+        if(!req.Permission || req.Permission >3) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
+
         if(!data) {
             return res.json(ResponseUtil.response(false, 'Tham số không hơp lệ'))
         }

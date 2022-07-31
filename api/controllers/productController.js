@@ -138,6 +138,9 @@ class ProductController {
 
         const objParams = req.body
         const images = req.files
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!objParams) {
             return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
@@ -162,7 +165,9 @@ class ProductController {
     update = async(req, res) => {
         const objProduct = req.body
         const images = req.files
-
+        if(!req.Permission || req.Permission >3) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!objProduct) {
             return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
         }
@@ -187,6 +192,9 @@ class ProductController {
 
     delete = async (req, res) => {
         const params=req.query
+        if(!req.Permission || req.Permission >3) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!params || !params.id) {
             return res.json(ResponseUtil.response(false, 'Thiếu id sản phẩm'))
         }

@@ -98,6 +98,12 @@ class ProductModel {
             if(objCondition.new) {
                 strOrder = ` ORDER BY ${this.table}.id DESC`
             }
+            if(objCondition.sortPrice === 'desc') {
+                strOrder = ` ORDER BY ${this.table}.GiaGoc DESC`
+            }
+            if(objCondition.sortPrice === 'asc') {
+                strOrder = ` ORDER BY ${this.table}.GiaGoc ASC`
+            }
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} ${strOrder} limit 20 offset ${start}`
             const arrData = await dbconnect.query(query)
 

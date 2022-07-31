@@ -59,6 +59,7 @@ const NavbarHeader = () => {
             response = await CartAPI.GetCart({ IDTaiKhoan: localStorage.getItem('UID') })
         } else if (localStorage.getItem('SessionID')) {
             response = await CartAPI.GetCart({ SessionID: localStorage.getItem('SessionID') })
+
         } else {
             let session = uniqid()
             const SessionID = localStorage.setItem('SessionID', session)
@@ -74,7 +75,7 @@ const NavbarHeader = () => {
     useEffect(() => {
         fetchCart()
     }, [searchParams])
- 
+
     return (
         <>
             <Navbar bg="light" variant="light" expand='sm' sticky="top">

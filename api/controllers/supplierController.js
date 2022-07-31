@@ -21,7 +21,9 @@ class Supplier {
 
     insert = async(req, res) => {
         const data = req.body
-
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!data) {
             return res.json(ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ', [], ['Dữ liệu không hợp lệ']))
         }
@@ -40,7 +42,9 @@ class Supplier {
 
     update = async (req, res) => {
         const data= req.body
-
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!data.id) {
             return res.json(ResponseUtil.response(false, 'Đối tượng cần sửa không hợp lệ'))
         }
@@ -66,6 +70,9 @@ class Supplier {
 
     delete = async (req,res) => {
         const id = req.params.id
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!id) {
             return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
         }

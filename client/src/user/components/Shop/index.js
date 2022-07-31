@@ -20,6 +20,7 @@ const ShopComponent = () => {
     const [keyword, setKeyword] = useState();
     const [IDTLProduct, setIDTLProduct] = useState();
     const navigate=useNavigate()
+    const [sort, setSort] = useState({})
     //Hiển category theo danh mục
     const id = searchParams.get("IDTheLoai");
     useEffect(() => {
@@ -151,6 +152,13 @@ const ShopComponent = () => {
             return objCondition.Ten;
         });
     };
+
+    // sắp xếp
+    const priceSortChangeHandler = (e) => {
+        setSort( ()=> {
+            return {[e.target.name] : e.target.value}
+        })
+    }
     const ListCategory = (categories,id) => {
         if(id){
             if( Array.isArray(categories) && !categories.length){
@@ -186,20 +194,20 @@ const ShopComponent = () => {
                             {/* safe off */}
                             <div className="filter__item">
                                 <div className="row">
-                                    <div className="col-lg-4 col-md-5">
+                                    <div className="col-6 d-flex">
+                                        <div className="filter__sort pr-3">
+                                            <span>Sắp xếp theo giá</span>
+                                            <select name="sortPrice" onChange={priceSortChangeHandler}>
+                                                <option value='asc'>Tăng dần</option>
+                                                <option value='desc'>Giảm dần</option>
+                                            </select>
+                                        </div>
                                         <div className="filter__sort">
                                             <span>Sort By</span>
                                             <select>
                                                 <option value={0}>Default</option>
                                                 <option value={0}>Default</option>
                                             </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-4 col-md-3">
-                                        <div className="filter__option">
-                                            <span className="icon_grid-2x2" />
-                                            <span className="icon_ul" />
                                         </div>
                                     </div>
                                 </div>

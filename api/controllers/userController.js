@@ -154,6 +154,9 @@ class UserController {
      */
     delete = async(req, res) => {
         const id = req.query.id
+        if(!req.Permission || req.Permission >1) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!id) {
             return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
         }
