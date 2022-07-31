@@ -13,7 +13,7 @@ import TreeNavBar from "./TreeNavBar";
 import ListItem from "./ListItem";
 import Section from "../Section";
 import CartAPI from "../../services/API/Cart";
-import {logout} from "../../services/utils/auth"
+import { logout } from "../../services/utils/auth"
 import uniqid from 'uniqid'
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
@@ -54,26 +54,28 @@ const NavbarHeader = () => {
 
     //cart
     const fetchCart = async () => {
-        var response 
-        if(localStorage.getItem('UID')) {
-            response = await CartAPI.GetCart({IDTaiKhoan: localStorage.getItem('UID')})
-        } else if(localStorage.getItem('SessionID')) {            
-            response = await CartAPI.GetCart({SessionID: localStorage.getItem('SessionID')})
+        var response
+        if (localStorage.getItem('UID')) {
+            response = await CartAPI.GetCart({ IDTaiKhoan: localStorage.getItem('UID') })
+        } else if (localStorage.getItem('SessionID')) {
+            response = await CartAPI.GetCart({ SessionID: localStorage.getItem('SessionID') })
+
         } else {
             let session = uniqid()
             const SessionID = localStorage.setItem('SessionID', session)
-            response = await CartAPI.GetCart({SessionID: SessionID})
+            response = await CartAPI.GetCart({ SessionID: SessionID })
         }
-        setCart(()=> {
-            if(!response || response.success === false || response.data.length === 0 ) {
+        setCart(() => {
+            if (!response || response.success === false || response.data.length === 0) {
                 return {}
             }
             return response.data[0]
         })
     }
-    useEffect(()=> {
+    useEffect(() => {
         fetchCart()
-    },[searchParams])
+    }, [searchParams])
+
     return (
         <>
             <Navbar bg="light" variant="light" expand='sm' sticky="top">
@@ -101,7 +103,7 @@ const NavbarHeader = () => {
                                                     category && category.map && category.map((item, k) => (
                                                         <div className="col" key={k}>
                                                             <section>
-                                                                <h2>{item.Ten}</h2>
+                                                                <h2 onClick={() => { handleIDCategory(item.id) }}>{item.Ten}</h2>
                                                                 <ul className="mega-links">
                                                                     {ListChild(item)}
                                                                 </ul>
@@ -121,7 +123,7 @@ const NavbarHeader = () => {
                         <Navbar.Brand href="Cart">
                             <button type="button" className="icon-button">
                                 <i className="fa fa-shopping-cart" aria-hidden="true"></i>
-                                <span className="icon-button__badge">{cart.SoLuongSanPham}</span>
+                                <span className="icon-button__badge">{cart.SoLuongSanPham?cart.SoLuongSanPham:0}</span>
                             </button>
                         </Navbar.Brand>
                         <Dropdown >
