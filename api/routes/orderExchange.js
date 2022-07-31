@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const OrderExchangeController = require('../controllers/orderExchangeController')
-router.get('/get-list', OrderExchangeController.getList)
-router.post('/insert', OrderExchangeController.insert)
-router.put('/update', OrderExchangeController.update)
-router.delete('/delete', OrderExchangeController.delete)
+const { CheckToken } = require('../middlewares/User')
+router.get('/get-list',CheckToken, OrderExchangeController.getList)
+router.post('/insert',CheckToken, OrderExchangeController.insert)
+router.put('/update',CheckToken, OrderExchangeController.update)
+router.delete('/delete',CheckToken, OrderExchangeController.delete)
 
 module.exports = router

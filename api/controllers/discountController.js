@@ -26,6 +26,9 @@ class DiscountController {
      */
     insert = async (req, res) => {
         const data= req.body
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         try {
             const response = await DiscountModel.insert(data)
             return res.json(response)
@@ -40,6 +43,9 @@ class DiscountController {
      */
     update = async (req, res) => {
         const data = req.body
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!data) {
             return res.json(ResponseUtil.response(false, 'dữ liệu không hợp lệ'))
         }
@@ -57,6 +63,9 @@ class DiscountController {
      */
     delete = async (req, res) => {
         const id = req.query.id
+        if(!req.Permission || req.Permission >2) {
+            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        }
         if(!id) {
             return res.json(ResponseUtil.response(false, 'id không hợp lệ'))
         }

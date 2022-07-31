@@ -8,34 +8,67 @@ import User from "./User"
 import KhoHang from "./KhoHang"
 import DoiTra from "./DoiTra"
 import Discount from "./Discount"
+import Denied from "../components/Denied"
 const Main = () => {
     const {manage, option} = useParams()
     var pageBody 
-
+    var level = localStorage.getItem('USER_LEVEL')
     switch (manage) {
         case "supplier":
-            pageBody = <NhaCungCap option={option} />
+            if(!level || level >2) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <NhaCungCap option={option} />
+            }
             break;
         case "category":
-            pageBody = <TheLoai option={option}/>
+            if(!level || level >2) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <TheLoai option={option}/>
+            }
             break;
         case "product": 
-            pageBody = <SanPham option= {option} />
+            if(!level || level >3) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <SanPham option= {option} />
+            }
             break;
         case "order":
-            pageBody = <Order option= {option}/>
+            if(!level || level >3) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <Order option= {option}/>
+            }
             break;
         case "user":
-            pageBody = <User option = {option}/>
+            if(!level || level >1) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <User option = {option}/>
+            }
             break
         case "warehouse":
-            pageBody = <KhoHang option = {option}/>
+            if(!level || level >3) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <KhoHang option = {option}/>
+            }
             break
         case "change": 
-            pageBody = <DoiTra option = {option}/>
+            if(!level || level >3) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <DoiTra option = {option}/>
+            }
             break
         case "discount":
-            pageBody = <Discount option = {option} />
+            if(!level || level >2) {
+                pageBody= <Denied/>
+            }else {
+                pageBody = <Discount option = {option} />
+            }
             break
         default:
             break;
