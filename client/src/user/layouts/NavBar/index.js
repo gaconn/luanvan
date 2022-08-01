@@ -15,12 +15,17 @@ import Section from "../Section";
 import CartAPI from "../../services/API/Cart";
 import { logout } from "../../services/utils/auth"
 import uniqid from 'uniqid'
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import Accordion from 'react-bootstrap/Accordion';
 const NavbarHeader = () => {
     const [category, setCategory] = useState([])
     const navigate = useNavigate()
     const location = useLocation()
+    const [show, setShow] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams()
     const [cart, setCart] = useState({})
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const logoutHandler = () => {
         logout()
         token.deleteToken()
@@ -40,12 +45,12 @@ const NavbarHeader = () => {
         } else
             setSearchParams(params)
     }
-    const ListChild = (item) => {
-        // if (item.listChild && !item.listChild.listChild) {
-        //     return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
-        // }
-        return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
-    }
+    // const ListChild = (item) => {
+    //     // if (item.listChild && !item.listChild.listChild) {
+    //     //     return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
+    //     // }
+    //     return <TreeNavBar listChild={item.listChild} handlerIDItem={handleIDCategory} />
+    // }
     const checkInformation = () => {
         if (localStorage.getItem("UID")) {
             navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)
@@ -93,7 +98,7 @@ const NavbarHeader = () => {
 
                             <Nav.Link href="/Shop">Cửa hàng</Nav.Link>
                             <Nav.Link href="/Contact">Liên hệ</Nav.Link>
-                            <Nav.Link>
+                            {/* <Nav.Link>
                                 <ul className="menu-items">
                                     <li>
                                         Danh mục
@@ -116,6 +121,9 @@ const NavbarHeader = () => {
 
                                     </li>
                                 </ul>
+                            </Nav.Link> */}
+                            <Nav.Link variant="primary" onClick={handleShow}>
+                                Danh mục
                             </Nav.Link>
                             <Nav.Link href="/Blog">Bản tin</Nav.Link>
                         </Nav>
@@ -123,7 +131,7 @@ const NavbarHeader = () => {
                         <Navbar.Brand href="Cart">
                             <button type="button" className="icon-button">
                                 <i className="fa fa-shopping-cart" aria-hidden="true"></i>
-                                <span className="icon-button__badge">{cart.SoLuongSanPham?cart.SoLuongSanPham:0}</span>
+                                <span className="icon-button__badge">{cart.SoLuongSanPham ? cart.SoLuongSanPham : 0}</span>
                             </button>
                         </Navbar.Brand>
                         <Dropdown >
@@ -157,6 +165,27 @@ const NavbarHeader = () => {
                 </Container>
 
             </Navbar>
+            <Offcanvas show={show} onHide={handleClose}  >
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title className='text-center' > Danh mục</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body >
+                    {
+                        category && category.map && category.map((item, k) => (
+                            <>
+                                <Accordion defaultActiveKey="0" key={k}>
+                                    <Accordion.Item >
+                                        <Accordion.Header><h5 onClick={() => { handleIDCategory(item.id) }}>{item.Ten}</h5></Accordion.Header>
+                                        <Accordion.Body>
+                                            <TreeNavBar listChild={item.listChild} handlerIDItem={handleIDCategory} />
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            </>
+                        ))
+                    }
+                </Offcanvas.Body>
+            </Offcanvas>
 
         </>
     );
