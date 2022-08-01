@@ -1,4 +1,4 @@
-import CategoryBlog from "./CategoryBlog";
+import CategoryBlog from "./CategoryBlog"
 
 const Blog = () => {
     return (
@@ -7,7 +7,7 @@ const Blog = () => {
             <section className="blog spad">
                 <div className="container">
                     <div className="row">
-                        <CategoryBlog/>
+                        <CategoryBlog />
                         <div className="col-lg-8 col-md-7">
                             <div className="row">
                                 <div className="col-lg-6 col-md-6 col-sm-6">
@@ -28,8 +28,8 @@ const Blog = () => {
                                                 <a href="#">6 ways to prepare breakfast for 30</a>
                                             </h5>
                                             <p>
-                                                Sed quia non numquam modi tempora indunt ut labore et dolore
-                                                magnam aliquam quaerat{" "}
+                                                Sed quia non numquam modi tempora indunt ut labore
+                                                et dolore magnam aliquam quaerat{" "}
                                             </p>
                                             <a href="#" className="blog__btn">
                                                 READ MORE <span className="arrow_right" />
@@ -55,8 +55,8 @@ const Blog = () => {
                                                 <a href="#">Visit the clean farm in the US</a>
                                             </h5>
                                             <p>
-                                                Sed quia non numquam modi tempora indunt ut labore et dolore
-                                                magnam aliquam quaerat{" "}
+                                                Sed quia non numquam modi tempora indunt ut labore
+                                                et dolore magnam aliquam quaerat{" "}
                                             </p>
                                             <a href="#" className="blog__btn">
                                                 READ MORE <span className="arrow_right" />
@@ -82,8 +82,8 @@ const Blog = () => {
                                                 <a href="#">Cooking tips make cooking simple</a>
                                             </h5>
                                             <p>
-                                                Sed quia non numquam modi tempora indunt ut labore et dolore
-                                                magnam aliquam quaerat{" "}
+                                                Sed quia non numquam modi tempora indunt ut labore
+                                                et dolore magnam aliquam quaerat{" "}
                                             </p>
                                             <a href="#" className="blog__btn">
                                                 READ MORE <span className="arrow_right" />
@@ -109,8 +109,8 @@ const Blog = () => {
                                                 <a href="#">Cooking tips make cooking simple</a>
                                             </h5>
                                             <p>
-                                                Sed quia non numquam modi tempora indunt ut labore et dolore
-                                                magnam aliquam quaerat{" "}
+                                                Sed quia non numquam modi tempora indunt ut labore
+                                                et dolore magnam aliquam quaerat{" "}
                                             </p>
                                             <a href="#" className="blog__btn">
                                                 READ MORE <span className="arrow_right" />
@@ -134,12 +134,13 @@ const Blog = () => {
                                             </ul>
                                             <h5>
                                                 <a href="#">
-                                                    The Moment You Need To Remove Garlic From The Menu
+                                                    The Moment You Need To Remove Garlic From The
+                                                    Menu
                                                 </a>
                                             </h5>
                                             <p>
-                                                Sed quia non numquam modi tempora indunt ut labore et dolore
-                                                magnam aliquam quaerat{" "}
+                                                Sed quia non numquam modi tempora indunt ut labore
+                                                et dolore magnam aliquam quaerat{" "}
                                             </p>
                                             <a href="#" className="blog__btn">
                                                 READ MORE <span className="arrow_right" />
@@ -165,8 +166,8 @@ const Blog = () => {
                                                 <a href="#">Cooking tips make cooking simple</a>
                                             </h5>
                                             <p>
-                                                Sed quia non numquam modi tempora indunt ut labore et dolore
-                                                magnam aliquam quaerat{" "}
+                                                Sed quia non numquam modi tempora indunt ut labore
+                                                et dolore magnam aliquam quaerat{" "}
                                             </p>
                                             <a href="#" className="blog__btn">
                                                 READ MORE <span className="arrow_right" />
@@ -191,9 +192,7 @@ const Blog = () => {
             </section>
             {/* Blog Section End */}
         </>
-
-
-    );
+    )
 }
 
-export default Blog;
+export default Blog

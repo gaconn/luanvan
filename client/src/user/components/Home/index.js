@@ -1,40 +1,40 @@
-import { useState, useEffect } from "react";
-import ProductAPI from "../../services/API/productAPI";
-import { useSearchParams } from "react-router-dom";
-import List from "../Shop/ListProduct";
+import { useState, useEffect } from "react"
+import ProductAPI from "../../services/API/productAPI"
+import { useSearchParams } from "react-router-dom"
+import List from "../Shop/ListProduct"
 const Home = () => {
-    const [products, setProducts] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [typeList, setTypeList] = useState("discount");
+    const [products, setProducts] = useState([])
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [typeList, setTypeList] = useState("discount")
 
     const fetchProduct = async (objCondition) => {
-        const productResponse = await ProductAPI.getAll(objCondition);
+        const productResponse = await ProductAPI.getAll(objCondition)
         setProducts(() => {
             if (productResponse.success) {
-                return productResponse.data.data;
+                return productResponse.data.data
             }
-            return [];
-        });
-    };
+            return []
+        })
+    }
     useEffect(() => {
-        const objCondition = {};
+        const objCondition = {}
         if (typeList === "discount") {
-            objCondition.joinDiscount = true;
+            objCondition.joinDiscount = true
         }
-        if(typeList === 'new') {
-          objCondition.new = true
+        if (typeList === "new") {
+            objCondition.new = true
         }
-        fetchProduct(objCondition);
-    }, [typeList]);
+        fetchProduct(objCondition)
+    }, [typeList])
     useEffect(() => {
-        const kind = searchParams.get("kind");
+        const kind = searchParams.get("kind")
         setTypeList((typeList) => {
             if (kind) {
-                return kind;
+                return kind
             }
-            return typeList;
-        });
-    }, [searchParams]);
+            return typeList
+        })
+    }, [searchParams])
     return (
         <>
             {/* Featured Section Begin */}
@@ -47,19 +47,23 @@ const Home = () => {
                             </div>
                             <div className="featured__controls">
                                 <ul>
-                                    <li className={`${typeList === "discount" ? "active" : ""}`} onClick={() => setSearchParams("kind=discount")}>
+                                    <li
+                                        className={`${typeList === "discount" ? "active" : ""}`}
+                                        onClick={() => setSearchParams("kind=discount")}
+                                    >
                                         Đang khuyến mãi
                                     </li>
-                                    <li className={`${typeList === "new" ? "active" : ""}`} onClick={() => setSearchParams("kind=new")}>
+                                    <li
+                                        className={`${typeList === "new" ? "active" : ""}`}
+                                        onClick={() => setSearchParams("kind=new")}
+                                    >
                                         Sản phẩm mới
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div className="row featured__filter">
-                    {<List Product={products} />}
-                    </div>
+                    <div className="row featured__filter">{<List Product={products} />}</div>
                 </div>
             </section>
             {/* Featured Section End */}
@@ -110,7 +114,10 @@ const Home = () => {
                                         <h5>
                                             <a href="#">Cooking tips make cooking simple</a>
                                         </h5>
-                                        <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
+                                        <p>
+                                            Sed quia non numquam modi tempora indunt ut labore et
+                                            dolore magnam aliquam quaerat{" "}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +138,10 @@ const Home = () => {
                                         <h5>
                                             <a href="#">6 ways to prepare breakfast for 30</a>
                                         </h5>
-                                        <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
+                                        <p>
+                                            Sed quia non numquam modi tempora indunt ut labore et
+                                            dolore magnam aliquam quaerat{" "}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -152,7 +162,10 @@ const Home = () => {
                                         <h5>
                                             <a href="#">Visit the clean farm in the US</a>
                                         </h5>
-                                        <p>Sed quia non numquam modi tempora indunt ut labore et dolore magnam aliquam quaerat </p>
+                                        <p>
+                                            Sed quia non numquam modi tempora indunt ut labore et
+                                            dolore magnam aliquam quaerat{" "}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -162,7 +175,7 @@ const Home = () => {
                 {/* Blog Section End */}
             </>
         </>
-    );
-};
+    )
+}
 
-export default Home;
+export default Home

@@ -1,149 +1,159 @@
 const UserModel = require("../models/UserModel")
 const GeneralUtil = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
-const mailer=require('../utils/mailerUtil')
-
+const mailer = require("../utils/mailerUtil")
 
 class UserController {
-    logon = async(req, res) => {
+    logon = async (req, res) => {
         const data = req.body
-        if(Object.keys(data).length === 0) {
+        if (Object.keys(data).length === 0) {
             return res.json(ResponseUtil.response(false, "Dữ liệu truyền vào không hợp lệ"))
         }
         const objResult = await UserModel.add(data)
-        if(Object.keys(objResult).length === 0) {
+        if (Object.keys(objResult).length === 0) {
             return res.json(ResponseUtil.response(false, "Có lỗi xảy ra, vui lòng thử lại"))
         }
         return res.json(objResult)
     }
     getDetail = async (req, res) => {
         const data = req.query
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
         try {
             const condition = {
                 ...data,
                 DaXoa: 0,
-                joinPermission: true
+                joinPermission: true,
             }
             const response = await UserModel.get(condition)
-            if(!response) {
-                throw new Error('Không thể kết nối database')
+            if (!response) {
+                throw new Error("Không thể kết nối database")
             }
             return res.json(response)
         } catch (error) {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
-    findByEmail=async(req,res)=>{
+    findByEmail = async (req, res) => {
         const data = req.query
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
         try {
             const condition = {
                 ...data,
                 DaXoa: 0,
-                joinPermission: true
+                joinPermission: true,
             }
             const response = await UserModel.findbyEmail(condition)
-            if(!response) {
-                throw new Error('Không thể kết nối database')
+            if (!response) {
+                throw new Error("Không thể kết nối database")
             }
             return res.json(response)
         } catch (error) {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
-    loginGoogle=async(req,res)=>{
+    loginGoogle = async (req, res) => {
         const data = req.body
         if (!data) {
-            return res.json(ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ', [], ['Dữ liệu không hợp lệ']))
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Dữ liệu truyền vào không hợp lệ",
+                    [],
+                    ["Dữ liệu không hợp lệ"]
+                )
+            )
         }
         try {
             const objResult = await UserModel.loginGoogle(data)
             if (GeneralUtil.checkIsEmptyObject(objResult)) {
-                return res.json(ResponseUtil.response(false, 'Không thêm dữ liệu', [], ['Có lỗi xảy ra khi thêm dữ liệu']))
+                return res.json(
+                    ResponseUtil.response(
+                        false,
+                        "Không thêm dữ liệu",
+                        [],
+                        ["Có lỗi xảy ra khi thêm dữ liệu"]
+                    )
+                )
             }
             return res.json(objResult)
         } catch (error) {
             console.log(error)
         }
     }
-    login = async(req, res) => {
+    login = async (req, res) => {
         const data = req.body
 
-        if(GeneralUtil.checkIsEmptyObject(data)) {
-            return res.json(ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ'))
+        if (GeneralUtil.checkIsEmptyObject(data)) {
+            return res.json(ResponseUtil.response(false, "Dữ liệu truyền vào không hợp lệ"))
         }
 
         const objResult = await UserModel.login(data)
 
-        if(!objResult) {
-            return res.json(ResponseUtil.response(false, 'Có lỗi xảy ra, vui lòng thử lại'))
+        if (!objResult) {
+            return res.json(ResponseUtil.response(false, "Có lỗi xảy ra, vui lòng thử lại"))
         }
 
         return res.json(objResult)
     }
     //Register
-    Register= async(req, res) => {
+    Register = async (req, res) => {
         const data = req.body
-        if(Object.keys(data).length === 0) {
+        if (Object.keys(data).length === 0) {
             return res.json(ResponseUtil.response(false, "Dữ liệu truyền vào không hợp lệ"))
         }
         const objResult = await UserModel.addCustomer(data)
-        if(Object.keys(objResult).length === 0) {
+        if (Object.keys(objResult).length === 0) {
             return res.json(ResponseUtil.response(false, "Có lỗi xảy ra, vui lòng thử lại"))
         }
         return res.json(objResult)
     }
     //sendMail
-    sendResetLinkEmail =async(req,res)=>{
+    sendResetLinkEmail = async (req, res) => {
         const data = req.body
-        let MatKhauRS = Math.random().toString(36).substring(4);  
+        let MatKhauRS = Math.random().toString(36).substring(4)
         //  const token = jwt.sign({Email: data.Email}, mailConfig.JSON, {expiresIn: '30s'})
-                var content = '';
-                content += `
+        var content = ""
+        content += `
                     <div style="padding: 10px; background-color: #003375">
                         <div style="padding: 10px; background-color: white;">
                             <h4 style="color: #0085ff">Đặt Lại mật khẩu</h4>
                             <span style="color: black">Mật khẩu mới: ${MatKhauRS}</span>
                         </div>
                     </div>
-                `;
-                // console.log(`${mailConfig.APP}/user/MatKhau/${data.Email}?token=${token}?MatKhau=${MatKhauRS}`);
-                const UPDATEMK=await UserModel.resetPassword(data,MatKhauRS)
-              if(UPDATEMK.data.length>0){
-                mailer.sendMail(data.Email,'Đặt lại mật khẩu',content)
-              }
-                return res.json(UPDATEMK)
+                `
+        // console.log(`${mailConfig.APP}/user/MatKhau/${data.Email}?token=${token}?MatKhau=${MatKhauRS}`);
+        const UPDATEMK = await UserModel.resetPassword(data, MatKhauRS)
+        if (UPDATEMK.data.length > 0) {
+            mailer.sendMail(data.Email, "Đặt lại mật khẩu", content)
+        }
+        return res.json(UPDATEMK)
     }
-    
-    
 
     /**
      * Method: get
      * url: /user/get-list
      */
 
-    getList = async(req, res) => {
-        const query  = req.query
+    getList = async (req, res) => {
+        const query = req.query
         try {
             const condition = {
-                ...query, 
+                ...query,
                 DaXoa: 0,
                 joinPermission: true,
-                count: true
+                count: true,
             }
             const response = await UserModel.get(condition)
-            if(!response) {
-                throw new Error('Không thể kết nối database')
+            if (!response) {
+                throw new Error("Không thể kết nối database")
             }
             return res.json(response)
         } catch (error) {
             return res.json(ResponseUtil.response(false, error.message))
-            
         }
     }
 
@@ -152,39 +162,42 @@ class UserController {
      * url: /user/delete
      * params: id
      */
-    delete = async(req, res) => {
+    delete = async (req, res) => {
         const id = req.query.id
-        if(!req.Permission || req.Permission >1) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 1) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
-        if(!id) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!id) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
         try {
             // const response = await UserModel.update()
-        } catch (error) {
-            
-        }
+        } catch (error) {}
     }
 
     /**
-     * method: put 
+     * method: put
      * url: /user/update
-     * 
+     *
      */
     update = async (req, res) => {
         const data = req.body
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
 
         try {
             const objCondition = {
-                id: data.id
+                id: data.id,
             }
             const response = await UserModel.update(data, objCondition)
-            if(!response) {
-                throw new Error('Không thể kết nối database')
+            if (!response) {
+                throw new Error("Không thể kết nối database")
             }
             return res.json(response)
         } catch (error) {

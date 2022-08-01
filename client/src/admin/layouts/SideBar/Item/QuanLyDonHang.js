@@ -12,17 +12,23 @@ const quanLyDonHang = () => {
     return (
         <Item>
             <div className="side-bar-item-control">
-                <IconTagToggle eventKey="2"><GiBuyCard /></IconTagToggle>
+                <IconTagToggle eventKey="2">
+                    <GiBuyCard />
+                </IconTagToggle>
                 <span className="side-bar-item-label">Quản lý đơn hàng</span>
-                <ListTagToggle eventKey="2"><AiOutlinePlus/></ListTagToggle>
+                <ListTagToggle eventKey="2">
+                    <AiOutlinePlus />
+                </ListTagToggle>
             </div>
             <Accordion.Collapse eventKey="2">
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub">
                             <Link to={LinkOrderAction.order_list} className="side-bar-item-control">
-                                <span className="side-bar-item-icon-sub"><BsCardChecklist /></span>
-                                <span className="side-bar-item-label">Danh sách đơn hàng</span>   
+                                <span className="side-bar-item-icon-sub">
+                                    <BsCardChecklist />
+                                </span>
+                                <span className="side-bar-item-label">Danh sách đơn hàng</span>
                             </Link>
                         </Item>
                     </List>

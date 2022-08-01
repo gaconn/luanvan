@@ -8,8 +8,7 @@ const Loading = () => {
                 <span className="visually-hidden">Loading...</span>
             </div>
         </div>
-
-    );
+    )
 }
 
-export default Loading;
+export default Loading

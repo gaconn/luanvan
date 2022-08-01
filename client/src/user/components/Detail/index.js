@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import CartAPI from "../../services/API/Cart";
-import ProducAPI from "../../services/API/productAPI";
-import ImageDetail from "./image";
-import uniqid from 'uniqid';
-import { generateCartSessionID } from "../../services/utils/GenerateUtil";
+import { useEffect, useState } from "react"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import CartAPI from "../../services/API/Cart"
+import ProducAPI from "../../services/API/productAPI"
+import ImageDetail from "./image"
+import uniqid from "uniqid"
+import { generateCartSessionID } from "../../services/utils/GenerateUtil"
 const DetailComponent = () => {
     const [Detail, setDetail] = useState([])
     const navigate = useNavigate()
-    let id = localStorage.getItem('DetailID')
+    let id = localStorage.getItem("DetailID")
     const [cart, setCart] = useState({ SoLuong: 1 })
     const [searchParams, setSearchParams] = useSearchParams()
     const changeInput = (event) => {
@@ -20,41 +20,39 @@ const DetailComponent = () => {
         const data = response.data
         if (response.success && response.error.length === 0) {
             setDetail(data)
-            localStorage.removeItem('DetailID')
+            localStorage.removeItem("DetailID")
         }
         if (id === null && Detail.length === 0) {
-            navigate('../Shop')
+            navigate("../Shop")
         }
     }
     useEffect(() => {
         fetchProductDetail(id)
     }, [])
     const ProductState = (state) => {
-        var result = ''
+        var result = ""
         if (state.TrangThai != 1) {
-            return result = "Hết hàng"
+            return (result = "Hết hàng")
         }
-        return result = "Còn hàng";
+        return (result = "Còn hàng")
     }
 
     const handleInfoCart = async (item, CartSL) => {
-        let SessionID=localStorage.getItem('SessionID')
-        let UID = localStorage.getItem('UID')
+        let SessionID = localStorage.getItem("SessionID")
+        let UID = localStorage.getItem("UID")
         if (!SessionID && !UID) {
             SessionID = generateCartSessionID()
         }
         const data = { IDSanPham: item.id, SoLuong: CartSL.SoLuong }
-        if(UID) {
+        if (UID) {
             data.IDTaiKhoan = UID
         } else {
             data.SessionID = SessionID
         }
         const addToCart = await CartAPI.AddToCart(data)
-        const params = new URLSearchParams({updateCart: new Date().getTime()}).toString()
+        const params = new URLSearchParams({ updateCart: new Date().getTime() }).toString()
         setSearchParams(params)
     }
-
-
 
     return (
         <>
@@ -62,24 +60,21 @@ const DetailComponent = () => {
             <section className="product-details spad">
                 <div className="container">
                     <div className="row">
-
                         <div className="col-lg-6 col-md-6">
                             <div className="product__details__pic">
                                 <div className="product__details__pic__item">
-                                    {
-                                        Detail && Detail.HinhAnh &&
+                                    {Detail && Detail.HinhAnh && (
                                         <img
                                             className="product__details__pic__item--large"
-                                            src={process.env.REACT_APP_API_IMAGE + Detail.HinhAnh[0]}
+                                            src={
+                                                process.env.REACT_APP_API_IMAGE + Detail.HinhAnh[0]
+                                            }
                                             alt=""
-                                            style={{width:400,height:400}}
+                                            style={{ width: 400, height: 400 }}
                                         />
-                                    }
+                                    )}
                                 </div>
                                 {/* Hình Ảnh Thêm */}
-
-
-
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6">
@@ -95,21 +90,29 @@ const DetailComponent = () => {
                                 </div>
                                 <div className="product__details__price">${Detail.GiaGoc * 2}</div>
                                 <p>
-                                    <b> Số Lượng:</b>{" "}
-                                    <span>{Detail.SoLuong}</span>
+                                    <b> Số Lượng:</b> <span>{Detail.SoLuong}</span>
                                 </p>
                                 <div className="product__details__quantity">
                                     <div className="quantity">
                                         <div className="pro-qty">
-                                            <input type="nummber" name='SoLuong' min={1} defaultValue={1} onChange={changeInput} />
+                                            <input
+                                                type="nummber"
+                                                name="SoLuong"
+                                                min={1}
+                                                defaultValue={1}
+                                                onChange={changeInput}
+                                            />
                                         </div>
                                     </div>
-
                                 </div>
-                                <a href='/Cart' className="primary-btn" onClick={(e) => {
-                                    e.preventDefault()
-                                    handleInfoCart(Detail, cart)
-                                }}>
+                                <a
+                                    href="/Cart"
+                                    className="primary-btn"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        handleInfoCart(Detail, cart)
+                                    }}
+                                >
                                     Thêm Vào Giỏ Hàng
                                 </a>
                                 <a href="#" className="heart-icon">
@@ -120,10 +123,7 @@ const DetailComponent = () => {
                                         <b>Tình Trạng</b> <span>{ProductState(Detail)}</span>
                                     </li>
                                     <li>
-                                        <b>Giao Hàng</b>{" "}
-                                        <span>
-                                            trong 1 ngày.
-                                        </span>
+                                        <b>Giao Hàng</b> <span>trong 1 ngày.</span>
                                     </li>
                                     <li>
                                         <b>Cân nặng</b> <span>{Detail.CanNang}</span>
@@ -167,12 +167,9 @@ const DetailComponent = () => {
                                     <div className="tab-pane active" id="tabs-1" role="tabpanel">
                                         <div className="product__details__tab__desc">
                                             <h6>Thông tin sản phẩm</h6>
-                                            <p>
-                                                {Detail.MoTa}
-                                            </p>
+                                            <p>{Detail.MoTa}</p>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -181,8 +178,7 @@ const DetailComponent = () => {
             </section>
             {/* Product Details Section End */}
         </>
-
-    );
+    )
 }
 
-export default DetailComponent;
+export default DetailComponent

@@ -1,24 +1,22 @@
-import styled from "styled-components";
-
+import styled from "styled-components"
 
 export const Container = styled.div`
     width: 100%;
     min-width: 500px;
     max-width: 1400px;
     overflow: scroll;
-    ::-webkit-scrollbar{
+    ::-webkit-scrollbar {
         width: 4px;
         height: 4px;
     }
     ::-webkit-scrollbar-track {
         background: #35404d;
-
     }
     ::-webkit-scrollbar-thumb {
         background: #888;
     }
     ::-webkit-scrollbar-thumb:hover {
-        background: #FF6C60;
+        background: #ff6c60;
     }
 `
 

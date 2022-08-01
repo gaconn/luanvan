@@ -1,4 +1,3 @@
-
 const Header = () => {
     return (
         <>
@@ -33,7 +32,6 @@ const Header = () => {
                                             <i className="fa fa-pinterest-p" />
                                         </a>
                                     </div>
-                                   
                                 </div>
                             </div>
                         </div>
@@ -42,9 +40,7 @@ const Header = () => {
             </header>
             {/* Header Section End */}
         </>
-
-
-    );
+    )
 }
 
-export default Header;
+export default Header

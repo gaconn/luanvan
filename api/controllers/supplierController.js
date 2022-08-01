@@ -1,90 +1,126 @@
-const SupplierModel = require('../models/SupplierModel')
-const { checkIsEmptyObject } = require('../utils/GeneralUtil')
-const ResponseUtil = require('../utils/ResponseUtil')
+const SupplierModel = require("../models/SupplierModel")
+const { checkIsEmptyObject } = require("../utils/GeneralUtil")
+const ResponseUtil = require("../utils/ResponseUtil")
 class Supplier {
     //method: GET
     //url: /supplier/get-all
-    getAll = async(req, res) =>{
+    getAll = async (req, res) => {
         const objQuery = req.query
-        var objCondition = {...objQuery, DaXoa: 0}
+        var objCondition = { ...objQuery, DaXoa: 0 }
         try {
-            const data =await SupplierModel.get(objCondition)
+            const data = await SupplierModel.get(objCondition)
 
-            if(!data) {
-                return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], ['không thể lấy dữ liệu từ database']))
+            if (!data) {
+                return res.json(
+                    ResponseUtil.response(
+                        false,
+                        "Lỗi hệ thống",
+                        [],
+                        ["không thể lấy dữ liệu từ database"]
+                    )
+                )
             }
             return res.json(data)
         } catch (error) {
-            return res.json(ResponseUtil.response(false, 'Lỗi hệ thống'))
+            return res.json(ResponseUtil.response(false, "Lỗi hệ thống"))
         }
     }
 
-    insert = async(req, res) => {
+    insert = async (req, res) => {
         const data = req.body
-        if(!req.Permission || req.Permission >2) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 2) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Dữ liệu truyền vào không hợp lệ', [], ['Dữ liệu không hợp lệ']))
+        if (!data) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Dữ liệu truyền vào không hợp lệ",
+                    [],
+                    ["Dữ liệu không hợp lệ"]
+                )
+            )
         }
 
         try {
             const response = await SupplierModel.insert(data)
 
-            if(checkIsEmptyObject(response)) {
-                return res.json(ResponseUtil.response(false, 'Không thêm dữ liệu', [], ['Có lỗi xảy ra khi thêm dữ liệu']))
+            if (checkIsEmptyObject(response)) {
+                return res.json(
+                    ResponseUtil.response(
+                        false,
+                        "Không thêm dữ liệu",
+                        [],
+                        ["Có lỗi xảy ra khi thêm dữ liệu"]
+                    )
+                )
             }
             return res.json(response)
         } catch (error) {
-            return res.json(ResponseUtil.response(false, 'Lỗi hệ thống', [], [error]))
+            return res.json(ResponseUtil.response(false, "Lỗi hệ thống", [], [error]))
         }
     }
 
     update = async (req, res) => {
-        const data= req.body
-        if(!req.Permission || req.Permission >2) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        const data = req.body
+        if (!req.Permission || req.Permission > 2) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
-        if(!data.id) {
-            return res.json(ResponseUtil.response(false, 'Đối tượng cần sửa không hợp lệ'))
+        if (!data.id) {
+            return res.json(ResponseUtil.response(false, "Đối tượng cần sửa không hợp lệ"))
         }
 
         const objCondition = { id: data.id }
         delete data.id
 
-        if(checkIsEmptyObject(data)) {
-            return res.json(ResponseUtil.response(false, 'Dữ liệu chỉnh sửa không hợp lệ'))
+        if (checkIsEmptyObject(data)) {
+            return res.json(ResponseUtil.response(false, "Dữ liệu chỉnh sửa không hợp lệ"))
         }
 
         try {
             const response = await SupplierModel.update(data, objCondition)
 
-            if(!response) {
-                return res.json(ResponseUtil.response(false, 'Có lỗi xảy ra'))
+            if (!response) {
+                return res.json(ResponseUtil.response(false, "Có lỗi xảy ra"))
             }
             return res.json(response)
         } catch (error) {
-            return res.json(ResponseUtil.response(false, 'Lỗi hệ thống'))
+            return res.json(ResponseUtil.response(false, "Lỗi hệ thống"))
         }
     }
 
-    delete = async (req,res) => {
+    delete = async (req, res) => {
         const id = req.params.id
-        if(!req.Permission || req.Permission >2) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 2) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
-        if(!id) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!id) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
         try {
             const objDataUpdate = {
-                DaXoa: 1
+                DaXoa: 1,
             }
             const objCondition = {
-                id: id
+                id: id,
             }
-            const response = await SupplierModel.update(objDataUpdate,objCondition)
-            if(!response) {
+            const response = await SupplierModel.update(objDataUpdate, objCondition)
+            if (!response) {
                 return res.json(ResponseUtil.response(false, "Có lỗi xảy ra"))
             }
             return res.json(response)
@@ -94,23 +130,23 @@ class Supplier {
     }
 
     //GET /supplier/get-detail?id=
-    getDetail = async(req, res) => {
+    getDetail = async (req, res) => {
         const query = req.query
-        if(!query) return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
+        if (!query) return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         try {
             const id = query.id ? query.id : undefined
-            const Ten = query.Ten ? query.Ten: undefined
+            const Ten = query.Ten ? query.Ten : undefined
             const TrangThai = query.TrangThai ? query.TrangThai : undefined
 
             const objCondition = {
                 DaXoa: 0,
                 id,
                 Ten,
-                TrangThai
+                TrangThai,
             }
             const dataSupplierResponse = await SupplierModel.getDetail(objCondition)
 
-            if(!dataSupplierResponse) {
+            if (!dataSupplierResponse) {
                 throw new Error("Không thể truy xuất database")
             }
 

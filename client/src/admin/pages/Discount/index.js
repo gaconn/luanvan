@@ -1,19 +1,17 @@
-import React from 'react'
-import AddCampaign from './AddCampaign';
-import ListDiscount from './ListDiscount';
+import React from "react"
+import AddCampaign from "./AddCampaign"
+import ListDiscount from "./ListDiscount"
 
-const Discount = ({option}) => {
+const Discount = ({ option }) => {
     switch (option) {
-        case 'list':
+        case "list":
             return <ListDiscount />
-        case 'add':
+        case "add":
             return <AddCampaign />
         default:
-            break;
+            break
     }
-  return (
-    <div>Discount</div>
-  )
+    return <div>Discount</div>
 }
 
 export default Discount

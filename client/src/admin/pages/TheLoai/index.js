@@ -1,17 +1,15 @@
-import DanhSachTheLoai from "./DanhSachTheLoai";
+import DanhSachTheLoai from "./DanhSachTheLoai"
 
-const TheLoai = ({option}) => {
+const TheLoai = ({ option }) => {
     var body
     switch (option) {
-        case 'list':
-              body= <DanhSachTheLoai />  
-            break;
+        case "list":
+            body = <DanhSachTheLoai />
+            break
         default:
-            break;
+            break
     }
-    return (
-        body
-    )
+    return body
 }
 
 export default TheLoai

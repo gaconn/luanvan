@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import IMG from '../../assets/img/icon/icon3.png'
+import { useNavigate } from "react-router-dom"
+import IMG from "../../assets/img/icon/icon3.png"
 
 const CartRong = () => {
     const navigate = useNavigate()
     const ReloadShop = () => {
-        navigate('/Shop')
+        navigate("/Shop")
     }
     return (
         <>
@@ -26,12 +26,10 @@ const CartRong = () => {
                             tiếp tục mua sắm
                         </button>
                     </div>
-
                 </div>
             </div>
-
         </>
-    );
+    )
 }
 
-export default CartRong;
+export default CartRong

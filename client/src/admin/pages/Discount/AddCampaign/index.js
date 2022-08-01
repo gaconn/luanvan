@@ -1,67 +1,92 @@
-import { useState } from "react";
-import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap";
-import discountAPI from "../../../services/API/discountAPI";
-import { Container, Content } from "./AddCampaign.style";
+import { useState } from "react"
+import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap"
+import discountAPI from "../../../services/API/discountAPI"
+import { Container, Content } from "./AddCampaign.style"
 
 const AddCampaign = () => {
-    const [validated, setValidated] = useState(false);
-    const [discount, setDiscount] = useState({Ten:""})
-    const [insertNotify, setInsertNotify] = useState({show: false, message: ""})
+    const [validated, setValidated] = useState(false)
+    const [discount, setDiscount] = useState({ Ten: "" })
+    const [insertNotify, setInsertNotify] = useState({ show: false, message: "" })
 
-    const handleSubmit = async(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const form = event.currentTarget;
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const form = event.currentTarget
         var isValid = true
-        const data = {...discount}
-        data.ThoiGianBatDau = new Date(data.ThoiGianBatDau).getTime()/1000
-        data.ThoiGianKetThuc = new Date(data.ThoiGianKetThuc).getTime()/1000
+        const data = { ...discount }
+        data.ThoiGianBatDau = new Date(data.ThoiGianBatDau).getTime() / 1000
+        data.ThoiGianKetThuc = new Date(data.ThoiGianKetThuc).getTime() / 1000
 
         const isValidTime = data.ThoiGianBatDau > data.ThoiGianKetThuc
         if (form.checkValidity() === false) {
-            isValid =false
+            isValid = false
         }
-        setValidated(true);
+        setValidated(true)
 
-        if(!isValid) return
-        
-        setInsertNotify(() =>{ 
-            if(isValidTime) {
-                return {...insertNotify, show: true, message: "Thời gian không hợp lệ", success: false}
+        if (!isValid) return
+
+        setInsertNotify(() => {
+            if (isValidTime) {
+                return {
+                    ...insertNotify,
+                    show: true,
+                    message: "Thời gian không hợp lệ",
+                    success: false,
+                }
             }
             return {}
         })
-        console.log(isValidTime);
-        if(isValidTime) {
+        console.log(isValidTime)
+        if (isValidTime) {
             return
         }
         const response = await discountAPI.insert(data)
-        console.log(response);
-        setInsertNotify(() =>{ 
-            if(!response) {
-                return {...insertNotify, show: true, message: "Không thể kết nối server", success: false}
+        console.log(response)
+        setInsertNotify(() => {
+            if (!response) {
+                return {
+                    ...insertNotify,
+                    show: true,
+                    message: "Không thể kết nối server",
+                    success: false,
+                }
             }
-            return {...insertNotify, show: true, message: response.message, success: response.success, error: response.error}
-        })
-    };
-  
-    const onChangeInput = (e) => {
-        setDiscount((discount)=> {
-            return {...discount, [e.target.name]: e.target.value}
+            return {
+                ...insertNotify,
+                show: true,
+                message: response.message,
+                success: response.success,
+                error: response.error,
+            }
         })
     }
-    return(
+
+    const onChangeInput = (e) => {
+        setDiscount((discount) => {
+            return { ...discount, [e.target.name]: e.target.value }
+        })
+    }
+    return (
         <Container>
             <ToastContainer position="top-end" className="p-3">
-                <Toast bg={insertNotify.success ? "success": "danger"} onClose={()=> setInsertNotify({...insertNotify, show: false})} show={insertNotify.show} delay={5000} autohide>
+                <Toast
+                    bg={insertNotify.success ? "success" : "danger"}
+                    onClose={() => setInsertNotify({ ...insertNotify, show: false })}
+                    show={insertNotify.show}
+                    delay={5000}
+                    autohide
+                >
                     <Toast.Header>
                         <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
                         <strong className="me-auto">Thông báo</strong>
                         <small className="text-muted">just now</small>
                     </Toast.Header>
-                    <Toast.Body>{insertNotify.error && insertNotify.length >0  ? insertNotify.error.join("-") : insertNotify.message}</Toast.Body>
+                    <Toast.Body>
+                        {insertNotify.error && insertNotify.length > 0
+                            ? insertNotify.error.join("-")
+                            : insertNotify.message}
+                    </Toast.Body>
                 </Toast>
-                
             </ToastContainer>
 
             <Content>
@@ -77,7 +102,9 @@ const AddCampaign = () => {
                                 value={discount.TenChuongTrinh}
                                 onChange={onChangeInput}
                             />
-                            <Form.Control.Feedback type="invalid">Tên không được để trống</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                                Tên không được để trống
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
@@ -142,7 +169,9 @@ const AddCampaign = () => {
                                 value={discount.ThoiGianBatDau}
                                 onChange={onChangeInput}
                             />
-                            <Form.Control.Feedback type="invalid">Vui lòng nhập thời gian bắt đầu chương trình</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                                Vui lòng nhập thời gian bắt đầu chương trình
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId="discount-name">
                             <Form.Label>Thời gian kết thúc chương trình</Form.Label>
@@ -154,7 +183,9 @@ const AddCampaign = () => {
                                 value={discount.ThoiGianKetThuc}
                                 onChange={onChangeInput}
                             />
-                            <Form.Control.Feedback type="invalid">Vui lòng nhập thời gian bắt đầu chương trình</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">
+                                Vui lòng nhập thời gian bắt đầu chương trình
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Row>
                     <Row className="mb-3">
@@ -190,7 +221,7 @@ const AddCampaign = () => {
                                 onChange={onChangeInput}
                                 min={0}
                                 max={100}
-                                disabled={discount.GiaTriChietKhau ? "true": ""}
+                                disabled={discount.GiaTriChietKhau ? "true" : ""}
                             />
                         </Form.Group>
                         <Form.Group as={Col} md="4" controlId="discount-name">
@@ -201,11 +232,11 @@ const AddCampaign = () => {
                                 name="GiaTriChietKhau"
                                 value={discount.GiaTriChietKhau}
                                 onChange={onChangeInput}
-                                disabled={discount.PhanTramChietKhau ? "true": ""}
+                                disabled={discount.PhanTramChietKhau ? "true" : ""}
                             />
                         </Form.Group>
                     </Row>
-                    
+
                     <Button type="submit">Thêm mới</Button>
                 </Form>
             </Content>

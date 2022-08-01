@@ -2,7 +2,7 @@ const LadingModel = require("../models/LadingModel")
 const OrderDetailModel = require("../models/OrderDetailModel")
 const OrderModel = require("../models/OrderModel")
 const ResponseUtil = require("../utils/ResponseUtil")
-const {Telegraf} = require('telegraf')
+const { Telegraf } = require("telegraf")
 const TelegramModel = require("../models/TelegramModel")
 class OrderController {
     /**
@@ -10,11 +10,16 @@ class OrderController {
      * /order/get-orders
      */
 
-    getOrder = async(req, res) => {
+    getOrder = async (req, res) => {
         const objData = req.query
 
-        if(!req.Permission || req.Permission >3) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 3) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
 
         try {
@@ -24,24 +29,28 @@ class OrderController {
                 joinPaymentMethod: true,
             }
 
-            const orders =await OrderModel.get(objCondition)
+            const orders = await OrderModel.get(objCondition)
 
-            if(!orders) {
-                throw new Error('Lỗi hệ thống')
+            if (!orders) {
+                throw new Error("Lỗi hệ thống")
             }
 
             return res.json(orders)
-
-        } catch (error) {   
+        } catch (error) {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
 
     getOrderDetail = async (req, res) => {
-        const data =req.query
+        const data = req.query
 
-        if(!req.Permission || req.Permission >3) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 3) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
         try {
             const condition = {
@@ -49,10 +58,10 @@ class OrderController {
                 joinOrder: true,
                 joinProduct: true,
             }
-            const response = await OrderDetailModel.get(condition) 
+            const response = await OrderDetailModel.get(condition)
 
-            if(!response) {
-                throw new Error('Không thể kết nối')
+            if (!response) {
+                throw new Error("Không thể kết nối")
             }
             return res.json(response)
         } catch (error) {
@@ -64,13 +73,13 @@ class OrderController {
      * /order/checkout-v1
      */
 
-    checkoutV1 = async(req, res) => {
+    checkoutV1 = async (req, res) => {
         const data = req.body
         try {
             const response = await OrderModel.checkoutV1(data)
 
-            if(!response) {
-                throw new Error('Lỗi hệ thống')
+            if (!response) {
+                throw new Error("Lỗi hệ thống")
             }
 
             return res.json(response)
@@ -82,18 +91,18 @@ class OrderController {
     /**
      * Checkout trực tiếp không qua giỏ hàng, không cần đăng nhập
      * Method POST
-     * /order/checkout-v2 
+     * /order/checkout-v2
      */
     checkoutV2 = async (req, res) => {
         const data = req.body
-        if(!data) {
-            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        if (!data) {
+            return ResponseUtil.response(false, "Tham số không hợp lệ")
         }
         try {
             const checkoutResponse = await OrderModel.checkoutV2(data)
 
-            if(!checkoutResponse) {
-                throw new Error('Không thể sử lý')
+            if (!checkoutResponse) {
+                throw new Error("Không thể sử lý")
             }
             return res.json(checkoutResponse)
         } catch (error) {
@@ -105,7 +114,7 @@ class OrderController {
      * Checkout qua giỏ hàng khi chưa đăng nhập
      * Method: POST
      * url: order/checkout-v3
-     * params: 
+     * params:
      * + Thông tin => Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha
      * + IDGioHang
      * + IDSanPham : có thể truyền 1 hoặc nhiều vd 1,2,3
@@ -119,14 +128,14 @@ class OrderController {
         //     return res.json(ResponseUtil.response(false, 'Vui lòng đăng nhập để sử dụng'))
         // }
 
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
 
         try {
             const response = await OrderModel.checkoutV3(data)
-            if(!response) {
-                throw new Error('Lỗi xử lý')
+            if (!response) {
+                throw new Error("Lỗi xử lý")
             }
             return res.json(response)
         } catch (error) {
@@ -134,26 +143,26 @@ class OrderController {
         }
     }
 
-    checkout = async (req,res) => {
+    checkout = async (req, res) => {
         const data = req.body
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
 
         try {
-            var response 
-            if(data.IDSanPham && !data.IDGioHang) {
+            var response
+            if (data.IDSanPham && !data.IDGioHang) {
                 //chưa thêm giỏ hàng
                 //tham số {IDSanPham, SoLuong, IDPhuongThucThanhToan, (Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha) || IDTaiKhoan}
                 response = await OrderModel.checkoutV2(data)
-            } else if( data.IDSanPham && data.IDGioHang) {
+            } else if (data.IDSanPham && data.IDGioHang) {
                 //đã thêm sản phẩm vào giỏ hàng
                 // tham số {IDSanPham, IDPhuongThucThanhToan (Email, SoDienThoai, TinhThanh, QuanHuyen, PhuongXa, SoNha) || IDTaiKhoan}
                 response = await OrderModel.checkoutV3(data)
-            } 
+            }
 
-            if(!response) {
-                throw new Error('Không thể kết nối database')
+            if (!response) {
+                throw new Error("Không thể kết nối database")
             }
 
             return res.json(response)
@@ -167,51 +176,59 @@ class OrderController {
      * url: order/change-status
      * params: {id, TrangThai}
      */
-    changeStatus = async (req, res)=> {
-        const data= req.body
+    changeStatus = async (req, res) => {
+        const data = req.body
 
-        if(!req.Permission || req.Permission >3) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 3) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
 
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hơp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hơp lệ"))
         }
 
-        if(!data.id || !data.TrangThai) {
-            return res.json(ResponseUtil.response(false, 'Dữ liệu không hợp lệ'))
+        if (!data.id || !data.TrangThai) {
+            return res.json(ResponseUtil.response(false, "Dữ liệu không hợp lệ"))
         }
         try {
-            if(data.TrangThai *1 === 2) {
+            if (data.TrangThai * 1 === 2) {
                 // kiểm tra xem đã có vận đơn cho đơn này chưa
-                const responseLading = await LadingModel.get({IDDonHang: data.id})
-                if(!responseLading ) {
-                    throw new Error('')
+                const responseLading = await LadingModel.get({ IDDonHang: data.id })
+                if (!responseLading) {
+                    throw new Error("")
                 }
-                if(responseLading.data.length === 0) {
-                    const responseCreateLading = await LadingModel.insert({IDDonHang: data.id})
-                    if(!responseCreateLading || !responseCreateLading.success) {
+                if (responseLading.data.length === 0) {
+                    const responseCreateLading = await LadingModel.insert({ IDDonHang: data.id })
+                    if (!responseCreateLading || !responseCreateLading.success) {
                         return res.json(responseCreateLading)
                     }
                 }
             }
 
-            if(data.TrangThai*1 === 3) {
+            if (data.TrangThai * 1 === 3) {
                 // vận chuyển xong thì cập nhật
-                const responseLading = await LadingModel.get({IDDonHang: data.id})
-                if(!responseLading ) {
-                    throw new Error('')
+                const responseLading = await LadingModel.get({ IDDonHang: data.id })
+                if (!responseLading) {
+                    throw new Error("")
                 }
-                if(responseLading.data.length > 0) {
-                    const responseCreateLading = await LadingModel.update({TrangThai: 1},{IDDonHang: data.id})
-                    if(!responseCreateLading || !responseCreateLading.success) {
+                if (responseLading.data.length > 0) {
+                    const responseCreateLading = await LadingModel.update(
+                        { TrangThai: 1 },
+                        { IDDonHang: data.id }
+                    )
+                    if (!responseCreateLading || !responseCreateLading.success) {
                         return res.json(responseCreateLading)
                     }
                 }
             }
-            const response = await OrderModel.update(data, {id: data.id})
-            if(!response) {
-                throw new Error('Không thể kết nối với database')
+            const response = await OrderModel.update(data, { id: data.id })
+            if (!response) {
+                throw new Error("Không thể kết nối với database")
             }
             return res.json(response)
         } catch (error) {

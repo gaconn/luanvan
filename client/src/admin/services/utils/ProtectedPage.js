@@ -5,16 +5,16 @@ import token from "./token"
 
 const ProtectedPage = () => {
     let location = useLocation()
-    if(!localStorage.getItem("USER_NAME") || !localStorage.getItem('TOKEN')) {
+    if (!localStorage.getItem("USER_NAME") || !localStorage.getItem("TOKEN")) {
         logout()
-        return <Navigate to='auth' state={{from: location}} replace />
+        return <Navigate to="auth" state={{ from: location }} replace />
     }
-    if(!localStorage.getItem('USER_LEVEL') || localStorage.getItem('USER_LEVEL') > 3) {
-        return <Navigate to={'permission-denied'} replace/>
+    if (!localStorage.getItem("USER_LEVEL") || localStorage.getItem("USER_LEVEL") > 3) {
+        return <Navigate to={"permission-denied"} replace />
     }
 
-    if(!axios.defaults.headers.common['Authorization']) {
-        token.setToken(localStorage.getItem('TOKEN'))
+    if (!axios.defaults.headers.common["Authorization"]) {
+        token.setToken(localStorage.getItem("TOKEN"))
     }
     return <Outlet />
 }

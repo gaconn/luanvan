@@ -1,26 +1,24 @@
-import React from 'react'
+import React from "react"
 import DanhSachSanPham from "./DanhSachSanPham"
-import SuaSanPham from './SuaSanPham'
+import SuaSanPham from "./SuaSanPham"
 import ThemSanPham from "./ThemSanPham"
 
-const SanPham = ({option}) => {
-    var body 
+const SanPham = ({ option }) => {
+    var body
     switch (option) {
         case "list":
-            body=<DanhSachSanPham />
-            break;
+            body = <DanhSachSanPham />
+            break
         case "add":
             body = <ThemSanPham />
             break
-        case 'update':
+        case "update":
             body = <SuaSanPham />
             break
         default:
-            break;
+            break
     }
-  return (
-    body
-  )
+    return body
 }
 
 export default SanPham

@@ -10,11 +10,11 @@ class PermissionController {
         try {
             const condition = {
                 ...data,
-                TrangThai: 1
+                TrangThai: 1,
             }
             const response = await PermissionModel.get(condition)
-            if(!response) {
-                throw new Error('Không thể kết nối đến database')
+            if (!response) {
+                throw new Error("Không thể kết nối đến database")
             }
             return res.json(response)
         } catch (error) {

@@ -13,28 +13,51 @@ const QuanLyKhoHang = () => {
     return (
         <Item>
             <div className="side-bar-item-control">
-                <IconTagToggle eventKey="1"><BsHouseDoor /></IconTagToggle>
+                <IconTagToggle eventKey="1">
+                    <BsHouseDoor />
+                </IconTagToggle>
                 <span className="side-bar-item-label">Quản lý kho hàng</span>
-                <ListTagToggle eventKey="1"><AiOutlinePlus /></ListTagToggle>
+                <ListTagToggle eventKey="1">
+                    <AiOutlinePlus />
+                </ListTagToggle>
             </div>
             <Accordion.Collapse eventKey="1">
                 <div className="side-bar-item-expand-list">
                     <List>
                         <Item className="side-bar-item-sub side-1" id="side-bar-item-sub-1" key="1">
-                            <Link to={LinkWarehouseAction.in_warehouse} className="side-bar-item-control" >
-                                <span className="side-bar-item-icon-sub"><RiStackLine /></span>
-                                <span className="side-bar-item-label" >Danh sách đơn hàng trong kho</span>
+                            <Link
+                                to={LinkWarehouseAction.in_warehouse}
+                                className="side-bar-item-control"
+                            >
+                                <span className="side-bar-item-icon-sub">
+                                    <RiStackLine />
+                                </span>
+                                <span className="side-bar-item-label">
+                                    Danh sách đơn hàng trong kho
+                                </span>
                             </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
-                            <Link to={LinkWarehouseAction.exported_warehouse} className="side-bar-item-control">
-                                <span className="side-bar-item-icon-sub"><RiStackOverflowFill /></span>
-                                <span className="side-bar-item-label">Danh sách đơn hàng xuất kho</span>
+                            <Link
+                                to={LinkWarehouseAction.exported_warehouse}
+                                className="side-bar-item-control"
+                            >
+                                <span className="side-bar-item-icon-sub">
+                                    <RiStackOverflowFill />
+                                </span>
+                                <span className="side-bar-item-label">
+                                    Danh sách đơn hàng xuất kho
+                                </span>
                             </Link>
                         </Item>
                         <Item className="side-bar-item-sub">
-                            <Link to={LinkWarehouseAction.import_warehouse} className="side-bar-item-control">
-                                <span className="side-bar-item-icon-sub"><BiAddToQueue /></span>
+                            <Link
+                                to={LinkWarehouseAction.import_warehouse}
+                                className="side-bar-item-control"
+                            >
+                                <span className="side-bar-item-icon-sub">
+                                    <BiAddToQueue />
+                                </span>
                                 <span className="side-bar-item-label">Lưu kho</span>
                             </Link>
                         </Item>

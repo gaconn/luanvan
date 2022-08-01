@@ -2,12 +2,12 @@ import AddNhaCungCap from "./AddNhaCungCap"
 import DanhSachNhaCungCap from "./DanhSachNhaCungCap"
 import UpdateNhaCungCap from "./UpdateNhaCungCap"
 
-const NhaCungCap = ({option}) => {
-    var body 
+const NhaCungCap = ({ option }) => {
+    var body
     switch (option) {
         case "list":
-            body = <DanhSachNhaCungCap/>
-            break;
+            body = <DanhSachNhaCungCap />
+            break
         case "add":
             body = <AddNhaCungCap />
             break
@@ -15,11 +15,9 @@ const NhaCungCap = ({option}) => {
             body = <UpdateNhaCungCap />
             break
         default:
-            break;
+            break
     }
-    return (
-        body
-    )
+    return body
 }
 
 export default NhaCungCap

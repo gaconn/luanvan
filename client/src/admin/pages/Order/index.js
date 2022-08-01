@@ -1,20 +1,16 @@
-import React from 'react'
-import Detail from './Detail'
+import React from "react"
+import Detail from "./Detail"
 import ListOrder from "./ListOrder"
-const Order = ({option}) => {
-
-
+const Order = ({ option }) => {
     switch (option) {
-        case 'list':
+        case "list":
             return <ListOrder />
-        case 'detail': 
+        case "detail":
             return <Detail />
         default:
-            break;
+            break
     }
-  return (
-    <div>Order</div>
-  )
+    return <div>Order</div>
 }
 
 export default Order

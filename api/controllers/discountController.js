@@ -11,12 +11,12 @@ class DiscountController {
         try {
             const response = await DiscountModel.get(condition)
 
-            if(!response) {
-                throw new Error('Không thể kết nối database')
+            if (!response) {
+                throw new Error("Không thể kết nối database")
             }
             return res.json(response)
         } catch (error) {
-            return res.json(ResponseUtil.response(false,error.message))
+            return res.json(ResponseUtil.response(false, error.message))
         }
     }
 
@@ -25,9 +25,14 @@ class DiscountController {
      * url: discount/insert
      */
     insert = async (req, res) => {
-        const data= req.body
-        if(!req.Permission || req.Permission >2) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        const data = req.body
+        if (!req.Permission || req.Permission > 2) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
         try {
             const response = await DiscountModel.insert(data)
@@ -43,11 +48,16 @@ class DiscountController {
      */
     update = async (req, res) => {
         const data = req.body
-        if(!req.Permission || req.Permission >2) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 2) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'dữ liệu không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "dữ liệu không hợp lệ"))
         }
         try {
             const response = await DiscountModel.update(data, data.id)
@@ -63,11 +73,16 @@ class DiscountController {
      */
     delete = async (req, res) => {
         const id = req.query.id
-        if(!req.Permission || req.Permission >2) {
-            return res.json(ResponseUtil.response(false, 'Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên'))
+        if (!req.Permission || req.Permission > 2) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
         }
-        if(!id) {
-            return res.json(ResponseUtil.response(false, 'id không hợp lệ'))
+        if (!id) {
+            return res.json(ResponseUtil.response(false, "id không hợp lệ"))
         }
 
         try {

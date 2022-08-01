@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const Container = styled.li`
     padding-top: 5px;
@@ -37,7 +37,7 @@ export const Container = styled.li`
         padding: 5px;
         :hover {
             cursor: pointer;
-            color: red;    
+            color: red;
         }
     }
-`;
+`

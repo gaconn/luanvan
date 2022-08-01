@@ -1,85 +1,103 @@
-import { useState } from "react";
-import isEmty from "validator/lib/isEmpty";
-import isEmail from "validator/lib/isEmail";
-import CustommerAPI from "../../services/API/CustomerAPI";
-import { useNavigate } from "react-router-dom";
-import token from "../../services/utils/setToken";
-import Toast from "react-bootstrap/Toast";
-import ToastContainer from "react-bootstrap/ToastContainer";
+import { useState } from "react"
+import isEmty from "validator/lib/isEmpty"
+import isEmail from "validator/lib/isEmail"
+import CustommerAPI from "../../services/API/CustomerAPI"
+import { useNavigate } from "react-router-dom"
+import token from "../../services/utils/setToken"
+import Toast from "react-bootstrap/Toast"
+import ToastContainer from "react-bootstrap/ToastContainer"
 const Auth = () => {
-    const [account, setaccount] = useState({ Email: "" });
-    const navigate = useNavigate();
+    const [account, setaccount] = useState({ Email: "" })
+    const navigate = useNavigate()
     const changeInputValue = (e) => {
         setaccount({
             ...account,
             [e.target.name]: e.target.value,
-        });
-    };
-    const [validated, setValidated] = useState("");
-    const [notify, setNotify] = useState();
+        })
+    }
+    const [validated, setValidated] = useState("")
+    const [notify, setNotify] = useState()
     const handelSubmit = async (event) => {
-        const isvalidated = validatedAll();
+        const isvalidated = validatedAll()
         if (!isvalidated) {
-            event.preventDefault();
-            return;
+            event.preventDefault()
+            return
         }
 
-        const form = event.currentTarget;
+        const form = event.currentTarget
         if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            return;
+            event.preventDefault()
+            event.stopPropagation()
+            return
         }
-        event.preventDefault();
-        const response = await CustommerAPI.NewPassword(account);
+        event.preventDefault()
+        const response = await CustommerAPI.NewPassword(account)
         setNotify(() => {
             if (response) {
                 if (!response.success) {
-                    return { show: true, success: false, message: response.message, error: response.error };
+                    return {
+                        show: true,
+                        success: false,
+                        message: response.message,
+                        error: response.error,
+                    }
                 }
                 if (response.error.length > 0) {
-                    return { show: true, success: false, message: response.message, error: response.error };
+                    return {
+                        show: true,
+                        success: false,
+                        message: response.message,
+                        error: response.error,
+                    }
                 }
                 if (response.success && response.error.length === 0) {
-                    return { show: false, success: true, message: response.message, error: response.error };
+                    return {
+                        show: false,
+                        success: true,
+                        message: response.message,
+                        error: response.error,
+                    }
                 }
             }
 
-            return { show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại" };
-        });
-        const data = response.data[0];
+            return { show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại" }
+        })
+        const data = response.data[0]
         if (response) {
             if (response.success && response.error.length === 0) {
                 if (data.token) {
-                    token.setAuthToken(data.token);
-                    localStorage.setItem("USER_NAME", data.HoTen);
-                    navigate("../Login");
+                    token.setAuthToken(data.token)
+                    localStorage.setItem("USER_NAME", data.HoTen)
+                    navigate("../Login")
                 }
             }
         }
-    };
+    }
     const validatedAll = () => {
-        const nsg = {};
+        const nsg = {}
         //Kiểm tra email
         if (!isEmail(account.Email)) {
-            nsg.Email = "Không đúng định dạng email";
+            nsg.Email = "Không đúng định dạng email"
         }
         if (isEmty(account.Email)) {
-            nsg.Email = "Vui lòng nhập email";
+            nsg.Email = "Vui lòng nhập email"
         }
-        setValidated(nsg);
+        setValidated(nsg)
         if (Object.keys(nsg).length > 0) {
-            return false;
+            return false
         }
-        return true;
-    };
+        return true
+    }
 
     return (
         <div className="py-20">
             <div className="block p-6 rounded-lg shadow-lg bg-white max-w-sm  mx-auto ">
                 <form>
                     <div className="form-group mb-6">
-                        <label htmlFor="exampleInputEmail1" className="form-label inline-block mb-2 text-gray-700">
+                        <label
+                            htmlFor="exampleInputEmail1"
+                            className="form-label inline-block mb-2 text-gray-700"
+                        >
                             Email Nhận Mật Khẩu Mới
                         </label>
                         <input
@@ -138,7 +156,13 @@ const Auth = () => {
             </div>
             {notify && (
                 <ToastContainer position="top-end" className="p-3">
-                    <Toast bg="danger" onClose={() => setNotify({ ...notify, show: false })} show={notify.show} delay={4000} autohide>
+                    <Toast
+                        bg="danger"
+                        onClose={() => setNotify({ ...notify, show: false })}
+                        show={notify.show}
+                        delay={4000}
+                        autohide
+                    >
                         <Toast.Header>
                             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
                             <strong className="me-auto">Thông báo</strong>
@@ -152,14 +176,14 @@ const Auth = () => {
                                         <div key={index} className="notify-error">
                                             {item}
                                         </div>
-                                    );
+                                    )
                                 })}
                         </Toast.Body>
                     </Toast>
                 </ToastContainer>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default Auth;
+export default Auth

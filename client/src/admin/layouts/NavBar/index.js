@@ -1,11 +1,9 @@
-import { Container, Content } from "./NavBar.style";
+import { Container, Content } from "./NavBar.style"
 
 const NavBar = () => {
     return (
         <Container>
-            <Content>
-                Navbar
-            </Content>
+            <Content>Navbar</Content>
         </Container>
     )
 }

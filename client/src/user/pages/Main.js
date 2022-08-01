@@ -7,19 +7,15 @@ const Main = () => {
     var pageBody
     switch (option) {
         case "ProductDetail":
-            pageBody = < DetailComponent />
-            break;
+            pageBody = <DetailComponent />
+            break
         case "InformationCustomer":
             pageBody = <ManageComponents />
-            break;
+            break
         default:
-            break;
+            break
     }
-    return (
-        <div>
-            {pageBody}
-        </div>
-    )
+    return <div>{pageBody}</div>
 }
 
 export default Main

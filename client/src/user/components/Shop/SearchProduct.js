@@ -1,17 +1,17 @@
-import LoadingPage from "../Loading";
-import { Link } from "react-router-dom";
-import uniqid from 'uniqid';
-import CartAPI from "../../services/API/Cart";
-import {generateCartSessionID} from '../../services/utils/GenerateUtil'
-const Search = ( {ProductSearch,LoadingProduct} ) => {
-    if(LoadingProduct){
-        return <LoadingPage/>
+import LoadingPage from "../Loading"
+import { Link } from "react-router-dom"
+import uniqid from "uniqid"
+import CartAPI from "../../services/API/Cart"
+import { generateCartSessionID } from "../../services/utils/GenerateUtil"
+const Search = ({ ProductSearch, LoadingProduct }) => {
+    if (LoadingProduct) {
+        return <LoadingPage />
     }
     const HandleInfo = (item) => {
-        localStorage.setItem('DetailID', item)
-    };
+        localStorage.setItem("DetailID", item)
+    }
     const handleInfoCart = async (item) => {
-        let SessionID = localStorage.getItem('SessionID')
+        let SessionID = localStorage.getItem("SessionID")
         if (!SessionID) {
             SessionID = generateCartSessionID()
         }
@@ -20,52 +20,60 @@ const Search = ( {ProductSearch,LoadingProduct} ) => {
     }
     return (
         <>
-            {
-                ProductSearch &&  ProductSearch.map &&  ProductSearch.map((item,k)=>(
+            {ProductSearch &&
+                ProductSearch.map &&
+                ProductSearch.map((item, k) => (
                     <div className="col-lg-4 col-md-6 col-sm-6" key={k}>
-                    <div className="product__item">
-                        <div
-                            className="product__item__pic set-bg"
-                        >
-                            {
-                                item.HinhAnh &&
-                                <img
-                                    className="d-block w-100"
-                                    src={process.env.REACT_APP_API_IMAGE + JSON.parse(item.HinhAnh)[0]}
-                                    style={{ height: 300 }}
-                                    alt="First slide"
-                                />   
-                            }
-                            <ul className="product__item__pic__hover">
-                                <li>
-                                    <a href="#">
-                                        <i className="fa fa-heart" />
-                                    </a>
-                                </li>
-                                <li>
-                                    <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}   >
-                                        <i className="fa fa-retweet" />
+                        <div className="product__item">
+                            <div className="product__item__pic set-bg">
+                                {item.HinhAnh && (
+                                    <img
+                                        className="d-block w-100"
+                                        src={
+                                            process.env.REACT_APP_API_IMAGE +
+                                            JSON.parse(item.HinhAnh)[0]
+                                        }
+                                        style={{ height: 300 }}
+                                        alt="First slide"
+                                    />
+                                )}
+                                <ul className="product__item__pic__hover">
+                                    <li>
+                                        <a href="#">
+                                            <i className="fa fa-heart" />
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            to="/ProductDetail"
+                                            onClick={() => HandleInfo(item.id)}
+                                        >
+                                            <i className="fa fa-retweet" />
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <i
+                                                className="fa fa-shopping-cart"
+                                                onClick={() => handleInfoCart(item)}
+                                            />
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="product__item__text">
+                                <h6>
+                                    <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}>
+                                        {item.Ten}
                                     </Link>
-                                </li>
-                                <li>
-                                    <a href='#'>
-                                        <i className="fa fa-shopping-cart" onClick={() => handleInfoCart(item)} />
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="product__item__text">
-                            <h6>
-                                <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}>{item.Ten}</Link>
-                            </h6>
-                            <h5>${item.GiaGoc * 2}</h5>
+                                </h6>
+                                <h5>${item.GiaGoc * 2}</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-                ))
-            }
+                ))}
         </>
-    );
+    )
 }
 
-export default Search;
+export default Search

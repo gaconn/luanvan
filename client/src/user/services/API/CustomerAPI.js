@@ -9,7 +9,6 @@ const CustommerAPI = {
         } catch (error) {
             console.log(error)
         }
-
     },
     login: async (data) => {
         try {
@@ -55,6 +54,6 @@ const CustommerAPI = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
 }
 export default CustommerAPI

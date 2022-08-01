@@ -2,7 +2,7 @@ const dbconnect = require("./DBConnection")
 const ResponseUtil = require("../utils/ResponseUtil")
 const GeneralUtil = require("../utils/GeneralUtil")
 const { object_filter, buildFieldQuery, _buildSelect } = require("../utils/DBUtil")
-const fs = require('fs')
+const fs = require("fs")
 const path = require("path")
 class ProductModel {
     constructor() {
@@ -18,46 +18,36 @@ class ProductModel {
         var start = (objCondition.page - 1) * 20
         try {
             var strWhere = this._buildWhereQuery(objCondition)
-            var strSelect = 'select 1'
+            var strSelect = "select 1"
             var strJoin = ""
             var strOrder = ""
-            strSelect += _buildSelect(['*'], this.table)
+            strSelect += _buildSelect(["*"], this.table)
             if (objCondition.joinCategory) {
                 strJoin += ` left join theloai on ${this.table}.IDTheLoai = theloai.id`
-                var arrFieldCategorySelect = [
-                    'Ten',
-                    'HoatDong',
-                    'IDTheLoaiCha'
-                ]
-                strSelect += _buildSelect(arrFieldCategorySelect, 'theloai', 'TheLoai_')
+                var arrFieldCategorySelect = ["Ten", "HoatDong", "IDTheLoaiCha"]
+                strSelect += _buildSelect(arrFieldCategorySelect, "theloai", "TheLoai_")
             }
 
             if (objCondition.joinSupplier) {
                 strJoin += ` left join nhacungcap on ${this.table}.IDNhaCungCap = nhacungcap.id`
-                var arrFieldSupplierSelect = [
-                    'Ten',
-                    'TrangThai',
-                ]
-                strSelect += _buildSelect(arrFieldSupplierSelect, 'nhacungcap', 'NhaCungCap_')
+                var arrFieldSupplierSelect = ["Ten", "TrangThai"]
+                strSelect += _buildSelect(arrFieldSupplierSelect, "nhacungcap", "NhaCungCap_")
             }
 
             if ((objCondition.SessionID || objCondition.IDTaiKhoan) && objCondition.fromCart) {
                 strJoin += ` left join chitietgiohang on ${this.table}.id = chitietgiohang.IDSanPham`
                 strJoin += ` left join giohang on chitietgiohang.IDGioHang = giohang.id`
 
-                var arrFieldCartItemSelect = [
-                    'id',
-                    'SoLuong',
-                ]
-                strSelect += _buildSelect(arrFieldCartItemSelect, 'chitietgiohang', 'ChiTietGioHang_')
+                var arrFieldCartItemSelect = ["id", "SoLuong"]
+                strSelect += _buildSelect(
+                    arrFieldCartItemSelect,
+                    "chitietgiohang",
+                    "ChiTietGioHang_"
+                )
 
-                var arrFieldCartSelect = [
-                    'id',
-                    'IDTaiKhoan',
-                    'SessionID'
-                ]
+                var arrFieldCartSelect = ["id", "IDTaiKhoan", "SessionID"]
 
-                strSelect += _buildSelect(arrFieldCartSelect, 'giohang', 'GioHang_')
+                strSelect += _buildSelect(arrFieldCartSelect, "giohang", "GioHang_")
 
                 if (objCondition.IDTaiKhoan) {
                     strWhere += ` and giohang.IDTaiKhoan = '${objCondition.IDTaiKhoan}'`
@@ -67,51 +57,61 @@ class ProductModel {
             }
 
             // lấy những sản phẩm có khuyến mãi thì thêm params joinDiscount = true
-            if(objCondition.joinDiscount) {
+            if (objCondition.joinDiscount) {
                 strJoin += ` join chietkhau on ${this.table}.id = chietkhau.IDSanPham`
                 const arrFieldDiscountSelect = [
-                    'id',
-                    'TrangThai',
-                    'TenChuongTrinh',
-                    'GiaChietKhauToiDa',
-                    'DieuKienGiaToiThieu',
-                    'DieuKienGiaToiDa',
-                    'SoLuongSuDungToiDa',
-                    'ThoiGianBatDau',
-                    'ThoiGianKetThuc',
-                    'IDPhuongThucThanhToan',
-                    'ThoiGianTao',
-                    'DaXoa',
-                    'GiaTriChietKhau',
-                    'PhanTramChietKhau',
-                    'MaChietKhau'
+                    "id",
+                    "TrangThai",
+                    "TenChuongTrinh",
+                    "GiaChietKhauToiDa",
+                    "DieuKienGiaToiThieu",
+                    "DieuKienGiaToiDa",
+                    "SoLuongSuDungToiDa",
+                    "ThoiGianBatDau",
+                    "ThoiGianKetThuc",
+                    "IDPhuongThucThanhToan",
+                    "ThoiGianTao",
+                    "DaXoa",
+                    "GiaTriChietKhau",
+                    "PhanTramChietKhau",
+                    "MaChietKhau",
                 ]
-                strSelect += _buildSelect(arrFieldDiscountSelect, 'chietkhau', 'ChietKhau_')
+                strSelect += _buildSelect(arrFieldDiscountSelect, "chietkhau", "ChietKhau_")
 
                 // chỉ lấy 1 mã khuyến mãi hợp lệ cho 1 sản phẩm thôi, ra 2 sản phẩm giống nhau là sai nghiệp vụ
                 strWhere += ` and chietkhau.DaXoa = 0`
                 strWhere += ` and chietkhau.TrangThai = 1`
-                strWhere += ` and chietkhau.ThoiGianBatDau <= ${new Date().getTime()/1000}`
-                strWhere += ` and chietkhau.ThoiGianKetThuc >= ${new Date().getTime()/1000}`
+                strWhere += ` and chietkhau.ThoiGianBatDau <= ${new Date().getTime() / 1000}`
+                strWhere += ` and chietkhau.ThoiGianKetThuc >= ${new Date().getTime() / 1000}`
             }
 
-            if(objCondition.new) {
+            if (objCondition.new) {
                 strOrder = ` ORDER BY ${this.table}.id DESC`
             }
-            if(objCondition.sortPrice === 'desc') {
+            if (objCondition.sortPrice === "desc") {
                 strOrder = ` ORDER BY ${this.table}.GiaGoc DESC`
             }
-            if(objCondition.sortPrice === 'asc') {
+            if (objCondition.sortPrice === "asc") {
                 strOrder = ` ORDER BY ${this.table}.GiaGoc ASC`
             }
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} ${strOrder} limit 20 offset ${start}`
             const arrData = await dbconnect.query(query)
 
             if (!arrData) {
-                return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                return ResponseUtil.response(
+                    false,
+                    "Không thể truy xuất dữ liệu từ database",
+                    [],
+                    ["Truy xuất dữ liệu thất bại"]
+                )
             }
             if (!arrData[0]) {
-                return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                return ResponseUtil.response(
+                    true,
+                    "Không có dữ liệu",
+                    [],
+                    ["Không tìm thấy dữ liệu"]
+                )
             }
 
             if (objCondition.getRowCount) {
@@ -119,21 +119,34 @@ class ProductModel {
                 const arrCount = await dbconnect.query(queryCount)
 
                 if (!arrCount) {
-                    return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                    return ResponseUtil.response(
+                        false,
+                        "Không thể truy xuất dữ liệu từ database",
+                        [],
+                        ["Truy xuất dữ liệu thất bại"]
+                    )
                 }
                 if (!arrCount[0]) {
-                    return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                    return ResponseUtil.response(
+                        true,
+                        "Không có dữ liệu",
+                        [],
+                        ["Không tìm thấy dữ liệu"]
+                    )
                 }
 
-                return ResponseUtil.response(true, 'Thành công', { data: arrData[0], rowCount: arrCount[0][0].rowCount })
+                return ResponseUtil.response(true, "Thành công", {
+                    data: arrData[0],
+                    rowCount: arrCount[0][0].rowCount,
+                })
             }
-            return ResponseUtil.response(true, 'Thành công', arrData[0])
+            return ResponseUtil.response(true, "Thành công", arrData[0])
         } catch (error) {
-            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
+            return ResponseUtil.response(false, "Lỗi hệ thống", [], [error.message])
         }
     }
     //get-all new
-    featuredProduct = async(objCondition) => {
+    featuredProduct = async (objCondition) => {
         if (!objCondition || !objCondition.page) {
             objCondition = { ...objCondition, page: 1 }
         }
@@ -143,45 +156,35 @@ class ProductModel {
         var start = (objCondition.page - 1) * 8
         try {
             var strWhere = this._buildWhereQuery(objCondition)
-            var strSelect = 'select 1'
+            var strSelect = "select 1"
             var strJoin = ""
-            strSelect += _buildSelect(['*'], this.table)
+            strSelect += _buildSelect(["*"], this.table)
             if (objCondition.joinCategory) {
                 strJoin += ` left join theloai on ${this.table}.IDTheLoai = theloai.id`
-                var arrFieldCategorySelect = [
-                    'Ten',
-                    'HoatDong',
-                    'IDTheLoaiCha'
-                ]
-                strSelect += _buildSelect(arrFieldCategorySelect, 'theloai', 'TheLoai_')
+                var arrFieldCategorySelect = ["Ten", "HoatDong", "IDTheLoaiCha"]
+                strSelect += _buildSelect(arrFieldCategorySelect, "theloai", "TheLoai_")
             }
 
             if (objCondition.joinSupplier) {
                 strJoin += ` left join nhacungcap on ${this.table}.IDNhaCungCap = nhacungcap.id`
-                var arrFieldSupplierSelect = [
-                    'Ten',
-                    'TrangThai',
-                ]
-                strSelect += _buildSelect(arrFieldSupplierSelect, 'nhacungcap', 'NhaCungCap_')
+                var arrFieldSupplierSelect = ["Ten", "TrangThai"]
+                strSelect += _buildSelect(arrFieldSupplierSelect, "nhacungcap", "NhaCungCap_")
             }
 
             if ((objCondition.SessionID || objCondition.IDTaiKhoan) && objCondition.fromCart) {
                 strJoin += ` left join chitietgiohang on ${this.table}.id = chitietgiohang.IDSanPham`
                 strJoin += ` left join giohang on chitietgiohang.IDGioHang = giohang.id`
 
-                var arrFieldCartItemSelect = [
-                    'id',
-                    'SoLuong',
-                ]
-                strSelect += _buildSelect(arrFieldCartItemSelect, 'chitietgiohang', 'ChiTietGioHang_')
+                var arrFieldCartItemSelect = ["id", "SoLuong"]
+                strSelect += _buildSelect(
+                    arrFieldCartItemSelect,
+                    "chitietgiohang",
+                    "ChiTietGioHang_"
+                )
 
-                var arrFieldCartSelect = [
-                    'id',
-                    'IDTaiKhoan',
-                    'SessionID'
-                ]
+                var arrFieldCartSelect = ["id", "IDTaiKhoan", "SessionID"]
 
-                strSelect += _buildSelect(arrFieldCartSelect, 'giohang', 'GioHang_')
+                strSelect += _buildSelect(arrFieldCartSelect, "giohang", "GioHang_")
 
                 if (objCondition.IDTaiKhoan) {
                     strWhere += ` and giohang.IDTaiKhoan = '${objCondition.IDTaiKhoan}'`
@@ -194,10 +197,20 @@ class ProductModel {
             const arrData = await dbconnect.query(query)
 
             if (!arrData) {
-                return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                return ResponseUtil.response(
+                    false,
+                    "Không thể truy xuất dữ liệu từ database",
+                    [],
+                    ["Truy xuất dữ liệu thất bại"]
+                )
             }
             if (!arrData[0]) {
-                return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                return ResponseUtil.response(
+                    true,
+                    "Không có dữ liệu",
+                    [],
+                    ["Không tìm thấy dữ liệu"]
+                )
             }
 
             if (objCondition.getRowCount) {
@@ -205,95 +218,116 @@ class ProductModel {
                 const arrCount = await dbconnect.query(queryCount)
 
                 if (!arrCount) {
-                    return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                    return ResponseUtil.response(
+                        false,
+                        "Không thể truy xuất dữ liệu từ database",
+                        [],
+                        ["Truy xuất dữ liệu thất bại"]
+                    )
                 }
                 if (!arrCount[0]) {
-                    return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                    return ResponseUtil.response(
+                        true,
+                        "Không có dữ liệu",
+                        [],
+                        ["Không tìm thấy dữ liệu"]
+                    )
                 }
 
-                return ResponseUtil.response(true, 'Thành công', { data: arrData[0], rowCount: arrCount[0][0].rowCount })
+                return ResponseUtil.response(true, "Thành công", {
+                    data: arrData[0],
+                    rowCount: arrCount[0][0].rowCount,
+                })
             }
-            return ResponseUtil.response(true, 'Thành công', arrData[0])
+            return ResponseUtil.response(true, "Thành công", arrData[0])
         } catch (error) {
-            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
+            return ResponseUtil.response(false, "Lỗi hệ thống", [], [error.message])
         }
     }
     getDetail = async (objCondition) => {
         try {
             const strWhere = this._buildWhereQuery(objCondition)
-            var strSelect = 'select 1'
+            var strSelect = "select 1"
             var strJoin = ""
-            strSelect += _buildSelect(['*'], this.table)
+            strSelect += _buildSelect(["*"], this.table)
             if (objCondition.joinCategory) {
                 strJoin += ` left join theloai on ${this.table}.IDTheLoai = theloai.id`
-                var arrFieldCategorySelect = [
-                    'Ten',
-                    'HoatDong',
-                    'IDTheLoaiCha'
-                ]
-                strSelect += _buildSelect(arrFieldCategorySelect, 'theloai', 'TheLoai_')
+                var arrFieldCategorySelect = ["Ten", "HoatDong", "IDTheLoaiCha"]
+                strSelect += _buildSelect(arrFieldCategorySelect, "theloai", "TheLoai_")
             }
 
             if (objCondition.joinSupplier) {
                 strJoin += ` left join nhacungcap on ${this.table}.IDNhaCungCap = nhacungcap.id`
-                var arrFieldSupplierSelect = [
-                    'Ten',
-                    'TrangThai',
-                ]
-                strSelect += _buildSelect(arrFieldSupplierSelect, 'nhacungcap', 'NhaCungCap_')
+                var arrFieldSupplierSelect = ["Ten", "TrangThai"]
+                strSelect += _buildSelect(arrFieldSupplierSelect, "nhacungcap", "NhaCungCap_")
             }
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 1`
             const arrData = await dbconnect.query(query)
 
             if (!arrData) {
-                return ResponseUtil.response(false, 'Không thể truy xuất dữ liệu từ database', [], ['Truy xuất dữ liệu thất bại'])
+                return ResponseUtil.response(
+                    false,
+                    "Không thể truy xuất dữ liệu từ database",
+                    [],
+                    ["Truy xuất dữ liệu thất bại"]
+                )
             }
             if (!arrData[0]) {
-                return ResponseUtil.response(true, 'Không có dữ liệu', [], ['Không tìm thấy dữ liệu'])
+                return ResponseUtil.response(
+                    true,
+                    "Không có dữ liệu",
+                    [],
+                    ["Không tìm thấy dữ liệu"]
+                )
             }
             if (arrData[0][0] && arrData[0][0].HinhAnh) {
                 arrData[0][0].HinhAnh = JSON.parse(arrData[0][0].HinhAnh)
             }
-            return ResponseUtil.response(true, 'Thành công', arrData[0][0])
+            return ResponseUtil.response(true, "Thành công", arrData[0][0])
         } catch (error) {
-            return ResponseUtil.response(false, 'Lỗi hệ thống', [], [error.message])
+            return ResponseUtil.response(false, "Lỗi hệ thống", [], [error.message])
         }
     }
     insert = async (objProduct) => {
         var error = []
         if (objProduct.Ten === "") {
-            error.push('Tên nhà cung cấp không được để trống')
+            error.push("Tên nhà cung cấp không được để trống")
         }
 
         if (!objProduct.SoLuong) {
-            error.push('Số lượng không đươc để trống')
+            error.push("Số lượng không đươc để trống")
         }
         if (!objProduct.GiaGoc) {
-            error.push('Giá gốc không được để trống')
+            error.push("Giá gốc không được để trống")
         }
 
         if (!objProduct.IDTheLoai) {
-            error.push('Thể loại không được để trống')
+            error.push("Thể loại không được để trống")
         }
 
         if (!objProduct.IDNhaCungCap) {
-            error.push('Nhà cung cấp không được để trống')
+            error.push("Nhà cung cấp không được để trống")
         }
         if (error.length > 0) {
-            return ResponseUtil.response(false, 'Dữ liệu không hợp lệ', [], error)
+            return ResponseUtil.response(false, "Dữ liệu không hợp lệ", [], error)
         }
 
         try {
-
-            const categoryExist = await dbconnect.query("select * from theloai where id =? limit 1", [objProduct.IDTheLoai])
-            const supplierExist = await dbconnect.query("select * from nhacungcap where id =? limit 1", [objProduct.IDNhaCungCap])
+            const categoryExist = await dbconnect.query(
+                "select * from theloai where id =? limit 1",
+                [objProduct.IDTheLoai]
+            )
+            const supplierExist = await dbconnect.query(
+                "select * from nhacungcap where id =? limit 1",
+                [objProduct.IDNhaCungCap]
+            )
 
             if (!categoryExist || !categoryExist[0] || categoryExist[0].length === 0) {
-                return ResponseUtil.response(false, 'Ngành hàng không tồn tại')
+                return ResponseUtil.response(false, "Ngành hàng không tồn tại")
             }
 
             if (!supplierExist || !supplierExist[0] || supplierExist[0].length === 0) {
-                return ResponseUtil.response(false, 'Nhà cung cấp không tồn tại')
+                return ResponseUtil.response(false, "Nhà cung cấp không tồn tại")
             }
 
             var listImageName
@@ -318,15 +352,15 @@ class ProductModel {
                 IDTheLoai: objProduct.IDTheLoai,
                 IDNhaCungCap: objProduct.IDNhaCungCap,
                 ThoiGianTao: new Date().getTime() / 1000,
-                HinhAnh: listImageName ? listImageName : undefined
+                HinhAnh: listImageName ? listImageName : undefined,
             }
             objField = object_filter(objField)
             const strField = buildFieldQuery(objField)
             if (strField === "" || !strField) {
-                throw new Error('build query thất bại')
+                throw new Error("build query thất bại")
             }
 
-            const arrField = strField.split(', ')
+            const arrField = strField.split(", ")
 
             var arrValue = []
 
@@ -337,12 +371,17 @@ class ProductModel {
             const dataResponse = await dbconnect.query(query, [arrValue])
 
             if (!dataResponse || !dataResponse[0]) {
-                return ResponseUtil.response(false, 'Không thể truy xuất database', [], ['Không thể truy xuất database'])
+                return ResponseUtil.response(
+                    false,
+                    "Không thể truy xuất database",
+                    [],
+                    ["Không thể truy xuất database"]
+                )
             }
             if (dataResponse[0].affectedRows === 0) {
-                return ResponseUtil.response(false, 'Thất bại', [], 'Dữ liệu không hợp lệ')
+                return ResponseUtil.response(false, "Thất bại", [], "Dữ liệu không hợp lệ")
             }
-            return ResponseUtil.response(true, 'Thành công')
+            return ResponseUtil.response(true, "Thành công")
         } catch (error) {
             return ResponseUtil.response(false, error.message, [], [error])
         }
@@ -350,12 +389,12 @@ class ProductModel {
 
     update = async (objProduct) => {
         if (GeneralUtil.checkIsEmptyObject(objProduct)) {
-            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+            return ResponseUtil.response(false, "Tham số không hợp lệ")
         }
         const id = objProduct.id
         objProduct.id = undefined
         if (!id) {
-            return ResponseUtil.response(false, 'Tham số id không được bỏ trống')
+            return ResponseUtil.response(false, "Tham số id không được bỏ trống")
         }
         try {
             // Xử lý thêm hình ảnh mới
@@ -372,28 +411,44 @@ class ProductModel {
                         const arrUrlImages = JSON.parse(objProduct.HinhAnh)
                         if (arrUrlImages && arrUrlImages.length > 0) {
                             for (let index = 0; index < arrUrlImages.length; index++) {
-                                fs.unlinkSync(path.join(`${__dirname}/../public/images/${arrUrlImages[index]}`))
+                                fs.unlinkSync(
+                                    path.join(
+                                        `${__dirname}/../public/images/${arrUrlImages[index]}`
+                                    )
+                                )
                             }
                         }
-                    } catch (error) {
-                    }
+                    } catch (error) {}
                 }
             }
             var objField = {
                 Ten: objProduct.Ten,
                 TrangThai: 1,
                 DaXoa: 0,
-                XuatXu: objProduct.XuatXu && objProduct.XuatXu !== 'null' ? objProduct.XuatXu : undefined,
-                MauSac: objProduct.MauSac && objProduct.MauSac !== 'null' ? objProduct.MauSac : undefined,
-                KichThuoc: objProduct.KichThuoc && objProduct.KichThuoc !== 'null' ? objProduct.KichThuoc : undefined,
-                CanNang: objProduct.CanNang && objProduct.CanNang !== 'null' ? objProduct.CanNang : undefined,
-                SoLuong: objProduct.SoLuong && objProduct.SoLuong !== 'null' ? objProduct.SoLuong : 0,
-                MoTa: objProduct.MoTa && objProduct.MoTa !== 'null' ? objProduct.MoTa : undefined,
+                XuatXu:
+                    objProduct.XuatXu && objProduct.XuatXu !== "null"
+                        ? objProduct.XuatXu
+                        : undefined,
+                MauSac:
+                    objProduct.MauSac && objProduct.MauSac !== "null"
+                        ? objProduct.MauSac
+                        : undefined,
+                KichThuoc:
+                    objProduct.KichThuoc && objProduct.KichThuoc !== "null"
+                        ? objProduct.KichThuoc
+                        : undefined,
+                CanNang:
+                    objProduct.CanNang && objProduct.CanNang !== "null"
+                        ? objProduct.CanNang
+                        : undefined,
+                SoLuong:
+                    objProduct.SoLuong && objProduct.SoLuong !== "null" ? objProduct.SoLuong : 0,
+                MoTa: objProduct.MoTa && objProduct.MoTa !== "null" ? objProduct.MoTa : undefined,
                 GiaGoc: objProduct.GiaGoc,
                 IDTheLoai: objProduct.IDTheLoai,
                 IDNhaCungCap: objProduct.IDNhaCungCap,
                 ThoiGianCapNhat: new Date().getTime() / 1000,
-                HinhAnh: listImageName && listImageName !== 'null' ? listImageName : undefined
+                HinhAnh: listImageName && listImageName !== "null" ? listImageName : undefined,
             }
             objField = object_filter(objField)
 
@@ -402,15 +457,15 @@ class ProductModel {
             const response = await dbconnect.query(query, [objField, { id: id }])
 
             if (!response || !response[0]) {
-                throw new Error('Có lỗi xảy ra khi kết nối database')
+                throw new Error("Có lỗi xảy ra khi kết nối database")
             }
 
             if (response[0].affectedRows > 0) {
-                return ResponseUtil.response(true, 'Sửa dữ liệu thành công')
+                return ResponseUtil.response(true, "Sửa dữ liệu thành công")
             }
-            return ResponseUtil.response(false, 'Sửa dữ liệu thất bại')
+            return ResponseUtil.response(false, "Sửa dữ liệu thất bại")
         } catch (error) {
-            return ResponseUtil.response(false, 'Có lỗi xảy ra', [], [error.message])
+            return ResponseUtil.response(false, "Có lỗi xảy ra", [], [error.message])
         }
     }
 
@@ -420,14 +475,13 @@ class ProductModel {
             const response = await dbconnect.query(query, [{ DaXoa: 1 }, { id: id }])
 
             if (!response || !response[0]) {
-                throw new Error('Không thể kết nối database')
+                throw new Error("Không thể kết nối database")
             }
 
             if (response[0].affectedRows > 0) {
-                return ResponseUtil.response(true, 'Thành công')
+                return ResponseUtil.response(true, "Thành công")
             }
-            return ResponseUtil.response(false, 'Xóa dữ liệu thất bại.')
-
+            return ResponseUtil.response(false, "Xóa dữ liệu thất bại.")
         } catch (error) {
             return ResponseUtil.response(false, error.message)
         }
@@ -438,7 +492,7 @@ class ProductModel {
             return strWhere
         }
         if (objCondition.id) {
-            var id = (objCondition.id + '').split(',')
+            var id = (objCondition.id + "").split(",")
             if (id.length > 1) {
                 strWhere += ` and (1=0 `
                 for (let index = 0; index < id.length; index++) {
@@ -450,28 +504,28 @@ class ProductModel {
             }
         }
 
-        if(objCondition.hasOwnProperty('Ten') && objCondition.Ten) {
+        if (objCondition.hasOwnProperty("Ten") && objCondition.Ten) {
             strWhere += ` and ${this.table}.Ten LIKE '%${objCondition.Ten}%'`
         }
 
-        if (objCondition.hasOwnProperty('DaXoa')) {
+        if (objCondition.hasOwnProperty("DaXoa")) {
             strWhere += ` and ${this.table}.DaXoa = ${objCondition.DaXoa}`
         }
 
-        if (objCondition.hasOwnProperty('TrangThai')) {
+        if (objCondition.hasOwnProperty("TrangThai")) {
             strWhere += ` and ${this.table}.TrangThai = ${objCondition.TrangThai}`
         }
-        if (objCondition.hasOwnProperty('ThoiGianTao')) {
+        if (objCondition.hasOwnProperty("ThoiGianTao")) {
             strWhere += ` and ${this.table}.ThoiGianTao > ${objCondition.ThoiGianTao}`
         }
         if (objCondition.isStoking) {
             strWhere += ` and ${this.table}.SoLuong > 0`
         }
-        if(objCondition.IDNhaCungCap) {
+        if (objCondition.IDNhaCungCap) {
             strWhere += ` and ${this.table}.IDNhaCungCap = ${objCondition.IDNhaCungCap}`
         }
-        if(objCondition.IDTheLoai) {
-            if(objCondition.getAllProduct) {
+        if (objCondition.IDTheLoai) {
+            if (objCondition.getAllProduct) {
                 strWhere += ` and FIND_IN_SET(IDTheLoai, 
                             (select  @pv list
                             from    (select * from theloai t
@@ -488,7 +542,6 @@ class ProductModel {
         }
         return strWhere
     }
-
 }
 
 module.exports = new ProductModel()

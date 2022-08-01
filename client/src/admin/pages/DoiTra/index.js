@@ -1,19 +1,17 @@
-import React from 'react'
-import DanhSachDoiTra from './DanhSachDoiTra';
-import ThemDanhSachDoiTra from './ThemDanhSachDoiTra';
+import React from "react"
+import DanhSachDoiTra from "./DanhSachDoiTra"
+import ThemDanhSachDoiTra from "./ThemDanhSachDoiTra"
 
-const DoiTra = ({option}) => {
+const DoiTra = ({ option }) => {
     switch (option) {
         case "list":
             return <DanhSachDoiTra />
         case "insert":
             return <ThemDanhSachDoiTra />
         default:
-            break;
+            break
     }
-  return (
-    <div>DoiTra</div>
-  )
+    return <div>DoiTra</div>
 }
 
 export default DoiTra

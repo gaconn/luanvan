@@ -1,5 +1,4 @@
-import styled from "styled-components";
-
+import styled from "styled-components"
 
 export const Container = styled.div`
     width: 100%;
@@ -10,7 +9,7 @@ export const Content = styled.div`
         color: #666;
         font-size: 1.2rem;
         padding: 0 3px;
-        :hover{
+        :hover {
             cursor: pointer;
             color: orange;
         }

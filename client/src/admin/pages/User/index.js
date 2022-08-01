@@ -1,19 +1,17 @@
-import React from 'react'
-import ListUser from './ListUser';
-import UpdateUser from './UpdateUser';
+import React from "react"
+import ListUser from "./ListUser"
+import UpdateUser from "./UpdateUser"
 
-const User = ({option}) => {
+const User = ({ option }) => {
     switch (option) {
-        case 'list':
-            return <ListUser />    
-        case 'update':
+        case "list":
+            return <ListUser />
+        case "update":
             return <UpdateUser />
         default:
-            break;
+            break
     }
-  return (
-    <div>User</div>
-  )
+    return <div>User</div>
 }
 
 export default User

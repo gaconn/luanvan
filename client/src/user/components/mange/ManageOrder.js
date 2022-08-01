@@ -1,4 +1,4 @@
-import Table from 'react-bootstrap/Table';
+import Table from "react-bootstrap/Table"
 const ManageOrder = () => {
     return (
         <>
@@ -26,7 +26,7 @@ const ManageOrder = () => {
                 </Table>
             </section>
         </>
-    );
+    )
 }
 
-export default ManageOrder;
+export default ManageOrder

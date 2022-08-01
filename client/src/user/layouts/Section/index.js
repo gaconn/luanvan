@@ -1,16 +1,14 @@
-
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 
 const Section = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const location = useLocation()
     const navigate = useNavigate()
-    const searchHandler = async(e) => {
-        const params = new URLSearchParams({keyword: e.target.value}).toString()
-        if(location.pathname !== "/Shop") {
-            navigate("/Shop?"+params)
-        }else 
-        setSearchParams(params)
+    const searchHandler = async (e) => {
+        const params = new URLSearchParams({ keyword: e.target.value }).toString()
+        if (location.pathname !== "/Shop") {
+            navigate("/Shop?" + params)
+        } else setSearchParams(params)
     }
     return (
         <>
@@ -19,23 +17,23 @@ const Section = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-3">
-                            <div className="hero__categories">
-                                         
-                            </div>
+                            <div className="hero__categories"></div>
                         </div>
                         <div className="col-lg-9">
                             <div className="hero__search">
                                 <div className="hero__search__form">
                                     <form action="#">
-                                        <input type="text" placeholder="Nhập tên sản phẩm" defaultValue={searchParams.get('keyword')} name="keyword" 
-                                        onChange={
-                                            (e)=> {
-                                                setTimeout(()=> searchHandler(e), 1000)
-                                            }
-                                        } 
-                                        autoFocus
+                                        <input
+                                            type="text"
+                                            placeholder="Nhập tên sản phẩm"
+                                            defaultValue={searchParams.get("keyword")}
+                                            name="keyword"
+                                            onChange={(e) => {
+                                                setTimeout(() => searchHandler(e), 1000)
+                                            }}
+                                            autoFocus
                                         />
-                                        <button type="submit" className="site-btn" >
+                                        <button type="submit" className="site-btn">
                                             Tìm Kiếm
                                         </button>
                                     </form>
@@ -56,8 +54,7 @@ const Section = () => {
             </section>
             {/* Hero Section End */}
         </>
-
-    );
+    )
 }
 
-export default Section;
+export default Section

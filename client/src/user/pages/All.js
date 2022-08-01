@@ -6,15 +6,17 @@ import Banner from "../layouts/Banner"
 import Loading from "../layouts/Loading"
 import { Outlet } from "react-router-dom"
 const useAllPage = () => {
-    return (<>
-        <Loading />
-        <Header />
-        <NavbarHeader />
-        <Section />
-        <Banner />
-        <Outlet/>
-        <Footer/>
-    </>);
+    return (
+        <>
+            <Loading />
+            <Header />
+            <NavbarHeader />
+            <Section />
+            <Banner />
+            <Outlet />
+            <Footer />
+        </>
+    )
 }
 
-export default useAllPage;
+export default useAllPage

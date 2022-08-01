@@ -1,5 +1,5 @@
-const CartItemModel = require("../models/CartItemModel");
-const ResponseUtil = require("../utils/ResponseUtil");
+const CartItemModel = require("../models/CartItemModel")
+const ResponseUtil = require("../utils/ResponseUtil")
 
 class CartItemController {
     /**
@@ -11,24 +11,23 @@ class CartItemController {
      */
     getAll = async (req, res) => {
         const data = req.query
-        if(!data) {
-            return res.json(ResponseUtil.response(false, 'Tham số không hợp lệ'))
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
         try {
             const objCondition = {
                 ...data,
-                joinProduct: true
+                joinProduct: true,
             }
-            const response = await CartItemModel.getListCartItem(objCondition);
-            if(!response) {
-                throw new Error('Xử lý thất bại')
+            const response = await CartItemModel.getListCartItem(objCondition)
+            if (!response) {
+                throw new Error("Xử lý thất bại")
             }
             return res.json(response)
         } catch (error) {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
-
 }
 
 module.exports = new CartItemController()

@@ -9,7 +9,7 @@ const categoryAPI = {
             const response = await axios.get(url, { params: params })
             return response.data
         } catch (error) {
-            console.log(error);
+            console.log(error)
         }
     },
     detail: async (id) => {
@@ -42,12 +42,12 @@ const categoryAPI = {
     getChild: async (objConditionTheLoai) => {
         try {
             const url = `${categoryUrl}/get-all`
-            const response = await axios.get(url,{params:objConditionTheLoai})
+            const response = await axios.get(url, { params: objConditionTheLoai })
             return response.data
         } catch (error) {
             console.log(error)
         }
-    }
+    },
 }
 
 export default categoryAPI

@@ -1,20 +1,20 @@
 import axios from "axios"
 
-var productUrl = process.env.REACT_APP_API_HOST_URL+"/product"
+var productUrl = process.env.REACT_APP_API_HOST_URL + "/product"
 const productAPI = {
-    getAll: async(condition) => {
+    getAll: async (condition) => {
         try {
-            const url = productUrl+"/get-all"
-            const response = await axios.get(url, {params: condition})
+            const url = productUrl + "/get-all"
+            const response = await axios.get(url, { params: condition })
             return response.data
         } catch (error) {
-            console.log(error);
+            console.log(error)
         }
     },
     detail: async (id) => {
         try {
             const url = `${productUrl}/get-detail`
-            const response = await axios.get(url, {params: {id}})
+            const response = await axios.get(url, { params: { id } })
             return response.data
         } catch (error) {
             console.warn(error)
@@ -23,12 +23,12 @@ const productAPI = {
     getCheckoutList: async (params) => {
         try {
             const url = `${productUrl}/get-product-checkout-list`
-            const response = await axios.get(url, {params: params})
+            const response = await axios.get(url, { params: params })
             return response.data
         } catch (error) {
             console.warn(error)
         }
-    }
+    },
 }
 
 export default productAPI

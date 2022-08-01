@@ -1,28 +1,25 @@
-
-import image from '../../assets/img/banner/banner-login.png'
-import { useState, useEffect } from 'react'
-import isEmty from 'validator/lib/isEmpty'
-import isEmail from 'validator/lib/isEmail';
-import CustommerAPI from '../../services/API/CustomerAPI'
-import { useNavigate, Link } from 'react-router-dom'
-import token from '../../services/utils/setToken'
+import image from "../../assets/img/banner/banner-login.png"
+import { useState, useEffect } from "react"
+import isEmty from "validator/lib/isEmpty"
+import isEmail from "validator/lib/isEmail"
+import CustommerAPI from "../../services/API/CustomerAPI"
+import { useNavigate, Link } from "react-router-dom"
+import token from "../../services/utils/setToken"
 import Toast from "react-bootstrap/Toast"
 import ToastContainer from "react-bootstrap/ToastContainer"
-import GoogleLogin from 'react-google-login';
-import { gapi } from 'gapi-script';
-import { Redirect } from 'react-router-dom';
+import GoogleLogin from "react-google-login"
+import { gapi } from "gapi-script"
+import { Redirect } from "react-router-dom"
 const Logincomponents = () => {
     const navigate = useNavigate()
-    const [account, setAccount] = useState({ Email: '', MatKhau: '' })
-    const [validated, setValidated] = useState('')
+    const [account, setAccount] = useState({ Email: "", MatKhau: "" })
+    const [validated, setValidated] = useState("")
     const [notify, setNotify] = useState()
     const [loginData, setLoginData] = useState(
-        localStorage.getItem('loginData')
-            ? JSON.parse(localStorage.getItem('loginData'))
-            : null
-    );
+        localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")) : null
+    )
     const InputOnChange = (e) => {
-        setAccount(account => ({ ...account, [e.target.name]: e.target.value }))
+        setAccount((account) => ({ ...account, [e.target.name]: e.target.value }))
     }
     const handleAcountSubmit = async (event) => {
         const isvalidated = validatedAll()
@@ -31,79 +28,92 @@ const Logincomponents = () => {
             return
         }
 
-        const form = event.currentTarget;
+        const form = event.currentTarget
         if (form.checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
             return
         }
         event.preventDefault()
-        let UID=localStorage.getItem('UID')
-        let SessionID=localStorage.getItem('SessionID')
-            const response = await CustommerAPI.login(account)
-            setNotify(() => {
-                if (response) {
-                    if (!response.success) {
-                        return { show: true, success: false, message: response.message, error: response.error }
-                    }
-                    if (response.error.length > 0) {
-                        return { show: true, success: false, message: response.message, error: response.error }
-                    }
-                    if (response.success && response.error.length === 0) {
-                        return { show: false, success: true, message: response.message, error: response.error }
-                    }
-    
-                }
-    
-                return { show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại" }
-            })
-            const data = response.data[0]
+        let UID = localStorage.getItem("UID")
+        let SessionID = localStorage.getItem("SessionID")
+        const response = await CustommerAPI.login(account)
+        setNotify(() => {
             if (response) {
-                if (response.success && response.error.length === 0) {
-                    if (data.token) {
-                        token.setAuthToken(data.token)
-                        localStorage.setItem('USER_NAME', data.HoTen)
-                        localStorage.setItem('UID', data.id)
-                        navigate('../Home')
+                if (!response.success) {
+                    return {
+                        show: true,
+                        success: false,
+                        message: response.message,
+                        error: response.error,
                     }
-    
+                }
+                if (response.error.length > 0) {
+                    return {
+                        show: true,
+                        success: false,
+                        message: response.message,
+                        error: response.error,
+                    }
+                }
+                if (response.success && response.error.length === 0) {
+                    return {
+                        show: false,
+                        success: true,
+                        message: response.message,
+                        error: response.error,
+                    }
                 }
             }
-        
+
+            return { show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại" }
+        })
+        const data = response.data[0]
+        if (response) {
+            if (response.success && response.error.length === 0) {
+                if (data.token) {
+                    token.setAuthToken(data.token)
+                    localStorage.setItem("USER_NAME", data.HoTen)
+                    localStorage.setItem("UID", data.id)
+                    navigate("../Home")
+                }
+            }
+        }
     }
     const validatedAll = () => {
         const nsg = {}
         //Kiểm tra email
 
         if (!isEmail(account.Email)) {
-            nsg.Email = 'Không đúng định dạng email'
+            nsg.Email = "Không đúng định dạng email"
         }
         //Kiểm tra password
         if (account.MatKhau.length < 6) {
-            nsg.MatKhau = 'Mật khẩu phải lớn hơn là 6 ký tự'
+            nsg.MatKhau = "Mật khẩu phải lớn hơn là 6 ký tự"
         }
 
         if (isEmty(account.Email)) {
-            nsg.Email = 'Vui lòng nhập email'
+            nsg.Email = "Vui lòng nhập email"
         }
         if (isEmty(account.MatKhau)) {
-            nsg.MatKhau = 'Vui lòng nhập mật khẩu'
+            nsg.MatKhau = "Vui lòng nhập mật khẩu"
         }
         setValidated(nsg)
-        if (Object.keys(nsg).length > 0) { return false }
+        if (Object.keys(nsg).length > 0) {
+            return false
+        }
         return true
-
     }
     //google
     useEffect(() => {
         function start() {
-        gapi.client.init({
-        clientId:process.env.REACT_APP_GOOGLE_CLIENT_ID,
-        scope: 'email',
-          });
-           }
-          gapi.load('client:auth2', start);
-           }, []);
+            gapi.client.init({
+                clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+                scope: "email",
+            })
+        }
+        gapi.load("client:auth2", start)
+    }, [])
     const onSuccess = async (res) => {
         // localStorage.setItem("USER_NAME", googleData.profileObj.name)
         // localStorage.setItem("IMAGE", googleData.profileObj.imageUrl)
@@ -114,29 +124,25 @@ const Logincomponents = () => {
             Email: res.profileObj.email,
             Token: res.googleId,
             Image: res.profileObj.imageUrl,
-            ProviderId: 'Google'
-        };
+            ProviderId: "Google",
+        }
         console.log(googleresponse)
-
-
     }
     const onFailure = (result) => {
         console.log(result.error)
     }
     const handleLogout = () => {
-        localStorage.removeItem('loginData');
-        setLoginData(null);
-    };
+        localStorage.removeItem("loginData")
+        setLoginData(null)
+    }
     return (
-
         <div>
-            <div className="py-6 wow zoomIn" >
+            <div className="py-6 wow zoomIn">
                 <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
                     <div
                         className="hidden lg:block lg:w-1/2 bg-cover "
                         style={{
-                            backgroundImage:
-                                `url(${image})`
+                            backgroundImage: `url(${image})`,
                         }}
                     />
                     <div className="w-full p-8 lg:w-1/2">
@@ -155,9 +161,12 @@ const Logincomponents = () => {
                             </label>
                             <input
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                                type="email" required name='Email' onChange={InputOnChange}
+                                type="email"
+                                required
+                                name="Email"
+                                onChange={InputOnChange}
                             />
-                            <p style={{ color: 'red' }}>{validated.Email}</p>
+                            <p style={{ color: "red" }}>{validated.Email}</p>
                         </div>
                         <div className="mt-4">
                             <div className="flex justify-between">
@@ -170,12 +179,18 @@ const Logincomponents = () => {
                             </div>
                             <input
                                 className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
-                                type="password" required name='MatKhau' onChange={InputOnChange}
+                                type="password"
+                                required
+                                name="MatKhau"
+                                onChange={InputOnChange}
                             />
-                            <p style={{ color: 'red' }}>{validated.MatKhau}</p>
+                            <p style={{ color: "red" }}>{validated.MatKhau}</p>
                         </div>
                         <div className="mt-8">
-                            <button onClick={handleAcountSubmit} className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600">
+                            <button
+                                onClick={handleAcountSubmit}
+                                className="bg-gray-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-600"
+                            >
                                 Đăng nhập
                             </button>
                         </div>
@@ -191,9 +206,9 @@ const Logincomponents = () => {
                                     buttonText="Đăng Nhập bằng google"
                                     onSuccess={onSuccess}
                                     onFailure={onFailure}
-                                    cookiePolicy={'single_host_origin'}
-                                />)
-                            }
+                                    cookiePolicy={"single_host_origin"}
+                                />
+                            )}
                         </div>
                         {/* <a
                             href="#"
@@ -220,14 +235,18 @@ const Logincomponents = () => {
                             </Link>
                             <span className="border-b w-1/5 md:w-1/4" />
                         </div>
-
-
                     </div>
                 </div>
             </div>
-            {
-                notify && <ToastContainer position="bottom-end" className="p-3">
-                    <Toast bg="danger" onClose={() => setNotify({ ...notify, show: false })} show={notify.show} delay={4000} autohide>
+            {notify && (
+                <ToastContainer position="bottom-end" className="p-3">
+                    <Toast
+                        bg="danger"
+                        onClose={() => setNotify({ ...notify, show: false })}
+                        show={notify.show}
+                        delay={4000}
+                        autohide
+                    >
                         <Toast.Header>
                             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
                             <strong className="me-auto">Thông báo</strong>
@@ -235,17 +254,20 @@ const Logincomponents = () => {
                         </Toast.Header>
                         <Toast.Body>
                             <h5 className="notify-message">{notify.message}</h5>
-                            {
-                                notify.error.length > 0 && notify.error.map((item, index) => {
-                                    return <div key={index} className="notify-error">{item}</div>
-                                })
-                            }
+                            {notify.error.length > 0 &&
+                                notify.error.map((item, index) => {
+                                    return (
+                                        <div key={index} className="notify-error">
+                                            {item}
+                                        </div>
+                                    )
+                                })}
                         </Toast.Body>
                     </Toast>
                 </ToastContainer>
-            }
+            )}
         </div>
-    );
+    )
 }
 
-export default Logincomponents;
+export default Logincomponents
