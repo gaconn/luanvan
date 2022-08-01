@@ -1,19 +1,24 @@
 import Accordion from 'react-bootstrap/Accordion';
 import ListItem from './ListItem';
-
-const TreeNavBar = ({ listChild = [] }) => {
+import ListGroup from 'react-bootstrap/ListGroup';
+const TreeNavBar = ({ listChild = [], handlerIDItem }) => {
     const Tree = listChild.map((item, k) => {
+       if(item.listChild.length===0){
+         return (  <ListGroup><ListGroup.Item action onClick={()=>{handlerIDItem(item.id)}} key={k}>{item.Ten}</ListGroup.Item></ListGroup>)
+       }
         if (item.listChild) {
-            return <Accordion defaultActiveKey="0" flush key={k}>
-                <Accordion.Item eventKey="1" >
-                    <Accordion.Header>{item.Ten}</Accordion.Header>
-                    <Accordion.Body>
-                        <ListItem listChild={item.listChild} />
-                    </Accordion.Body>
-                </Accordion.Item>
-            </Accordion>
+                return (
+                    <Accordion defaultActiveKey="0" flush key={k} >
+                        <Accordion.Item eventKey="1">
+                            <Accordion.Header onClick={() => { handlerIDItem(item.id) }}>{item.Ten}</Accordion.Header>
+                            <Accordion.Body>
+                                <ListItem listChild={item.listChild} handlerID={handlerIDItem}  />
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    </Accordion>
+                )
         }
-        return  <ListItem listChild={item.listChild}  />
+        return <div key={k}><ListItem listChild={item.listChild} handlerID={handlerIDItem} /></div>
     })
     return (
         <>
