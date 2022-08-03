@@ -47,6 +47,15 @@ const productAPI = {
             console.warn(error)
         }
     },
+    updateMultiple: async (data) => {
+        try {
+            const url = `${productUrl}/update-multiple`
+            const response = await axios.post(url, data)
+            return response.data
+        } catch (error) {
+            console.warn(error.message)
+        }
+    },
 }
 
 export default productAPI

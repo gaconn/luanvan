@@ -10,6 +10,7 @@ function poolConnection() {
         waitForConnections: process.env.DB_WAIT_FOR_CONNECTION,
         connectionLimit: process.env.DB_CONNECTION_LIMIT,
         queueLimit: process.env.DB_QUEUE_LIMIT,
+        multipleStatements: true
     })
     const promiseConn = conn.promise()
     return promiseConn

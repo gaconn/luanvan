@@ -12,5 +12,5 @@ router.get("/get-detail", ProductController.getDetail)
 router.delete("/delete", CheckToken, ProductController.delete)
 router.put("/update", CheckToken, upload.array("files", 20), ProductController.update)
 router.get("/get-product-checkout-list", ProductController.getCheckoutList)
-
+router.post("/update-multiple", CheckToken, ProductController.updateMultiple)
 module.exports = router

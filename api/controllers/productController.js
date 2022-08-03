@@ -300,6 +300,78 @@ class ProductController {
             return res.json(ResponseUtil.response(false, error.message))
         }
     }
+
+    //import by excel file 
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     */
+    updateMultiple = async(req, res) => {
+        //check permission
+        if(req.Permission >3) {
+            return res.json(ResponseUtil.response(false, "Bạn không có quyền sử dụng"))
+        }
+        const data = req.body
+        
+        if(!data) {
+            return res.json(ResponseUtil.response(false, "Dữ liệu không hợp lệ"))
+        }
+        
+        try {
+            //check data exist
+            var isValid =await this._checkDataExist(data)
+            if(!isValid) {
+                return res.json(ResponseUtil.response(false, "Vui lòng kiểm tra dữ liệu thêm vào. Hãy chắc chắn rằng sản phẩm có tồn tại, id sản phẩm không bị trùng."))
+            }
+            const result = await ProductModel.updateMultiple(data)
+            return res.json(result)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
+    }
+
+    _checkDataExist = async(data) => {
+        if(!data.length) {
+            return false
+        }
+
+        //kiểm tra dữ liệu thêm có bị trùng hay không
+
+        for (let index = 0; index < data.length; index++) {
+            for (let j = 0; j < data.length; j++) {
+                if(index === j) continue
+                if(data[index].id === data[j].id) {
+                    return false
+                }
+            }
+            
+        }
+
+        //kiểm tra sản phẩm có trong danh sách bán không
+        var arrID = []
+        for (let index = 0; index < data.length; index++) {
+            if(!data[index].id) {
+                return false
+            }
+            arrID.push(data[index].id)
+        }
+        const strListID = arrID.join(',')
+        try {
+            const productResponse = await ProductModel.get({id: strListID, DaXoa: 0, TrangThai: 1})
+            if(!productResponse || productResponse.success === false) {
+                throw new Error('Không thể kết nối cơ sở dữ liệu')
+            }
+
+            if(data.length !== productResponse.data.length ) {
+                return false
+            }
+
+            return true
+        } catch (error) {
+            return false
+        }
+    }
 }
 
 module.exports = new ProductController()

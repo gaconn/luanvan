@@ -4,6 +4,7 @@ const GeneralUtil = require("../utils/GeneralUtil")
 const { object_filter, buildFieldQuery, _buildSelect } = require("../utils/DBUtil")
 const fs = require("fs")
 const path = require("path")
+const mysql2 = require('mysql2')
 class ProductModel {
     constructor() {
         this.table = "sanpham"
@@ -469,6 +470,58 @@ class ProductModel {
         }
     }
 
+    updateMultiple =async(arrData)=>{
+        
+        try {
+            var strQuery = ''
+            for (let index = 0; index < arrData.length; index++) {
+                var objField = {
+                    Ten: arrData[index].Ten,
+                    TrangThai: 1,
+                    DaXoa: 0,
+                    XuatXu:
+                        arrData[index].XuatXu && arrData[index].XuatXu !== "null"
+                            ? arrData[index].XuatXu
+                            : undefined,
+                    MauSac:
+                        arrData[index].MauSac && arrData[index].MauSac !== "null"
+                            ? arrData[index].MauSac
+                            : undefined,
+                    KichThuoc:
+                        arrData[index].KichThuoc && arrData[index].KichThuoc !== "null"
+                            ? arrData[index].KichThuoc
+                            : undefined,
+                    CanNang:
+                        arrData[index].CanNang && arrData[index].CanNang !== "null"
+                            ? arrData[index].CanNang
+                            : undefined,
+                    SoLuong:
+                        arrData[index].SoLuong && arrData[index].SoLuong !== "null" ? arrData[index].SoLuong : 0,
+                    MoTa: arrData[index].MoTa && arrData[index].MoTa !== "null" ? arrData[index].MoTa : undefined,
+                    GiaGoc: arrData[index].GiaGoc,
+                    IDTheLoai: arrData[index].IDTheLoai,
+                    IDNhaCungCap: arrData[index].IDNhaCungCap,
+                    ThoiGianCapNhat: new Date().getTime() / 1000,
+                }
+                objField = object_filter(objField)
+                strQuery += mysql2.format(`update sanpham set ? where ? ; `, [objField, {id:arrData[index].id}])
+            }
+            const response = await dbconnect.query(strQuery)
+
+            if (!response || !response[0]) {
+                throw new Error("Có lỗi xảy ra khi kết nối database")
+            }
+            const arrErrors = []
+            for (let index = 0; index < response[0].length; index++) {
+                if (response[0][index].affectedRows === 0) {
+                    arrErrors.push(`error::${arrData[index].id}`)
+                }
+            }
+            return ResponseUtil.response(true, "Thành công", [], arrErrors)
+        } catch (error) {
+            return ResponseUtil.response(false, "Có lỗi xảy ra", [], [error.message])
+        }
+    }
     delete = async (id) => {
         try {
             const query = `update sanpham set ? where ?`
