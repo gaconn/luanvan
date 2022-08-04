@@ -9,6 +9,9 @@ import Page from "../../../components/Page"
 import { LinkProductAction } from "../../../configs/define"
 import productAPI from "../../../services/API/productAPI"
 import { Container, Content } from "./LuuKho.style"
+import { RiFileExcel2Line } from "react-icons/ri"
+import * as XLSX from "xlsx"
+import { readXlsxFile } from "../../../services/utils/xlsx"
 const LuuKho = () => {
     const [product, setProduct] = useState([])
     const [notify, setNotify] = useState({ show: false, message: "", success: false })
@@ -17,6 +20,11 @@ const LuuKho = () => {
     const [loading, setLoading] = useState(false)
     const [productAdd, setProductAdd] = useState()
     const [productInfoAdd, setProductInfoAdd] = useState({})
+    const [fileData, setFileData] = useState() // dữ liệu trong file excel
+    const [importProduct, setImportProduct] = useState([]) // dữ liệu có trong database
+    const [dataChecked, setDataChecked] = useState() // dữ liệu đã kiểm tra tồn tại
+    const [errors, setErrors] = useState({})
+    const [update, setUpdate] = useState({show: false})
     let navigate = useNavigate()
     const fetchProduct = async () => {
         setLoading(true)
@@ -142,9 +150,127 @@ const LuuKho = () => {
     const onProductInfoAddChange = (e) => {
         setProductInfoAdd({ ...productInfoAdd, [e.target.name]: e.target.value })
     }
-    if (loading) {
-        return <Loading />
+
+    // import excel
+    const handleImportButtonClick = (e) => {
+        const inputElement = document.getElementById("file")
+        inputElement.click()
     }
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0]
+        const data = await readXlsxFile(file)
+        setFileData(() => {
+            return data
+        })
+    }
+
+    const fetchImportProduct = async () => {
+        const arrId = []
+        if (!fileData) return
+        for (let index = 0; index < fileData.length; index++) {
+            arrId.push(fileData[index].id)
+        }
+        const strId = arrId.join(",")
+        const response = await productAPI.getAll({ id: strId })
+        setImportProduct(() => {
+            if (response && response.data && response.data.data.length > 0) {
+                return response.data.data
+            }
+            return []
+        })
+    }
+    useEffect(() => {
+        fetchImportProduct()
+    }, [fileData])
+
+    const checkProduct = async () => {
+        if (!fileData) return
+        const data = [...fileData]
+        for (let index = 0; index < data.length; index++) {
+            data[index].text = "Sản phẩm không tồn tại"
+            data[index].exist = false
+            for (let j = 0; j < importProduct.length; j++) {
+                if (importProduct[j].id === data[index].id) {
+                    data[index].text = `Số lượng: ${importProduct[j].SoLuong}`
+                    data[index].exist = true
+                    data[index].SoLuongCu = importProduct[j].SoLuong
+                    break
+                }
+            }
+        }
+        setDataChecked(data)
+    }
+    useEffect(() => {
+        checkProduct()
+    }, [importProduct])
+
+    const handleUpdateAlertClose = () => {
+        setUpdate((update)=> {
+            return {...update, show: false}
+        })
+    }
+
+    const handleUpdateAlertAccept = async() => {
+        handleUpdateAlertClose()
+        //check valid
+        var isValid = true
+        for (let index = 0; index < dataChecked.length; index++) {
+            if (dataChecked[index].exist === false) {
+                isValid = false
+                break
+            }
+        }
+
+        setNotify((notify) => {
+            if (!isValid) {
+                return { show: true, message: "Có sản phẩm không tồn tại", success: false }
+            }
+            return notify
+        })
+        if (!isValid) return
+        setLoading(true)
+        await new Promise((resolve) => setTimeout(resolve, 2000)) // giả lập delay
+        // format data
+        const arrData = []
+        for (let index = 0; index < dataChecked.length; index++) {
+            const objTemp = {
+                id: dataChecked[index].id,
+                SoLuong: dataChecked[index].SoLuong + dataChecked[index].SoLuongCu,
+            }
+            arrData.push(objTemp)
+        }
+        // call api
+        const response = await productAPI.updateMultiple(arrData)
+        setErrors(() => {
+            const objTemp = {}
+            if (response.error.length > 0) {
+                for (let index = 0; index < response.error.length; index++) {
+                    let idTemp = response.error[index].split("::")[1]
+                    objTemp[idTemp] = "Lỗi"
+                }
+            }
+            return objTemp
+        })
+
+        setNotify((notify) => {
+            if (!response || response.success === false || response.error.length > 0) {
+                return { show: true, message: "Có lỗi xảy ra", success: false }
+            }
+            return { show: true, message: "Cập nhật thành công", success: true }
+        })
+
+        // cập nhật dữ liệu mới
+        fetchProduct()
+        fetchImportProduct()
+        setLoading(false)
+    }
+    const handleImportExcelClick = async () => {
+        setUpdate((update)=> {
+            return {...update, show: true}
+        })
+    }
+    console.log(dataChecked)
     return (
         <Container>
             <ToastContainer position="top-end" className="p-3 position-fixed">
@@ -270,11 +396,75 @@ const LuuKho = () => {
                         </Col>
                     </Row>
                     <Row style={{ width: "100%" }}>
-                        <Col className="text-center m-4">
+                        <Col className="m-4 col-2">
+                            <input
+                                type="file"
+                                id="file"
+                                accept=".xlsx"
+                                hidden
+                                onChange={handleFileChange}
+                            />
+                            <Button
+                                variant="success"
+                                className="d-flex align-items-center"
+                                onClick={handleImportButtonClick}
+                            >
+                                <RiFileExcel2Line />
+                                &nbsp; Nhập file excel
+                            </Button>
+                        </Col>
+                        <Col className="m-4 ">
                             <Button type="submit">Thêm</Button>
                         </Col>
                     </Row>
                 </Form>
+
+                {dataChecked && (
+                    <>
+                        <Button className="mt-4" variant="danger" onClick={handleImportExcelClick}>
+                            {loading ? <Loading /> : "Xác nhận"}
+                        </Button>
+                        <Table striped bordered hover className="text-center">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">ID</th>
+                                    <th className="text-center">Tên</th>
+                                    <th className="text-center">Số lượng sản phẩm</th>
+                                    <th className="text-center">Thông tin sản phẩm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dataChecked.map((item, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{item.id}</td>
+                                            <td>{item.Ten}</td>
+                                            <td>{item.SoLuong}</td>
+                                            <td
+                                                style={{
+                                                    color: item.exist
+                                                        ? item.id === errors[item.id]
+                                                            ? "red"
+                                                            : "green"
+                                                        : "red",
+                                                }}
+                                            >
+                                                {loading ? (
+                                                    <Loading />
+                                                ) : item.id === errors[item.id] ? (
+                                                    "Lỗi"
+                                                ) : (
+                                                    item.text
+                                                )}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>
+                    </>
+                )}
+
                 <Table striped bordered hover className="text-center">
                     <thead>
                         <tr>
@@ -290,7 +480,6 @@ const LuuKho = () => {
                     <tbody>
                         {product &&
                             product.data &&
-                            product.data.map &&
                             product.data.map((item, index) => {
                                 return (
                                     <tr key={index}>
@@ -362,6 +551,26 @@ const LuuKho = () => {
                     </Button>
                     <Button variant="danger" onClick={handleDeleteAccept}>
                         Xóa
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal
+                show={update.show}
+                onHide={handleUpdateAlertClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Cảnh báo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Bạn có chắc chắn muốn cập nhật dữ liệu ?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleUpdateAlertClose}>
+                        Quay lại
+                    </Button>
+                    <Button variant="danger" onClick={handleUpdateAlertAccept}>
+                        Xác nhận
                     </Button>
                 </Modal.Footer>
             </Modal>
