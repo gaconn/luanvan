@@ -88,7 +88,7 @@ const DetailComponent = () => {
                                     <i className="fa fa-star-half-o" />
                                     <span>(18 reviews)</span>
                                 </div>
-                                <div className="product__details__price">${Detail.GiaGoc * 2}</div>
+                                <div className="product__details__price">{(Detail.GiaGoc * 2).toLocaleString('en-US')}VND</div>
                                 <p>
                                     <b> Số Lượng:</b> <span>{Detail.SoLuong}</span>
                                 </p>

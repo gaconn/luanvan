@@ -44,18 +44,11 @@ const NavbarHeader = () => {
             navigate("Shop?" + params)
         } else setSearchParams(params)
     }
-    // const ListChild = (item) => {
-    //     // if (item.listChild && !item.listChild.listChild) {
-    //     //     return <ListItem listChild={item.listChild} handlerID={handleIDCategory} />
-    //     // }
-    //     return <TreeNavBar listChild={item.listChild} handlerIDItem={handleIDCategory} />
-    // }
     const checkInformation = () => {
         if (localStorage.getItem("UID")) {
             navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)
         }
     }
-
     //cart
     const fetchCart = async () => {
         var response
@@ -183,29 +176,26 @@ const NavbarHeader = () => {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     {category &&
-                        category.map &&
                         category.map((item, k) => (
-                            <>
-                                <Accordion defaultActiveKey="0" key={k}>
-                                    <Accordion.Item>
-                                        <Accordion.Header>
-                                            <h5
-                                                onClick={() => {
-                                                    handleIDCategory(item.id)
-                                                }}
-                                            >
-                                                {item.Ten}
-                                            </h5>
-                                        </Accordion.Header>
-                                        <Accordion.Body>
-                                            <TreeNavBar
-                                                listChild={item.listChild}
-                                                handlerIDItem={handleIDCategory}
-                                            />
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                </Accordion>
-                            </>
+                            <Accordion defaultActiveKey="0" key={k}>
+                                <Accordion.Item>
+                                    <Accordion.Header>
+                                        <h5
+                                            onClick={() => {
+                                                handleIDCategory(item.id)
+                                            }}
+                                        >
+                                            {item.Ten}
+                                        </h5>
+                                    </Accordion.Header>
+                                    <Accordion.Body>
+                                        <TreeNavBar
+                                            listChild={item.listChild}
+                                            handlerIDItem={handleIDCategory}
+                                        />
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            </Accordion>
                         ))}
                 </Offcanvas.Body>
             </Offcanvas>

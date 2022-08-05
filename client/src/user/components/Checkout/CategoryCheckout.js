@@ -1,6 +1,5 @@
-import { useEffect } from "react"
 import Spinner from "react-bootstrap/Spinner"
-import CustomerAPI from "../../services/API/CustomerAPI"
+import { truncateWords } from "../../services/utils/GenerateUtil"
 const Category = ({ data, loading, SoLuong }) => {
     return (
         <>
@@ -16,15 +15,15 @@ const Category = ({ data, loading, SoLuong }) => {
                             data.list.map((item, index) => {
                                 return (
                                     <li key={index}>
-                                        {item && item.Ten} x
+                                        {item && truncateWords(item.Ten,4,"...")} x
                                         {item.ChiTietGioHang_SoLuong
                                             ? item.ChiTietGioHang_SoLuong
                                             : SoLuong}{" "}
                                         <span>
-                                            {item.GiaGoc *
+                                            {(item.GiaGoc *
                                                 (item.ChiTietGioHang_SoLuong
                                                     ? item.ChiTietGioHang_SoLuong
-                                                    : SoLuong)}
+                                                    : SoLuong)).toLocaleString('en-US')} VND
                                         </span>
                                     </li>
                                 )
@@ -35,10 +34,10 @@ const Category = ({ data, loading, SoLuong }) => {
                         Phí vận chuyển{" "}
                         <span>{data && data.PhiVanChuyen.toLocaleString("en-US")} VND</span>
                     </div>
-
+                    {/* 
                     <div className="checkout__order__subtotal">
                         Phụ phí <span>{data && data.PhuPhi.toLocaleString("en-US")} VND</span>
-                    </div>
+                    </div> */}
                     <div className="checkout__order__total">
                         Tổng thành tiền{" "}
                         <span>{data && data.TongGiaTriDonHang.toLocaleString("en-US")} VND</span>

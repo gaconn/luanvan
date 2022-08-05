@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button"
 import Modal from "react-bootstrap/Modal"
 import CartRong from "./CartRong"
 import Loading from "../Loading"
+import { truncateWords } from "../../services/utils/GenerateUtil"
 const CartComponent = () => {
     const [cart, setCart] = useState([])
     const [cartEmty, setcartEmty] = useState(false)
@@ -30,23 +31,27 @@ const CartComponent = () => {
         var response
         if (UID) {
             response = await CartAPI.GetCart({ IDTaiKhoan: UID })
-        } else if (Session) {
+        } 
+        else {
             response = await CartAPI.GetCart({ SessionID: Session })
         }
-        // const response = await CartAPI.GetCart({ SessionID: Session, IDTaiKhoan: UID })
+   
         setCartInfo((cartInfo) => {
             if (!response || !response.success || response.data.length === 0) {
                 return cartInfo
             }
             return response.data[0]
         })
+      
+        if(response.data[0]===undefined){
+            setcartEmty(true)
+        }
         if (response) {
             const data = response.data
             if (data.length !== 0) {
                 const cartResponse = await CartAPI.getItemCart(data[0].id)
                 const cartData = cartResponse.data
-                console.log(cartData.length === 0)
-                if (cartData.length === 0) {
+                if ( cartData.length === 0) {
                     setcartEmty(true)
                 } else {
                     setcartEmty(false)
@@ -189,7 +194,6 @@ const CartComponent = () => {
     const handleDelete = (IDGioHang, IDSanPham) => {
         setDelete({ ...Delete, show: true, idGH: IDGioHang, idSP: IDSanPham })
     }
-
     return (
         <>
             {cartEmty ? (
@@ -222,13 +226,18 @@ const CartComponent = () => {
                                                             }
                                                             onChange={(e) => chooseHandler(e, cart)}
                                                         />
-                                                        <label for="choose-all">Chọn tất cả</label>
+                                                        <label htmlFor="choose-all">
+                                                            Chọn tất cả
+                                                        </label>
+                                                    </th>
+                                                    <th className="shoping__product pl-3">
+                                                        Ảnh Sản Phẩm
                                                     </th>
                                                     <th className="shoping__product pl-3">
                                                         Sản Phẩm
                                                     </th>
-                                                    <th>Giá</th>
-                                                    <th>Số Lượng</th>
+                                                    <th className="shoping__product pl-3">Giá</th>
+                                                    <th >Số Lượng</th>
                                                     <th />
                                                 </tr>
                                             </thead>
@@ -253,6 +262,7 @@ const CartComponent = () => {
                                                                 />
                                                             </td>
                                                             <td className="shoping__cart__item pl-3">
+                                                                <div style={{textAlign:'left'}}>
                                                                 <img
                                                                     src={
                                                                         item.SanPhamHinhAnh
@@ -269,14 +279,20 @@ const CartComponent = () => {
                                                                         height: 50,
                                                                     }}
                                                                 />
-                                                                <h5>{item.SanPhamTen}</h5>
+                                                                </div>
+                                                                
+                                                            </td>
+                                                            <td className="shoping__cart__item pl-3">
+                                                                <div>
+                                                                {item.SanPhamTen}
+                                                                </div>
                                                             </td>
                                                             <td className="shoping__cart__price">
-                                                                {Math.abs(item.SanPhamGiaGoc)
-                                                                    ? Math.abs(item.SanPhamGiaGoc) *
+                                                                {Math.abs(item.SanPhamGiaGoc).toLocaleString("en-US")
+                                                                    ? (Math.abs(item.SanPhamGiaGoc) *
                                                                       (Math.abs(item.SoLuong)
                                                                           ? Math.abs(item.SoLuong)
-                                                                          : 1)
+                                                                          : 1)).toLocaleString("en-US")
                                                                     : 0}{" "}
                                                                 VND
                                                             </td>

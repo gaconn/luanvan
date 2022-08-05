@@ -4,7 +4,6 @@ import { Container, Col, Row, Form, Button } from "react-bootstrap"
 import imgIcon from "../../assets/img/icon/icon2.png"
 import CustommerAPI from "../../services/API/CustomerAPI"
 import addressAPI from "../../../admin/services/API/addressAPI"
-import Loading from "../Loading"
 import { formatDateForInput } from "../../services/utils/GenerateUtil"
 import Alert from "react-bootstrap/Alert"
 const ValidateCheckout = () => {
@@ -109,7 +108,6 @@ const ValidateCheckout = () => {
     }
     // Address
     const changeAddressHandler = (e) => {
-        console.log(e.target.value)
         setAddress((arr) => {
             if (e.target.name === "city")
                 return { ...arr, [e.target.name]: e.target.value, district: "", ward: "" }
@@ -160,15 +158,13 @@ const ValidateCheckout = () => {
     return (
         <>
             <Container>
-                <Alert
-                    variant={notify.success ? "success" : "danger"}
-                    onClose={() => setNotify({ ...notify, show: false })}
-                    show={notify.show}
-                    dismissible
-                >
-                    <Alert.Heading>Thông Tin Khách Hàng</Alert.Heading>
-                    <p>{notify.message ? notify.message : ""}</p>
+                <Alert variant={notify.success ?"primary":"danger"}  show={notify.show}>
+                    <Alert.Heading>Thông tin khách hàng cập nhật</Alert.Heading>
+                    <p>
+                       Cập nhật thông tin thành công
+                    </p>
                 </Alert>
+              
                 <Row>
                     <Col>
                         <h3>
