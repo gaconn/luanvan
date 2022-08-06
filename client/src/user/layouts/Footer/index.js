@@ -1,3 +1,4 @@
+import imgLoGo from '../../assets/img/icon/icon2.png'
 const Footer = () => {
     return (
         <>
@@ -9,7 +10,7 @@ const Footer = () => {
                             <div className="footer__about">
                                 <div className="footer__about__logo">
                                     <a href="./index.html">
-                                        <img src="img/logo.png" alt="" />
+                                        <img src={imgLoGo} alt="" style={{height:80,width:200}}/>
                                     </a>
                                 </div>
                                 <ul>

@@ -143,11 +143,12 @@ const ValidateCheckout = () => {
             user.PhuongXa = strWard
         }
         const response = await CustommerAPI.updateInformation(user)
-
+       
         setNotify(() => {
             if (!response) {
                 return { ...notify }
             }
+            localStorage.setItem('USER_NAME',user.HoTen)
             return { ...notify, show: true, message: response.message, success: response.success }
         })
         setTimeout(() => {
@@ -265,7 +266,7 @@ const ValidateCheckout = () => {
                                         onChange={changeAddressHandler}
                                     >
                                         <option value=" ">
-                                            {user.QuanHuyen ? user.QuanHuyen : " "}
+                                            {user.QuanHuyen ? user.QuanHuyen : ""}
                                         </option>
                                         {listDistrict &&
                                             listDistrict.map((discrict, k) => {
@@ -290,7 +291,7 @@ const ValidateCheckout = () => {
                                         onChange={changeAddressHandler}
                                     >
                                         <option value=" ">
-                                            {user.PhuongXa ? user.PhuongXa : " "}
+                                            {user.PhuongXa ? user.PhuongXa : ""}
                                         </option>
                                         {listWard &&
                                             listWard.map((ward, index) => {
@@ -305,15 +306,21 @@ const ValidateCheckout = () => {
                                             })}
                                     </Form.Select>
                                 </Form.Group>
-                                <Form.Group as={Col} md="6" controlId="user-home">
-                                    <Form.Label>Số nhà</Form.Label>
+                                <Form.Group as={Col} md="6" controlId="user-name">
+                                    <Form.Label>Số Nhà</Form.Label>
                                     <Form.Control
-                                        type="text"
-                                        name="SoNha"
-                                        value={user.SoNha ? user.SoNha : " "}
+                                        required
                                         onChange={onChangeInput}
+                                        type="text"
+                                        placeholder="Số Nhà"
+                                        name="SoNha"
+                                        value={user.SoNha ? user.SoNha : ""}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        Vui lòng nhập địa chỉ số nhà
+                                    </Form.Control.Feedback>
                                 </Form.Group>
+                               
                             </Row>
                             <Button type="submit">Cập Nhật</Button>
                         </Form>

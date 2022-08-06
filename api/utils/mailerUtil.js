@@ -11,6 +11,7 @@ const transport = nodeMailer.createTransport({
         pass: mailConfig.PASSWORD,
     },
 })
+//gửi đến khách hàng
 exports.sendMail = (to, subject, htmlContent) => {
     const options = {
         from: mailConfig.FROM_ADDRESS,
@@ -20,7 +21,99 @@ exports.sendMail = (to, subject, htmlContent) => {
     }
     return transport.sendMail(options)
 }
-
+//gửi đến nhân viên
+exports.sendMail2 = (to, subject, htmlContent) => {
+    const options = {
+        from:to ,
+        to: mailConfig.USERNAME,
+        subject: subject,
+        html: htmlContent,
+    }
+    return transport.sendMail(options)
+}
+exports.contactFormat = (objContact = {}) => {
+    if (!objContact) {
+        return ""
+    }
+    return `<!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"  integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <style>
+    .column {
+      float: left;
+      width: 33.3%;
+      margin-bottom: 16px;
+      padding: 0 8px;
+    }
+    
+    @media screen and (max-width: 650px) {
+      .column {
+        width: 100%;
+        display: block;
+      }
+    }
+    
+    
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+    
+    
+    .container {
+      padding: 0 16px;
+    }
+    
+    .container::after, .row::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    
+    .title {
+      color: grey;
+    }
+    
+    .button {
+      border: none;
+      outline: 0;
+      display: inline-block;
+      padding: 8px;
+      color: white;
+      background-color: #000;
+      text-align: center;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    .button:hover {
+      background-color: #555;
+    }
+    </style>
+      </head>
+      <body>
+     
+      <div class="row">
+      <div class="column">
+        <div class="card">
+        
+          <div class="container">
+            <h2>${objContact.HoTen}</h2>
+            <p class="title">Số điện thoại: ${objContact.SoDienThoai}</p>
+            <p>${objContact.Message}</p>
+        
+            <p><button class="button">liên hệ</button></p>
+          </div>
+        </div>
+      </div>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+      </body>
+    </html>`
+}
 exports.orderFormat = (objOrderDetail = {}) => {
     if (!objOrderDetail) {
         return ""

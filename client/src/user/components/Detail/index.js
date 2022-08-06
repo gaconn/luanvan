@@ -118,6 +118,11 @@ const DetailComponent = () => {
                                 <a href="#" className="heart-icon">
                                     <span className="icon_heart_alt" />
                                 </a>
+                                <div>
+                                    <button  className="primary-btn" style={{width:440}}>
+                                        Đặt Hàng
+                                    </button>
+                                </div>
                                 <ul>
                                     <li>
                                         <b>Tình Trạng</b> <span>{ProductState(Detail)}</span>
