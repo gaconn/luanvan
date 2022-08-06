@@ -16,6 +16,7 @@ const ChechOutComponent = () => {
     const [validated, setValidated] = useState(false)
     const [order, setOrder] = useState({ IDPhuongThucThanhToan: 1 })
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     const [info, setInfo] = useState({ result: false })
     const fetchProductDetail = async () => {
         const productID = searchParams.get("product_id")
@@ -76,6 +77,7 @@ const ChechOutComponent = () => {
             setValidated(true)
             return
         }
+        setLoading(true)
         setInfo((info) => {
             if (
                 order.SoDienThoai &&
@@ -88,15 +90,14 @@ const ChechOutComponent = () => {
             }
             return info
         })
-      
-        console.log(order)
-        console.log(info.result)
+        
         if (info.result) {
             const response = await orderAPI.checkout(order)
             if (response.success) {
                 navigate("../checkout-success")
             }
         } 
+        setLoading(false)
         setNotify((noti)=>{
             if(!info.result){
                 return {show:true,message:"Vui lòng xác nhận thông tin đơn hàng",success:false }
@@ -337,6 +338,7 @@ const ChechOutComponent = () => {
                                     <Category
                                         data={product}
                                         SoLuong={searchParams.get("soluong")}
+                                        loading= {loading}
                                     />
                                 </div>
                             </div>
