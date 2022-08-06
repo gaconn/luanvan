@@ -4,7 +4,6 @@ import { Container, Col, Row, Form, Button } from "react-bootstrap"
 import imgIcon from "../../assets/img/icon/icon2.png"
 import CustommerAPI from "../../services/API/CustomerAPI"
 import addressAPI from "../../../admin/services/API/addressAPI"
-import Loading from "../Loading"
 import { formatDateForInput } from "../../services/utils/GenerateUtil"
 import Alert from "react-bootstrap/Alert"
 const ValidateCheckout = () => {
@@ -109,7 +108,6 @@ const ValidateCheckout = () => {
     }
     // Address
     const changeAddressHandler = (e) => {
-        console.log(e.target.value)
         setAddress((arr) => {
             if (e.target.name === "city")
                 return { ...arr, [e.target.name]: e.target.value, district: "", ward: "" }
@@ -145,11 +143,12 @@ const ValidateCheckout = () => {
             user.PhuongXa = strWard
         }
         const response = await CustommerAPI.updateInformation(user)
-
+       
         setNotify(() => {
             if (!response) {
                 return { ...notify }
             }
+            localStorage.setItem('USER_NAME',user.HoTen)
             return { ...notify, show: true, message: response.message, success: response.success }
         })
         setTimeout(() => {
@@ -160,15 +159,13 @@ const ValidateCheckout = () => {
     return (
         <>
             <Container>
-                <Alert
-                    variant={notify.success ? "success" : "danger"}
-                    onClose={() => setNotify({ ...notify, show: false })}
-                    show={notify.show}
-                    dismissible
-                >
-                    <Alert.Heading>Thông Tin Khách Hàng</Alert.Heading>
-                    <p>{notify.message ? notify.message : ""}</p>
+                <Alert variant={notify.success ?"primary":"danger"}  show={notify.show}>
+                    <Alert.Heading>Thông tin khách hàng cập nhật</Alert.Heading>
+                    <p>
+                       Cập nhật thông tin thành công
+                    </p>
                 </Alert>
+              
                 <Row>
                     <Col>
                         <h3>
@@ -269,7 +266,7 @@ const ValidateCheckout = () => {
                                         onChange={changeAddressHandler}
                                     >
                                         <option value=" ">
-                                            {user.QuanHuyen ? user.QuanHuyen : " "}
+                                            {user.QuanHuyen ? user.QuanHuyen : ""}
                                         </option>
                                         {listDistrict &&
                                             listDistrict.map((discrict, k) => {
@@ -294,7 +291,7 @@ const ValidateCheckout = () => {
                                         onChange={changeAddressHandler}
                                     >
                                         <option value=" ">
-                                            {user.PhuongXa ? user.PhuongXa : " "}
+                                            {user.PhuongXa ? user.PhuongXa : ""}
                                         </option>
                                         {listWard &&
                                             listWard.map((ward, index) => {
@@ -309,15 +306,21 @@ const ValidateCheckout = () => {
                                             })}
                                     </Form.Select>
                                 </Form.Group>
-                                <Form.Group as={Col} md="6" controlId="user-home">
-                                    <Form.Label>Số nhà</Form.Label>
+                                <Form.Group as={Col} md="6" controlId="user-name">
+                                    <Form.Label>Số Nhà</Form.Label>
                                     <Form.Control
-                                        type="text"
-                                        name="SoNha"
-                                        value={user.SoNha ? user.SoNha : " "}
+                                        required
                                         onChange={onChangeInput}
+                                        type="text"
+                                        placeholder="Số Nhà"
+                                        name="SoNha"
+                                        value={user.SoNha ? user.SoNha : ""}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        Vui lòng nhập địa chỉ số nhà
+                                    </Form.Control.Feedback>
                                 </Form.Group>
+                               
                             </Row>
                             <Button type="submit">Cập Nhật</Button>
                         </Form>

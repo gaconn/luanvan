@@ -18,7 +18,7 @@ const Information = () => {
             const response = await CustommerAPI.getCustomerDetail({ id: Customer_id })
             if (
                 response.data[0].SoDienThoai !== null ||
-                !response.data[0].NgaySinh !== null ||
+                response.data[0].NgaySinh !== null ||
                 response.data[0].TinhThanh !== null ||
                 response.data[0].QuanHuyen !== null ||
                 response.data[0].PhuongXa !== null ||
@@ -77,16 +77,13 @@ const Information = () => {
             </>
         )
     }
-    const UpdateID = () => {
-        navigate(`?updateID=${Customer_id}`)
-    }
+
     if (loading) {
         return <Loading />
     }
-    console.log(DiaChi)
     return (
         <>
-            <h3 className="w-2/3 text-center mx-auto py-5">Thông Tin Khách Hàng </h3>
+            <h3 className="w-2/3 text-center mx-auto py-2">Thông Tin Khách Hàng </h3>
             <div className="flex bg-white shadow-lg rounded-lg mx-auto md:mx-auto max-w-md md:max-w-1xl ">
                 <div className="flex items-start px-4 py-6">
                     <img

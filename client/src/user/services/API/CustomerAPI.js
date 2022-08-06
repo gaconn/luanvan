@@ -46,11 +46,20 @@ const CustommerAPI = {
             console.log(error)
         }
     },
-    loginGoogle: async (googleresponse) => {
+    loginGoogle: async (googleData) => {
         try {
             const url = BASE_URL + "/login-google"
-            const response = await axios.post(url, googleresponse)
-            return response.data
+            const res = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                  token: googleData.tokenId,
+                }),
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              });
+          
+              return res.json();
         } catch (error) {
             console.log(error)
         }

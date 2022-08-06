@@ -2,7 +2,12 @@ const UserModel = require("../models/UserModel")
 const GeneralUtil = require("../utils/GeneralUtil")
 const ResponseUtil = require("../utils/ResponseUtil")
 const mailer = require("../utils/mailerUtil")
-
+//mailer
+const { OAuth2Client } = require("google-auth-library")
+const dotenv = require("dotenv")
+dotenv.config()
+const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID)
+const clientId = process.env.GOOGLE_DEFAULT_CLIENT_ID
 class UserController {
     logon = async (req, res) => {
         const data = req.body
@@ -56,33 +61,16 @@ class UserController {
         }
     }
     loginGoogle = async (req, res) => {
-        const data = req.body
-        if (!data) {
-            return res.json(
-                ResponseUtil.response(
-                    false,
-                    "Dữ liệu truyền vào không hợp lệ",
-                    [],
-                    ["Dữ liệu không hợp lệ"]
-                )
-            )
-        }
-        try {
-            const objResult = await UserModel.loginGoogle(data)
-            if (GeneralUtil.checkIsEmptyObject(objResult)) {
-                return res.json(
-                    ResponseUtil.response(
-                        false,
-                        "Không thêm dữ liệu",
-                        [],
-                        ["Có lỗi xảy ra khi thêm dữ liệu"]
-                    )
-                )
-            }
-            return res.json(objResult)
-        } catch (error) {
-            console.log(error)
-        }
+        const users = [];
+        const { token } = req.body
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience:  clientId,
+        })
+        const { name, email, picture } = ticket.getPayload()
+        GeneralUtil.upsert(users, { name, email, picture })
+        res.status(201)
+        res.json({ name, email, picture })
     }
     login = async (req, res) => {
         const data = req.body
@@ -179,7 +167,23 @@ class UserController {
             // const response = await UserModel.update()
         } catch (error) {}
     }
-
+    contact =async(req,res)=>{
+        const data=req.body
+        if (!data) {
+            return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
+        }
+        try {
+       
+             const contactResponse=await UserModel.contact(data)
+                 return res.json(contactResponse)
+         
+            if (!contactResponse) {
+                throw new Error("Không thể kết nối database")
+            }
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message)) 
+        }
+    }
     /**
      * method: put
      * url: /user/update

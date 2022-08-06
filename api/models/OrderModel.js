@@ -534,6 +534,18 @@ class OrderModel {
                 if (!userResponse || !userResponse.success || userResponse.data.length === 0) {
                     return ResponseUtil.response(false, "Tài khoản không tồn tại")
                 }
+                const ThongTinDatHang = {
+                    HoTen:userResponse.data[0].HoTen,
+                    NgaySinh:userResponse.data[0].NgaySinh,
+                    Email: userResponse.data[0].Email,
+                    SoDienThoai: userResponse.data[0].SoDienThoai,
+                    TinhThanh: userResponse.data[0].TinhThanh,
+                    QuanHuyen: userResponse.data[0].QuanHuyen,
+                    PhuongXa: userResponse.data[0].PhuongXa,
+                    SoNha: userResponse.data[0].SoNha,
+                }
+                const encryptInfo = JSON.stringify(ThongTinDatHang)
+                extraInfo.ThongTinDatHang = encryptInfo
                 mailReceiver = userResponse.data[0].Email
                 extraInfo.IDTaiKhoan = objData.IDTaiKhoan
             }

@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom"
 import uniqid from "uniqid"
 import CartAPI from "../../services/API/Cart"
 import LoadingPage from "../Loading"
-
+import { truncateWords } from "../../services/utils/GenerateUtil"
 const List = ({ Product, LoadingProduct }) => {
     const [searchParams, setSearchParams] = useSearchParams()
     // if(LoadingProduct){
@@ -37,6 +37,7 @@ const List = ({ Product, LoadingProduct }) => {
         const params = new URLSearchParams({ updateCart: new Date().getTime() }).toString()
         setSearchParams(params)
     }
+
     return (
         <>
             {Product &&
@@ -89,10 +90,10 @@ const List = ({ Product, LoadingProduct }) => {
                             <div className="product__item__text">
                                 <h6>
                                     <Link to="/ProductDetail" onClick={() => HandleInfo(item.id)}>
-                                        {item.Ten}
+                                        {truncateWords(item.Ten, 4, "...")}
                                     </Link>
                                 </h6>
-                                <h5>{item.GiaGoc * 2}</h5>
+                                <h5>{(item.GiaGoc * 2).toLocaleString("en-US")}VND</h5>
                             </div>
                         </div>
                     </div>

@@ -40,7 +40,7 @@ class GeneralUtil {
     checkIsValidPhone = (strPhone) => {
         let phone = String(strPhone).trim()
         if (phone) {
-            if (strPhone.length === 10 && !NaN(phone)) {
+            if (strPhone.length === 10 && !isNaN(phone)) {
                 return true
             }
         }

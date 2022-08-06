@@ -6,6 +6,9 @@ const { buildFieldQuery, _buildSelect, object_filter } = require("../utils/DBUti
 const jwt = require("jsonwebtoken")
 const mailConfig = require("../utils/mailConfig/mailConfig")
 const { checkIsEmptyObject } = require("../utils/GeneralUtil")
+const { sendMail2, contactFormat } = require("../utils/mailerUtil")
+const dotenv = require("dotenv")
+dotenv.config()
 class UserModel {
     constructor() {
         this.table = "taikhoan"
@@ -221,7 +224,6 @@ class UserModel {
                     "CapDoTaiKhoan_"
                 )
             }
-
             const query = `${strSelect} from ${this.table} ${strJoin} ${strWhere} limit 1`
             const dataExist = await dbconnect.query(query)
             if (dataExist && dataExist[0] && dataExist[0].length > 0) {
@@ -478,6 +480,50 @@ class UserModel {
                 [],
                 [error.message]
             )
+        }
+    }
+    contact= async (objUserInfo)=>{
+        if (GeneralUtil.checkIsEmptyObject(objUserInfo)) {
+            return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], [])
+        }
+        let arrError = []
+        if (!objUserInfo.HoTen) {
+            arrError.push("Họ tên không được để trống")
+        }
+      
+        if (!objUserInfo.Email) {
+            arrError.push("Email không được bỏ trống")
+        }
+        if (!objUserInfo.Message) {
+            arrError.push("Tin nhắn không được để trống")
+        }
+        if (!objUserInfo.SoDienThoai) {
+            arrError.push("Số điện thoại không được để trống")
+        }
+        if (!GeneralUtil.checkValidEmail(objUserInfo.Email)) {
+            arrError.push("Email không hợp lệ")
+        }
+        if (!GeneralUtil.checkIsValidPhone(objUserInfo.SoDienThoai)) {
+            arrError.push("Số điện thoại phải 10 số")
+        }
+        if (!GeneralUtil.checkIsEmptyArray(arrError)) {
+            return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], arrError)
+        }
+        try {
+            
+           const objContact={
+            HoTen:objUserInfo.HoTen,
+            Email:objUserInfo.Email,
+            SoDienThoai:objUserInfo.SoDienThoai,
+            Message:objUserInfo.Message
+           }
+           const html = contactFormat(objContact)
+            if(html){
+                const send= await sendMail2(objContact.Email,`Tin nhắn từ khách hàng tên ${objContact.HoTen}`,html)
+                return ResponseUtil.response(true, 'Đã gửi thông tin liên hệ đến nhân viên phụ trách thành công ')    
+            }   
+        } catch (error) {
+            return ResponseUtil.response(false, error.message, [], [error])
         }
     }
 

@@ -105,28 +105,19 @@ const Logincomponents = () => {
         return true
     }
     //google
-    useEffect(() => {
-        function start() {
-            gapi.client.init({
-                clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-                scope: "email",
-            })
-        }
-        gapi.load("client:auth2", start)
-    }, [])
-    const onSuccess = async (res) => {
-        // localStorage.setItem("USER_NAME", googleData.profileObj.name)
-        // localStorage.setItem("IMAGE", googleData.profileObj.imageUrl)
-        // const objcondition={}
-        // objcondition.Email= googleData.profileObj.email
-        const googleresponse = {
-            HoTen: res.profileObj.name,
-            Email: res.profileObj.email,
-            Token: res.googleId,
-            Image: res.profileObj.imageUrl,
-            ProviderId: "Google",
-        }
-        console.log(googleresponse)
+    // useEffect(() => {
+    //     function start() {
+    //         gapi.client.init({
+    //             clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    //             scope: "email",
+    //         })
+    //     }
+    //     gapi.load("client:auth2", start)
+    // }, [])
+    const onSuccess = async (googleData) => {
+        const data = await CustommerAPI.loginGoogle(googleData)
+        setLoginData(data)
+        localStorage.setItem("loginData", JSON.stringify(data))
     }
     const onFailure = (result) => {
         console.log(result.error)
