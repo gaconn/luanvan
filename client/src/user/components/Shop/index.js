@@ -30,14 +30,14 @@ const ShopComponent = () => {
             fetchParentTree()
         } else {
             fetchCategory(objConditionTheLoai)
-            const objConditionProduct = {}
+            const objConditionProduct = {getAllProduct: true}
             objConditionProduct.IDTheLoai = id
             fetchCategoryProduct(objConditionProduct)
         }
         setLoading(() => {
             return false
         })
-    }, [searchParams, Loading])
+    }, [searchParams])
     //Lấy Category con để hiển thị từ danh mục
     const fetchCategory = async (objConditionTheLoai) => {
         const categoryResponse = await categoryAPI.getChild(objConditionTheLoai)
@@ -97,6 +97,10 @@ const ShopComponent = () => {
         const Ten = searchParams.get("keyword")
         if (!Loading && Ten === keyword) return
         const objCondition = {}
+        if(id) {
+            objCondition.IDTheLoai = id
+            objCondition.getAllProduct = true
+        }
         objCondition.Ten = Ten
         fetchProduct(objCondition)
         setLoading(() => {
