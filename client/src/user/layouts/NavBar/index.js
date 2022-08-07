@@ -44,6 +44,7 @@ const NavbarHeader = () => {
         if (location.pathname !== "Shop") {
             navigate("Shop?" + params)
         } else setSearchParams(params)
+        setShow(false)
     }
     const checkInformation = () => {
         if (localStorage.getItem("UID")) {

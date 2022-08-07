@@ -10,7 +10,7 @@ const Tree = ({ categoryParent }) => {
             navigate("?" + params)
         } else setSearchParams(params)
     }
-    const listChild = categoryParent.map((item, k) => (
+    const listChild = categoryParent && categoryParent.map((item, k) => (
         <div className="mx-auto" key={k}>
             <Button
                 variant="outline-secondary"

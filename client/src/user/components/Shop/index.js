@@ -30,7 +30,7 @@ const ShopComponent = () => {
             fetchParentTree()
         } else {
             fetchCategory(objConditionTheLoai)
-            const objConditionProduct = {getAllProduct:true}
+            const objConditionProduct = {getAllProduct: true}
             objConditionProduct.IDTheLoai = id
             fetchCategoryProduct(objConditionProduct)
         }
@@ -97,6 +97,10 @@ const ShopComponent = () => {
         const Ten = searchParams.get("keyword")
         if (!Loading && Ten === keyword) return
         const objCondition = {}
+        if(id) {
+            objCondition.IDTheLoai = id
+            objCondition.getAllProduct = true
+        }
         objCondition.Ten = Ten
         fetchProduct(objCondition)
         setLoading(() => {
