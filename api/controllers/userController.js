@@ -62,9 +62,9 @@ class UserController {
     }
     loginGoogle = async (req, res) => {
         const users = [];
-        const { token } = req.body
+        const data = req.body
         const ticket = await client.verifyIdToken({
-            idToken: token,
+            idToken: data.token,
             audience:  clientId,
         })
         const { name, email, picture } = ticket.getPayload()

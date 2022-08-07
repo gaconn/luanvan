@@ -4,9 +4,100 @@ import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Button from "react-bootstrap/Button"
 import { BsTextCenter } from "react-icons/bs"
+import { useState } from "react"
+import validator from 'validator';
+import isEmty from "validator/lib/isEmpty"
+import isEmail from "validator/lib/isEmail"
+import CustommerAPI from "../../services/API/CustomerAPI"
+import  {Toast, ToastContainer} from 'react-bootstrap'
+import { useNavigate } from "react-router-dom"
 const ContactComponent = () => {
+    const [Customer,setCustomer]=useState({HoTen:'',Email:'',SoDienThoai:'',Message:''})
+    const [notify, setNotify] = useState({ show: false, Message: "",success:false })
+    const [validated, setValidated] = useState(false)
+    const [checkout, setCheckout] = useState("")
+    const navigate=useNavigate()
+    const onChangeInput=(e)=>{
+        setCustomer((cus)=>{
+            return {...cus,[e.target.name]:e.target.value}
+        })
+    }
+    const handleSubmit=async(event)=>{
+        event.preventDefault()
+        event.stopPropagation()
+        const isvalidated = validatedAll()
+        if (!isvalidated) {
+            event.preventDefault()
+            return
+        }
+        const form = event.currentTarget
+        var isValid = true
+        if (form.checkValidity() === false) {
+            isValid = false
+        }
+        setValidated(true)
+        if (!isValid) return
+        const response=await CustommerAPI.Contact(Customer)
+        setNotify((noti)=>{
+            if(response&&response.success){
+                return {show:true,Message:response.message,success:true}
+            }
+            return noti
+        })
+        setTimeout(()=>{
+            navigate('/Shop')
+        },3000)
+        
+    }
+    const validatedAll = () => {
+        const nsg = {}
+        //Kiểm tra email
+
+        if (!isEmail(Customer.Email)) {
+            nsg.Email = "Không đúng định dạng email"
+        }
+        //Kiểm tra password
+        if (Customer.SoDienThoai.length>10 && !isNaN(Customer.SoDienThoai)) {
+            nsg.SoDienThoai = "Só điện thoại phải 10 số, không phải ký tự"
+        }
+
+        if (isEmty(Customer.Email)) {
+            nsg.Email = "Vui lòng nhập email"
+        }
+        if (isEmty(Customer.SoDienThoai)) {
+            nsg.SoDienThoai = "Vui lòng nhập mật khẩu"
+        }
+        if (isEmty(Customer.Message)) {
+            nsg.SoDienThoai = "Vui lòng nhập tin nhắn"
+        }
+        if (isEmty(Customer.HoTen)) {
+            nsg.HoTen = "Vui lòng nhập hợ tên của bạn"
+        }
+        setCheckout(nsg)
+        if (Object.keys(nsg).length > 0) {
+            return false
+        }
+        return true
+    }
+
     return (
-        <div>
+   <>
+   <ToastContainer position="top-end"
+                className="p-3 position-fixed"
+                style={{ zIndex: "10" }}>
+      <Toast   bg={notify.success ? "success" : "danger"}
+                    onClose={() => setNotify({ ...notify, show: false })}
+                    show={notify.show}
+                    delay={3000}
+                    autohide>
+        <Toast.Header>
+          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt=""/>
+          <strong className="me-auto">Thông báo</strong>
+        </Toast.Header>
+        <Toast.Body>{notify.Message?notify.Message:''}</Toast.Body>
+      </Toast>
+    </ToastContainer>
+   <div>
             {/* Contact Section Begin */}
             <section className="contact spad">
                 <div className="container">
@@ -97,7 +188,7 @@ const ContactComponent = () => {
                                     data-aos-duration={2000}
                                 >
                                     <div className="bg-gray-100 dark:bg-slate-800 relative rounded-lg p-8 sm:p-12 shadow-lg">
-                                        <form>
+                                        <Form noValidate validated={validated} onSubmit={handleSubmit}>
                                             <div className="mb-6">
                                                 <input
                                                     type="text"
@@ -116,9 +207,11 @@ const ContactComponent = () => {
                               focus:border-primary
                               "
                                                     name="HoTen"
+                                                    onChange={onChangeInput}
                                                     id="full_name"
                                                 />
                                             </div>
+                                            <p style={{ color: "red" }}>{checkout.HoTen}</p>
                                             <div className="mb-6">
                                                 <input
                                                     type="email"
@@ -137,9 +230,11 @@ const ContactComponent = () => {
                               focus:border-primary
                               "
                                                     name="Email"
+                                                    onChange={onChangeInput}
                                                     id="email"
                                                 />
                                             </div>
+                                            <p style={{ color: "red" }}>{checkout.Email}</p>
                                             <div className="mb-6">
                                                 <input
                                                     inputMode="numeric"
@@ -158,9 +253,11 @@ const ContactComponent = () => {
                               focus:border-primary
                               "
                                                     name="SoDienThoai"
+                                                    onChange={onChangeInput}
                                                     id="phone_number"
                                                 />
                                             </div>
+                                            <p style={{ color: "red" }}>{checkout.SoDienThoai}</p>
                                             <div className="mb-6">
                                                 <textarea
                                                     rows={6}
@@ -178,14 +275,17 @@ const ContactComponent = () => {
                               focus-visible:shadow-none
                               focus:border-primary
                               "
-                                                    name="message"
+                                                    name="Message"
+                                                    onChange={onChangeInput}
                                                     id="message"
                                                     defaultValue={""}
                                                 />
                                             </div>
+                                            <p style={{ color: "red" }}>{checkout.Message}</p>
                                             <div>
+                                       
                                                 <button
-                                                    type="submit"
+                                                 type="submit"
                                                     className="
                               w-full
                               text-gray-100
@@ -201,10 +301,10 @@ const ContactComponent = () => {
                               hover:bg-yellow-300
                               "
                                                 >
-                                                    Send Message
+                                                    Gưi tin nhắn
                                                 </button>
                                             </div>
-                                        </form>
+                                        </Form>
                                    
                                         <div>
                                             <span className="absolute -top-10 -right-9 z-[-1]">
@@ -1022,6 +1122,8 @@ const ContactComponent = () => {
                 </>
             </div>
         </div>
+   </>     
+   
     )
 }
 
