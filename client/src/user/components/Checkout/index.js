@@ -30,11 +30,13 @@ const ChechOutComponent = () => {
             //nếu checkout từ cart
             cartResponse = await cartAPI.getCart({ SessionID, IDTaiKhoan })
         }
-        const response = await productAPI.getCheckoutList({
+        const response = await productAPI.getCheckoutList(fromCart?{
             id: productID,
             IDTaiKhoan,
             SessionID,
             fromCart,
+        } : {
+            id: productID
         })
         setNotify((noti) => {
             if (response && response.success && response.data) {
@@ -52,13 +54,21 @@ const ChechOutComponent = () => {
 
         setOrder(() => {
             if (response && response.success && response.data) {
+                if(fromCart) {
+                    return {
+                        IDSanPham: productID,
+                        IDTaiKhoan,
+                        SessionID,
+                        IDPhuongThucThanhToan: 1,
+                        SoLuong,
+                        IDGioHang,
+                    }
+                }
                 return {
                     IDSanPham: productID,
                     IDTaiKhoan,
-                    SessionID,
                     IDPhuongThucThanhToan: 1,
-                    SoLuong,
-                    IDGioHang,
+                    SoLuong
                 }
             }
             return {}

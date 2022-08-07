@@ -8,9 +8,9 @@ import { generateCartSessionID } from "../../services/utils/GenerateUtil"
 const DetailComponent = () => {
     const [Detail, setDetail] = useState([])
     const navigate = useNavigate()
-    let id = localStorage.getItem("DetailID")
-    const [cart, setCart] = useState({ SoLuong: 1 })
     const [searchParams, setSearchParams] = useSearchParams()
+    let id = searchParams.get('IDSanPham')
+    const [cart, setCart] = useState({ SoLuong: 1 })
     const changeInput = (event) => {
         setCart({ ...cart, [event.target.name]: event.target.value })
     }
@@ -54,6 +54,9 @@ const DetailComponent = () => {
         setSearchParams(params)
     }
 
+    const handleCheckout = async () => {
+        navigate(`/checkout?soluong=${cart.SoLuong}&product_id=${id}`)
+    }
     return (
         <>
             {/* Product Details Section Begin */}
@@ -119,7 +122,7 @@ const DetailComponent = () => {
                                     <span className="icon_heart_alt" />
                                 </a>
                                 <div>
-                                    <button  className="primary-btn" style={{width:440}}>
+                                    <button  className="primary-btn" style={{width:440}} onClick={handleCheckout}>
                                         Đặt Hàng
                                     </button>
                                 </div>

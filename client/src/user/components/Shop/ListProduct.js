@@ -69,8 +69,7 @@ const List = ({ Product, LoadingProduct }) => {
                                     </li>
                                     <li>
                                         <Link
-                                            to="/ProductDetail"
-                                            onClick={() => HandleInfo(item.id)}
+                                            to={`/ProductDetail?IDSanPham=${item.id}`}
                                         >
                                             <i className="fa fa-retweet" />
                                         </Link>
