@@ -20,6 +20,8 @@ const ShopComponent = () => {
     const [IDTLProduct, setIDTLProduct] = useState()
     const navigate = useNavigate()
     const [sort, setSort] = useState({})
+    const [typeList, setTypeList] = useState("discount")
+    const [productDiscount, setProductDiscount] = useState([])
     //Hiển category theo danh mục
     const id = searchParams.get("IDTheLoai")
     useEffect(() => {
@@ -98,6 +100,7 @@ const ShopComponent = () => {
         if (!Loading && Ten === keyword) return
         const objCondition = {}
         if(id) {
+            console.log('Helo')
             objCondition.IDTheLoai = id
             objCondition.getAllProduct = true
         }
@@ -160,7 +163,6 @@ const ShopComponent = () => {
             return objCondition.Ten
         })
     }
-
     // sắp xếp
     const priceSortChangeHandler = (e) => {
         setSort(() => {
@@ -178,6 +180,32 @@ const ShopComponent = () => {
 
         return <Item categoryParent={categories} />
     }
+    const fetchProductDiscount = async (objCondition) => {
+        const productResponse = await productAPI.getAll(objCondition)
+        setProductDiscount(() => {
+            if (productResponse.success) {
+                return productResponse.data.data
+            }
+            return []
+        })
+    }
+    useEffect(() => {
+        const objCondition = {}
+        if (typeList === "discount") {
+            objCondition.joinDiscount = true
+        }
+        fetchProductDiscount(objCondition)
+    }, [typeList])
+    useEffect(() => {
+        const kind = searchParams.get("kind")
+        setTypeList((typeList) => {
+            if (kind) {
+                return kind
+            }
+            return typeList
+        })
+    }, [searchParams])
+    console.log(productDiscount)
     return (
         <>
             <section className="product spad">
@@ -186,7 +214,11 @@ const ShopComponent = () => {
                         <div className="col-lg-3 col-md-5">
                             <div className="sidebar">
                                 <div className="sidebar__item ">
-                                <marquee direction = "up">This text will scroll from bottom to up</marquee>
+                               {
+                                productDiscount && productDiscount.map((item,k)=>{
+                                    return  <marquee direction = "up" key={k}><img src={process.env.REACT_APP_API_IMAGE+JSON.parse(item.HinhAnh)[0]}/></marquee>
+                                })
+                               }
                                 </div>
                             </div>
                         </div>
@@ -203,13 +235,6 @@ const ShopComponent = () => {
                                             >
                                                 <option value="asc">Tăng dần</option>
                                                 <option value="desc">Giảm dần</option>
-                                            </select>
-                                        </div>
-                                        <div className="filter__sort">
-                                            <span>Sort By</span>
-                                            <select>
-                                                <option value={0}>Default</option>
-                                                <option value={0}>Default</option>
                                             </select>
                                         </div>
                                     </div>

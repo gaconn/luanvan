@@ -3,14 +3,14 @@ const ListItem = ({ listChild = [], handlerID }) => {
     const listChildItem = listChild.map((item, k) => {
         //    return ( <li key={k} onClick={()=>{ handlerID(item.id)}}> {item.Ten}</li>)
         return (
-            <ListGroup>
+            <ListGroup key={k}>
                 {" "}
                 <ListGroup.Item
                     action
                     onClick={() => {
                         handlerID(item.id)
                     }}
-                    key={k}
+              
                 >
                     {item.Ten}
                 </ListGroup.Item>
