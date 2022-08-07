@@ -661,7 +661,9 @@ class OrderModel {
         if (objCondition.id) {
             strWhere += ` and ${table}.id = ${objCondition.id} `
         }
-
+        if(objCondition.IDTaiKhoan) {
+            strWhere += ` and ${table}.IDTaiKhoan = ${objCondition.IDTaiKhoan}`
+        }
         if (objCondition.IDSanPham) {
             strWhere += ` and ${table}.IDSanPham = ${objCondition.IDSanPham}`
         }

@@ -4,7 +4,7 @@ const router = express.Router()
 const OrderController = require("../controllers/orderController")
 const { CheckToken } = require("../middlewares/User")
 
-router.get("/get-orders", CheckToken, OrderController.getOrder)
+router.get("/get-orders", OrderController.getOrder)
 router.get("/get-order-detail", CheckToken, OrderController.getOrderDetail)
 router.post("/checkout-v1", OrderController.checkoutV1)
 router.post("/checkout-v2", OrderController.checkoutV2)
