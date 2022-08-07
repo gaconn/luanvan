@@ -206,7 +206,6 @@ class UserModel {
                 IDCapDoTaiKhoan: 4,
                 ThoiGianTao: new Date().getTime() / 1000,
                 DaXoa: 0,
-                ProviderName: objUserInfo.ProviderName ? objUserInfo.ProviderName : null,
                 Token: objUserInfo.Token ? objUserInfo.Token : null,
                 Image: objUserInfo.Image ? objUserInfo.Image : null,
                 joinPermission: true,

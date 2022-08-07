@@ -68,7 +68,7 @@ const Home = () => {
             </section>
             {/* Featured Section End */}
             {/* Banner Begin */}
-            <div className="banner">
+            {/* <div className="banner">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 col-md-6 col-sm-6">
@@ -83,11 +83,11 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
             {/* Banner End */}
             <>
                 {/* Blog Section Begin */}
-                <section className="from-blog spad">
+                {/* <section className="from-blog spad">
                     <div className="container">
                         <div className="row">
                             <div className="col-lg-12">
@@ -171,7 +171,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> */}
                 {/* Blog Section End */}
             </>
         </>

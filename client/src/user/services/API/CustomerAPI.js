@@ -52,6 +52,8 @@ const CustommerAPI = {
             const res = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({
+                    name:googleData.profileObj.name,
+                    email:googleData.profileObj.email,
                   token: googleData.tokenId,
                 }),
                 headers: {
@@ -64,5 +66,14 @@ const CustommerAPI = {
             console.log(error)
         }
     },
+    Contact: async (data) => {
+        try {
+            const url = BASE_URL + "/lien-he"
+            const response = await axios.post(url, data)
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 export default CustommerAPI

@@ -30,14 +30,14 @@ const ShopComponent = () => {
             fetchParentTree()
         } else {
             fetchCategory(objConditionTheLoai)
-            const objConditionProduct = {}
+            const objConditionProduct = {getAllProduct:true}
             objConditionProduct.IDTheLoai = id
             fetchCategoryProduct(objConditionProduct)
         }
         setLoading(() => {
             return false
         })
-    }, [searchParams, Loading])
+    }, [searchParams])
     //Lấy Category con để hiển thị từ danh mục
     const fetchCategory = async (objConditionTheLoai) => {
         const categoryResponse = await categoryAPI.getChild(objConditionTheLoai)
@@ -182,14 +182,7 @@ const ShopComponent = () => {
                         <div className="col-lg-3 col-md-5">
                             <div className="sidebar">
                                 <div className="sidebar__item ">
-                                    <Accordion>
-                                        <Accordion.Item eventKey="0">
-                                            <Accordion.Header>Thể loại</Accordion.Header>
-                                            <Accordion.Body>
-                                                {ListCategory(categories, id)}
-                                            </Accordion.Body>
-                                        </Accordion.Item>
-                                    </Accordion>
+                                <marquee direction = "up">This text will scroll from bottom to up</marquee>
                                 </div>
                             </div>
                         </div>

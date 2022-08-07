@@ -11,13 +11,16 @@ import GoogleLogin from "react-google-login"
 import { gapi } from "gapi-script"
 import { Redirect } from "react-router-dom"
 const Logincomponents = () => {
+   // localStorage.removeItem('USER_NAME')
     const navigate = useNavigate()
     const [account, setAccount] = useState({ Email: "", MatKhau: "" })
     const [validated, setValidated] = useState("")
     const [notify, setNotify] = useState()
     const [loginData, setLoginData] = useState(
-        localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")) : null
-    )
+        localStorage.getItem('loginData')
+          ? JSON.parse(localStorage.getItem('loginData'))
+          : null
+      );
     const InputOnChange = (e) => {
         setAccount((account) => ({ ...account, [e.target.name]: e.target.value }))
     }
@@ -117,7 +120,8 @@ const Logincomponents = () => {
     const onSuccess = async (googleData) => {
         const data = await CustommerAPI.loginGoogle(googleData)
         setLoginData(data)
-        localStorage.setItem("loginData", JSON.stringify(data))
+        localStorage.setItem('USER_NAME',data.name)
+        navigate('/shop')
     }
     const onFailure = (result) => {
         console.log(result.error)
@@ -186,12 +190,7 @@ const Logincomponents = () => {
                             </button>
                         </div>
                         <div className="py-4 px-3">
-                            {loginData ? (
-                                <div>
-                                    <h3>You logged in as {loginData.email}</h3>
-                                    <button onClick={handleLogout}>Logout</button>
-                                </div>
-                            ) : (
+                       
                                 <GoogleLogin
                                     clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                                     buttonText="Đăng Nhập bằng google"
@@ -199,7 +198,7 @@ const Logincomponents = () => {
                                     onFailure={onFailure}
                                     cookiePolicy={"single_host_origin"}
                                 />
-                            )}
+                            
                         </div>
                         {/* <a
                             href="#"

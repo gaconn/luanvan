@@ -29,6 +29,7 @@ const NavbarHeader = () => {
     const logoutHandler = () => {
         logout()
         token.deleteToken()
+        fetchCart()
         navigate("/Home", { replace: true })
     }
     useEffect(() => {
@@ -88,6 +89,9 @@ const NavbarHeader = () => {
                             navbarScroll
                         >
                             <Nav.Link href="/Shop">Cửa hàng</Nav.Link>
+                            <Nav.Link variant="primary" onClick={handleShow}>
+                                Danh mục
+                            </Nav.Link>
                             <Nav.Link href="/Contact">Liên hệ</Nav.Link>
                             {/* <Nav.Link>
                                 <ul className="menu-items">
@@ -113,10 +117,8 @@ const NavbarHeader = () => {
                                     </li>
                                 </ul>
                             </Nav.Link> */}
-                            <Nav.Link variant="primary" onClick={handleShow}>
-                                Danh mục
-                            </Nav.Link>
-                            <Nav.Link href="/Blog">Bản tin</Nav.Link>
+                           
+                            {/* <Nav.Link href="/Blog">Bản tin</Nav.Link> */}
                         </Nav>
 
                         <Navbar.Brand href="Cart">
