@@ -348,9 +348,7 @@ class OrderModel {
             const objOrderInfo = orderInfo.data[0][0]
 
             for (let index = 0; index < arrProduct.length; index++) {
-                var ThanhTien =
-                    objDetailProduct.GiaGoc * objDetailProduct.SoLuongSanPham +
-                    objDetailProduct.PhiVanChuyen
+                var ThanhTien = arrProduct[index].ItemPrice
                 //Trừ số lượng sản phẩm đi
                 const updateProductResponse = await ProductModel.update({
                     SoLuong: arrProduct[index].SoLuong - arrProduct[index].SoLuongSanPham,

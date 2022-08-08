@@ -79,6 +79,7 @@ const Detail = () => {
         })
         fetchDetail()
     }
+    console.log(orderDetail);
     const onControlClick = (e, status) => {
         setModal({ ...modal, show: true, TrangThai: status })
     }

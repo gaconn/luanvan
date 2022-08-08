@@ -44,14 +44,14 @@ class OrderController {
     getOrderDetail = async (req, res) => {
         const data = req.query
 
-        if (!req.Permission || req.Permission > 3) {
-            return res.json(
-                ResponseUtil.response(
-                    false,
-                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
-                )
-            )
-        }
+        // if (!req.Permission || req.Permission > 3) {
+        //     return res.json(
+        //         ResponseUtil.response(
+        //             false,
+        //             "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+        //         )
+        //     )
+        // }
         try {
             const condition = {
                 ...data,
