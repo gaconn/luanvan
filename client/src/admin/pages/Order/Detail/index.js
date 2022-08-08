@@ -58,11 +58,17 @@ const Detail = () => {
                     success: false,
                 }
             }
+            if(modal.TrangThai*1 > orderDetail.TrangThai *1 +1 && modal.TrangThai * 1 !== 6) {
+                return {
+                    show: true,
+                    message: "Không thể thay đổi sang trạng thái này",
+                    success: false
+                }
+            }
             return notify
         })
 
-        if (modal.TrangThai < orderDetail.TrangThai) {
-            console.log("fail")
+        if (modal.TrangThai < orderDetail.TrangThai || (modal.TrangThai*1 > orderDetail.TrangThai *1 +1 && modal.TrangThai*1 !== 6)) {
             return
         }
 

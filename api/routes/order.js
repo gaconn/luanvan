@@ -10,5 +10,5 @@ router.post("/checkout-v1", OrderController.checkoutV1)
 router.post("/checkout-v2", OrderController.checkoutV2)
 router.post("/checkout-v3", OrderController.checkoutV3)
 router.post("/checkout", OrderController.checkout)
-router.put("/change-status", OrderController.changeStatus)
+router.put("/change-status",CheckToken, OrderController.changeStatus)
 module.exports = router

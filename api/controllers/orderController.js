@@ -179,14 +179,14 @@ class OrderController {
     changeStatus = async (req, res) => {
         const data = req.body
 
-        // if (!req.Permission || req.Permission > 3) {
-        //     return res.json(
-        //         ResponseUtil.response(
-        //             false,
-        //             "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
-        //         )
-        //     )
-        // }
+        if (!req.Permission || req.Permission > 3) {
+            return res.json(
+                ResponseUtil.response(
+                    false,
+                    "Bạn không có quền thay đổi dữ liệu này, xin vui lòng liên hệ quản trị viên"
+                )
+            )
+        }
 
         if (!data) {
             return res.json(ResponseUtil.response(false, "Tham số không hơp lệ"))

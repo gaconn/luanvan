@@ -524,8 +524,8 @@ class ProductModel {
     }
     delete = async (id) => {
         try {
-            const query = `update sanpham set ? where ?`
-            const response = await dbconnect.query(query, [{ DaXoa: 1 }, { id: id }])
+            const query = `update from sanpham where ?`
+            const response = await dbconnect.query(query, [{ id: id }])
 
             if (!response || !response[0]) {
                 throw new Error("Không thể kết nối database")
