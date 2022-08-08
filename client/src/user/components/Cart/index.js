@@ -385,7 +385,7 @@ const CartComponent = () => {
                             <Button variant="secondary" onClick={handleClose}>
                                 Đóng
                             </Button>
-                            {notify.success && <Button variant="primary">Liên hệ</Button>}
+                            {notify.success && <Button variant="primary" onClick={()=>{navigate('/contact')}}>Liên hệ</Button>}
                         </Modal.Footer>
                     </Modal>
 

@@ -182,7 +182,7 @@ const ManageOrder = () => {
                                             VND
                                         </td>
                                         <td>{StatusOrder[orderDetail.TrangThai]}</td>
-                                        {!modal && 
+                                        {!modal.TrangThai && 
                                         <td>
                                             <Button
                                                 variant="danger"
