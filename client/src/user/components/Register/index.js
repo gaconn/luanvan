@@ -25,6 +25,7 @@ const RegisterComponent = () => {
             return
         }
         event.preventDefault()
+        const user={Email:account.Email,MatKhau:account.MatKhau}
         const response = await CustommerAPI.register(account)
         setNotify(() => {
             if (response) {
@@ -56,13 +57,15 @@ const RegisterComponent = () => {
 
             return { show: true, success: false, message: "Có lỗi xảy ra, vui lòng thử lại" }
         })
+        const responseLogin = await CustommerAPI.login(user)
+        const dataLogin=responseLogin.data[0]
         const data = response.data[0]
         if (response) {
             if (response.success && response.error.length === 0) {
                 if (data.token) {
                     token.setAuthToken(data.token)
                     localStorage.setItem("USER_NAME", data.HoTen)
-                    localStorage.setItem("UID", data.id)
+                    localStorage.setItem("UID",dataLogin.id)
                     navigate("../Home")
                 }
             }

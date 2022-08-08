@@ -5,13 +5,13 @@ const TreeNavBar = ({ listChild = [], handlerIDItem }) => {
     const Tree = listChild.map((item, k) => {
         if (item.listChild.length === 0) {
             return (
-                <ListGroup>
+                <ListGroup key={k}>
                     <ListGroup.Item
                         action
                         onClick={() => {
                             handlerIDItem(item.id)
                         }}
-                        key={k}
+                       
                     >
                         {item.Ten}
                     </ListGroup.Item>

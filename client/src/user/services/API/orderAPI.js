@@ -3,10 +3,46 @@ import axios from "axios"
 const orderUrl = process.env.REACT_APP_API_HOST_URL + "/order"
 
 const orderAPI = {
+    getAll: async (params = { page: 1 }) => {
+        try {
+            const url = orderUrl + "/get-orders"
+            const response = await axios.get(url, { params: params })
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    getAllOrder: async (params) => {
+        try {
+            const url = orderUrl + "/get-orders"
+            const response = await axios.get(url, { params: params })
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    changeStatus: async (params) => {
+        try {
+            const url = orderUrl + "/change-status"
+            const response = await axios.put(url, params)
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    },
     checkout: async (params) => {
         try {
             const url = orderUrl + "/checkout"
             const response = await axios.post(url, params)
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    getDetail: async (params) => {
+        try {
+            const url = orderUrl + "/get-order-detail"
+            const response = await axios.get(url, { params: params })
             return response.data
         } catch (error) {
             console.log(error)
@@ -18,7 +54,7 @@ const orderAPI = {
             const response = await axios.get(url, { params: { id } })
             return response.data
         } catch (error) {
-            console.warn(error)
+            console.log(error)
         }
     },
     getCheckoutList: async (params) => {

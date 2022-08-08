@@ -44,10 +44,16 @@ const NavbarHeader = () => {
         if (location.pathname !== "Shop") {
             navigate("Shop?" + params)
         } else setSearchParams(params)
+        setShow(false)
     }
     const checkInformation = () => {
         if (localStorage.getItem("UID")) {
             navigate(`/InformationCustomer?id=${localStorage.getItem("UID")}`)
+        }
+    }
+    const manageOrder = () => {
+        if (localStorage.getItem("UID")) {
+            navigate(`/ManageOrder?id=${localStorage.getItem("UID")}`)
         }
     }
     //cart
@@ -72,7 +78,6 @@ const NavbarHeader = () => {
     useEffect(() => {
         fetchCart()
     }, [searchParams])
-
     return (
         <>
             <Navbar bg="light" variant="light" expand="sm" sticky="top">
@@ -157,8 +162,11 @@ const NavbarHeader = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <Dropdown.Item onClick={checkInformation} active>
+                                        <Dropdown.Item onClick={checkInformation} >
                                             Thông tin khách hàng
+                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={manageOrder} >
+                                            Đơn hàng của tôi
                                         </Dropdown.Item>
                                         <Dropdown.Divider />
                                         <Dropdown.Item onClick={logoutHandler}>

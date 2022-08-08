@@ -8,6 +8,7 @@ import "./search.css"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import Spinner from "react-bootstrap/Spinner"
 import Item from "./Item"
+import Carousel from "react-bootstrap/Carousel"
 
 const ShopComponent = () => {
     const [categories, setCategories] = useState([])
@@ -20,6 +21,8 @@ const ShopComponent = () => {
     const [IDTLProduct, setIDTLProduct] = useState()
     const navigate = useNavigate()
     const [sort, setSort] = useState({})
+    const [typeList, setTypeList] = useState("discount")
+    const [productDiscount, setProductDiscount] = useState([])
     //Hiển category theo danh mục
     const id = searchParams.get("IDTheLoai")
     useEffect(() => {
@@ -30,7 +33,7 @@ const ShopComponent = () => {
             fetchParentTree()
         } else {
             fetchCategory(objConditionTheLoai)
-            const objConditionProduct = {getAllProduct: true}
+            const objConditionProduct = { getAllProduct: true }
             objConditionProduct.IDTheLoai = id
             fetchCategoryProduct(objConditionProduct)
         }
@@ -97,7 +100,8 @@ const ShopComponent = () => {
         const Ten = searchParams.get("keyword")
         if (!Loading && Ten === keyword) return
         const objCondition = {}
-        if(id) {
+        if (id) {
+            console.log("Helo")
             objCondition.IDTheLoai = id
             objCondition.getAllProduct = true
         }
@@ -160,7 +164,6 @@ const ShopComponent = () => {
             return objCondition.Ten
         })
     }
-
     // sắp xếp
     const priceSortChangeHandler = (e) => {
         setSort(() => {
@@ -178,6 +181,31 @@ const ShopComponent = () => {
 
         return <Item categoryParent={categories} />
     }
+    const fetchProductDiscount = async (objCondition) => {
+        const productResponse = await productAPI.getAll(objCondition)
+        setProductDiscount(() => {
+            if (productResponse.success) {
+                return productResponse.data.data
+            }
+            return []
+        })
+    }
+    useEffect(() => {
+        const objCondition = {}
+        if (typeList === "discount") {
+            objCondition.joinDiscount = true
+        }
+        fetchProductDiscount(objCondition)
+    }, [typeList])
+    useEffect(() => {
+        const kind = searchParams.get("kind")
+        setTypeList((typeList) => {
+            if (kind) {
+                return kind
+            }
+            return typeList
+        })
+    }, [searchParams])
     return (
         <>
             <section className="product spad">
@@ -185,8 +213,24 @@ const ShopComponent = () => {
                     <div className="row">
                         <div className="col-lg-3 col-md-5">
                             <div className="sidebar">
-                                <div className="sidebar__item ">
-                                <marquee direction = "up">This text will scroll from bottom to up</marquee>
+                                <div className="sidebar__item text-center">
+                                <h5>Sản phẩm khuyến mãi</h5>
+                                    {productDiscount &&
+                                        productDiscount.map((item, k) => {
+                                            return (
+                                                <Carousel variant="dark" key={k}>
+                                                    <Carousel.Item>
+                                                        <img
+                                                            src={
+                                                                process.env.REACT_APP_API_IMAGE +
+                                                                JSON.parse(item.HinhAnh)[0]
+                                                            }
+                                                        />
+                                                        
+                                                    </Carousel.Item>
+                                                </Carousel>
+                                            )
+                                        })}
                                 </div>
                             </div>
                         </div>
@@ -203,13 +247,6 @@ const ShopComponent = () => {
                                             >
                                                 <option value="asc">Tăng dần</option>
                                                 <option value="desc">Giảm dần</option>
-                                            </select>
-                                        </div>
-                                        <div className="filter__sort">
-                                            <span>Sort By</span>
-                                            <select>
-                                                <option value={0}>Default</option>
-                                                <option value={0}>Default</option>
                                             </select>
                                         </div>
                                     </div>

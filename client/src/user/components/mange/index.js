@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import Information from "./infomationCustomer"
-import ManageOrder from "./ManageOrder"
 import ValidateCheckout from "./UpdateCustomer"
 const ManageComponents = () => {
     const [searchParams, setSearchParams] = useSearchParams()
