@@ -32,7 +32,7 @@ const Category = ({ data, loading, SoLuong }) => {
 
                     <div className="checkout__order__subtotal">
                         Phí vận chuyển{" "}
-                        <span>{data && data.PhiVanChuyen.toLocaleString("en-US")} VND</span>
+                        <span>{data && (data.PhiVanChuyen).toLocaleString("en-US")} VND</span>
                     </div>
                     {/* 
                     <div className="checkout__order__subtotal">
@@ -40,7 +40,7 @@ const Category = ({ data, loading, SoLuong }) => {
                     </div> */}
                     <div className="checkout__order__total">
                         Tổng thành tiền{" "}
-                        <span>{data && data.TongGiaTriDonHang.toLocaleString("en-US")} VND</span>
+                        <span>{data && (data.TongGiaTriDonHang).toLocaleString("en-US")} VND</span>
                     </div>
                     <button type="submit" className="site-btn" disabled={loading ? true : ""}>
                         {loading ? <Spinner animation="border" /> : "Xác nhận đặt hàng"}

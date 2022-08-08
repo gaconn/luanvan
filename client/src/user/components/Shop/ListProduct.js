@@ -15,19 +15,22 @@ const List = ({ Product, LoadingProduct }) => {
     }
     const handleInfoCart = async (e, item) => {
         e.preventDefault()
-        let SessionID = localStorage.getItem("SessionID")
-        let UID = localStorage.getItem("UID")
+        var SessionID = localStorage.getItem("SessionID")
+        var UID = localStorage.getItem("UID")
+        console.log("UID",UID);
         if (!UID) {
             if (!SessionID) {
                 let session = uniqid()
                 SessionID = localStorage.setItem("SessionID", session)
             }
+            console.log("sesionID", SessionID);
             const addToCart = await CartAPI.AddToCart({
                 IDSanPham: item.id,
                 SoLuong: 1,
                 SessionID: SessionID,
             })
         } else {
+            console.log(UID);
             const addToCart = await CartAPI.AddToCart({
                 IDSanPham: item.id,
                 SoLuong: 1,
@@ -92,7 +95,7 @@ const List = ({ Product, LoadingProduct }) => {
                                         {truncateWords(item.Ten, 4, "...")}
                                     </Link>
                                 </h6>
-                                <h5>{(item.GiaGoc * 2).toLocaleString("en-US")}VND</h5>
+                                <h5>{(item.GiaGoc).toLocaleString("en-US")}VND</h5>
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,27 @@
 import uniqid from "uniqid"
+export const StatusOrder = {
+    0: "Đang nhận đơn hàng",
+    1: "Đang kiểm tra thông tin",
+    2: "Đang vận chuyển",
+    3: "Đã chuyển hàng",
+    4: "Chờ đổi trả",
+    5: "Đã hoàn thành",
+    6: "Đã hủy",
+}
+export const colorTextStatus = {
+    0: "danger",
+    1: "info",
+    2: "info",
+    3: "success",
+    4: "warning",
+    5: "success",
+    6: "danger",
+}
+
+export const paymentMethod = {
+    1: "Trực tiếp",
+    2: "Momo",
+}
 export const toTimeString = (timestamp) => {
     const date = new Date(timestamp)
     if (!date) return ""

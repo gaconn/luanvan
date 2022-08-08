@@ -8,6 +8,7 @@ import "./search.css"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import Spinner from "react-bootstrap/Spinner"
 import Item from "./Item"
+import Carousel from "react-bootstrap/Carousel"
 
 const ShopComponent = () => {
     const [categories, setCategories] = useState([])
@@ -32,7 +33,7 @@ const ShopComponent = () => {
             fetchParentTree()
         } else {
             fetchCategory(objConditionTheLoai)
-            const objConditionProduct = {getAllProduct: true}
+            const objConditionProduct = { getAllProduct: true }
             objConditionProduct.IDTheLoai = id
             fetchCategoryProduct(objConditionProduct)
         }
@@ -99,8 +100,8 @@ const ShopComponent = () => {
         const Ten = searchParams.get("keyword")
         if (!Loading && Ten === keyword) return
         const objCondition = {}
-        if(id) {
-            console.log('Helo')
+        if (id) {
+            console.log("Helo")
             objCondition.IDTheLoai = id
             objCondition.getAllProduct = true
         }
@@ -205,7 +206,6 @@ const ShopComponent = () => {
             return typeList
         })
     }, [searchParams])
-    console.log(productDiscount)
     return (
         <>
             <section className="product spad">
@@ -213,12 +213,24 @@ const ShopComponent = () => {
                     <div className="row">
                         <div className="col-lg-3 col-md-5">
                             <div className="sidebar">
-                                <div className="sidebar__item ">
-                               {
-                                productDiscount && productDiscount.map((item,k)=>{
-                                    return  <marquee direction = "up" key={k}><img src={process.env.REACT_APP_API_IMAGE+JSON.parse(item.HinhAnh)[0]}/></marquee>
-                                })
-                               }
+                                <div className="sidebar__item text-center">
+                                <h5>Sản phẩm khuyến mãi</h5>
+                                    {productDiscount &&
+                                        productDiscount.map((item, k) => {
+                                            return (
+                                                <Carousel variant="dark" key={k}>
+                                                    <Carousel.Item>
+                                                        <img
+                                                            src={
+                                                                process.env.REACT_APP_API_IMAGE +
+                                                                JSON.parse(item.HinhAnh)[0]
+                                                            }
+                                                        />
+                                                        
+                                                    </Carousel.Item>
+                                                </Carousel>
+                                            )
+                                        })}
                                 </div>
                             </div>
                         </div>
