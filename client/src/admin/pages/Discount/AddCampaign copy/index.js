@@ -1,21 +1,13 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button, Col, Form, Row, Toast, ToastContainer } from "react-bootstrap"
 import discountAPI from "../../../services/API/discountAPI"
-import { Container, Content } from "./EditCampaign.style"
-import {useSearchParams} from "react-router-dom"
-const EditCampaign = () => {
+import { Container, Content } from "./AddCampaign.style"
+
+const AddCampaign = () => {
     const [validated, setValidated] = useState(false)
     const [discount, setDiscount] = useState({ Ten: "" })
     const [insertNotify, setInsertNotify] = useState({ show: false, message: "" })
-    const [searchParams, setSearchParams] = useSearchParams()
-    useEffect(() => {
-        const fetchDiscount = async() => {
-            const id = searchParams.get('id') 
-            const response = await discountAPI.getList(id)
-            setDiscount(response.data[0])
-        } 
-        fetchDiscount()
-    }, [])
+
     const handleSubmit = async (event) => {
         event.preventDefault()
         event.stopPropagation()
@@ -252,4 +244,4 @@ const EditCampaign = () => {
     )
 }
 
-export default EditCampaign
+export default AddCampaign

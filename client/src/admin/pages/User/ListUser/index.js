@@ -69,7 +69,7 @@ const ListUser = () => {
         setDel({ ...del, show: false })
     }
     const handleDeleteAccept = async () => {
-        const deleteUserResponse = await userAPI.delete(del.id)
+        const deleteUserResponse = await userAPI.delete({id: del.id})
         setDel({ ...del, show: false }) //ẩn dialog
         setNotify(() => {
             if (!deleteUserResponse || !deleteUserResponse.success) {
@@ -88,15 +88,9 @@ const ListUser = () => {
                 errors: deleteUserResponse.errors,
             }
         })
+        fetchUser({page: page.now})
 
-        setUser(() => {
-            if (deleteUserResponse.success) {
-                var tmpUser = [...user.data]
-                tmpUser = tmpUser.filter((item) => item.id !== del.id)
-                return { data: tmpUser, rowCount: user.rowCount - 1 }
-            }
-            return { ...user }
-        })
+        
     }
     const onControlClick = (e, id, action) => {
         if (action === "update") {

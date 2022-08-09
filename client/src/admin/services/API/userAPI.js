@@ -21,5 +21,10 @@ const userAPI = {
         const response = await axios.get(url, { params: params })
         return response.data
     },
+    delete: async (params) => {
+        const url = BASE_URL + "/delete"
+        const response = await axios.delete(url, { params: params })
+        return response.data
+    },
 }
 export default userAPI

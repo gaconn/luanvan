@@ -198,7 +198,7 @@ class CategoryModel {
             }
 
             //kiểm tra đã có ngành hàng con hay chưa
-            const dataCheckSubCategory = await this.get({ id: objCondition.id, child: true })
+            const dataCheckSubCategory = await this.get({ id: objCondition.id, child: true , DaXoa: 0})
             if (
                 dataCheckSubCategory &&
                 dataCheckSubCategory.success &&

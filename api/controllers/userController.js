@@ -164,8 +164,11 @@ class UserController {
             return res.json(ResponseUtil.response(false, "Tham số không hợp lệ"))
         }
         try {
-            // const response = await UserModel.update()
-        } catch (error) {}
+             const response = await UserModel.delete(id)
+             return res.json(response)
+        } catch (error) {
+            return res.json(ResponseUtil.response(false, error.message))
+        }
     }
     contact =async(req,res)=>{
         const data=req.body

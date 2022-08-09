@@ -32,9 +32,9 @@ class UserModel {
         if (!GeneralUtil.checkIsValidPassword(objUserInfo.MatKhau)) {
             arrError.push("Password phải lớn hơn 6 ký tự")
         }
-        if (!GeneralUtil.checkIsEmptyArray(arrError)) {
-            return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], arrError)
-        }
+        // if (!GeneralUtil.checkIsEmptyArray(arrError)) {
+        //     return ResponseUtil.response(false, "dữ liệu không hợp lệ", [], arrError)
+        // }
         try {
             const arrGetAccountResult = await dbconnect.query(
                 "select * from taikhoan where  Email = ? Limit 1",
@@ -573,6 +573,22 @@ class UserModel {
             return ResponseUtil.response(true, "Sửa dữ liệu tài khoản thành công")
         } catch (error) {
             return ResponseUtil.response(false, error.message, [], [error])
+        }
+    }
+
+    delete = async (id) => {
+        if(!id) {
+            return ResponseUtil.response(false, 'Tham số không hợp lệ')
+        }
+        try {
+            const query = `delete from taikhoan where id = ?`
+            const response = await dbconnect.query(query, id)
+            if(response[0].affectedRows === 0) {
+                return ResponseUtil.response(false, 'Xóa thất bại, không thể xóa do có dữ liệu liên quan')
+            }
+            return ResponseUtil.response(true, "thành công")
+        } catch (error) {
+            return ResponseUtil.response(false, error.message)
         }
     }
 }
